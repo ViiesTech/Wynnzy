@@ -1,4 +1,4 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Location from '../screens/mainScreens/UserStack/Location';
 import Filter from '../screens/commonScreens/Filter';
 import Create_Pet_Profile from '../screens/mainScreens/UserStack/Create_Pet_Profile';
@@ -12,7 +12,7 @@ import ZipCode from '../screens/mainScreens/UserStack/ZipCode';
 import Payment from '../screens/mainScreens/UserStack/Payment';
 import PetProfile from '../screens/mainScreens/UserStack/PetProfile';
 import UserProfile from '../screens/mainScreens/UserStack/UserProfile';
-import { UserBottomStack } from './BottomStack';
+import {UserBottomStack} from './BottomStack';
 import Filter2 from '../screens/mainScreens/UserStack/Filter2';
 import Notification from '../screens/commonScreens/Notification';
 import Reviews from '../screens/commonScreens/Reviews';
@@ -40,14 +40,13 @@ type UserStackParams = {
   AddCard: undefined;
   Payment: undefined;
   TransferSuccessfully: undefined;
-
 };
 
 const Stack = createNativeStackNavigator<UserStackParams>(); // Use the typed navigator
 
 export function UserStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="BottomStack" component={UserBottomStack} />
       <Stack.Screen name="Location" component={Location} />
       <Stack.Screen name="Filter" component={Filter} />
@@ -69,7 +68,10 @@ export function UserStack() {
       <Stack.Screen name="AddCard" component={AddNewCard} />
       <Stack.Screen name="Payment" component={Payment} />
       <Stack.Screen name="EditUserProfile" component={EditUserProfile} />
-      <Stack.Screen name="TransferSuccessfully" component={Transfer_Successfully} />
+      <Stack.Screen
+        name="TransferSuccessfully"
+        component={Transfer_Successfully}
+      />
     </Stack.Navigator>
   );
 }

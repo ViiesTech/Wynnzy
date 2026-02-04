@@ -1,19 +1,26 @@
-import { BaseUrl } from '../BaseUrl';
+import {BaseUrl} from '../BaseUrl';
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
-import { setBusinessProfileData, setUserData, UserLogin } from '../redux/Slices';
+import {setBusinessProfileData, setUserData, UserLogin} from '../redux/Slices';
+
 export const ShowToast = (type: string, text: string) => {
   return Toast.show({
     type: type,
     text1: text,
   });
 };
-export const Signup = async (fullname: string, email: string, password: string, type: string): Promise<any> => {
+
+export const Signup = async (
+  fullname: string,
+  email: string,
+  password: string,
+  type: string,
+): Promise<any> => {
   let data = JSON.stringify({
-    'fullName': fullname,
-    'email': email.toLowerCase(),
-    'password': password,
-    'type': type,
+    fullName: fullname,
+    email: email.toLowerCase(),
+    password: password,
+    type: type,
   });
   let config = {
     method: 'post',
@@ -31,7 +38,11 @@ export const Signup = async (fullname: string, email: string, password: string, 
     throw error.response.data.message;
   }
 };
-export const handleLogin = async (email: string, password: string, dispatch: any) => {
+export const handleLogin = async (
+  email: string,
+  password: string,
+  dispatch: any,
+) => {
   let data = JSON.stringify({
     email: email.toLowerCase(),
     password: password,
@@ -48,9 +59,34 @@ export const handleLogin = async (email: string, password: string, dispatch: any
   };
   dispatch(UserLogin(config));
 };
+export const handleSocialLogin = async (
+  email: string,
+  nickName: string,
+  type: string,
+  socialId: string,
+  dispatch: any,
+) => {
+  let data = JSON.stringify({
+    email: email.toLowerCase(),
+    nickName: nickName,
+    type: type,
+    socialId: socialId,
+  });
+
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: `${BaseUrl}user/socialLogin`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+  dispatch(UserLogin(config));
+};
 export const forgetPasswordApi = async (email: string) => {
   let data = JSON.stringify({
-    'email': email,
+    email: email,
   });
 
   let config = {
@@ -64,7 +100,7 @@ export const forgetPasswordApi = async (email: string) => {
   };
   try {
     const response = await axios.request(config);
-    console.log('ress', response.data)
+    console.log('ress', response.data);
     return response.data;
   } catch (error) {
     console.log('error', error.response.data.message);
@@ -73,8 +109,8 @@ export const forgetPasswordApi = async (email: string) => {
 };
 export const resetPassword = async (email: string, password: any) => {
   let data = JSON.stringify({
-    'email': email,
-    'newPassword': password,
+    email: email,
+    newPassword: password,
   });
 
   let config = {
@@ -97,9 +133,9 @@ export const verifyOtp = async (email: string, otp: number, token: string) => {
   console.log('email<><><>', email);
   console.log('otp<><><><>', otp);
   let data = JSON.stringify({
-    'email': email,
-    'Otp': otp,
-    'addSignUpToken': token,
+    email: email,
+    Otp: otp,
+    addSignUpToken: token,
   });
 
   let config = {
@@ -122,8 +158,8 @@ export const verifyOtpPassword = async (email: string, otp: number) => {
   console.log('email<><><>', email);
   console.log('otp<><><><>', otp);
   let data = JSON.stringify({
-    'email': email,
-    'Otp': otp,
+    email: email,
+    Otp: otp,
   });
 
   let config = {
@@ -144,7 +180,7 @@ export const verifyOtpPassword = async (email: string, otp: number) => {
 };
 export const resendOtp = async (email: string) => {
   let data = JSON.stringify({
-    'email': email,
+    email: email,
   });
 
   let config = {
@@ -233,7 +269,7 @@ export const createBusinessProfile = async (
     console.log('Post Response:', response.data);
     if (response.data.success) {
       ShowToast('success', response.data.message);
-      dispatch(setUserData({ ...userData, profileCreated: true }));
+      dispatch(setUserData({...userData, profileCreated: true}));
       dispatch(setBusinessProfileData(response.data.data));
       navigation.navigate('BottomStack');
     } else {
@@ -277,13 +313,15 @@ export const editBusinessProfile = async ({
   contactNo?: string;
   bio?: string;
   experienceLvl?: number;
-  location?: { lat: number; lng: number; address: string };
+  location?: {lat: number; lng: number; address: string};
   dispatch?: any;
   navigation?: any;
 }) => {
   const data = new FormData();
   data.append('businessProfileId', id);
-  if (bType) { data.append('bType', bType); }
+  if (bType) {
+    data.append('bType', bType);
+  }
   if (image) {
     data.append('profileImage', {
       uri: image,
@@ -291,13 +329,27 @@ export const editBusinessProfile = async ({
       type: 'image/jpeg',
     });
   }
-  if (fullName) { data.append('fullName', fullName); }
-  if (storeName) { data.append('businessName', storeName); }
-  if (address) { data.append('address', address); }
-  if (services) { data.append('services', services); }
-  if (contactNo) { data.append('contactNo', contactNo); }
-  if (bio) { data.append('bio', bio); }
-  if (experienceLvl !== undefined) { data.append('experienceLvl', experienceLvl.toString()); }
+  if (fullName) {
+    data.append('fullName', fullName);
+  }
+  if (storeName) {
+    data.append('businessName', storeName);
+  }
+  if (address) {
+    data.append('address', address);
+  }
+  if (services) {
+    data.append('services', services);
+  }
+  if (contactNo) {
+    data.append('contactNo', contactNo);
+  }
+  if (bio) {
+    data.append('bio', bio);
+  }
+  if (experienceLvl !== undefined) {
+    data.append('experienceLvl', experienceLvl.toString());
+  }
   if (location) {
     data.append('lat', location.lat.toString());
     data.append('lng', location.lng.toString());
@@ -442,10 +494,18 @@ export const editPetProfile = async (
     data.append('petName', petName);
   }
   // data.append('dob', '12-2-2024');
-  if (dob) { data.append('dob', dob); }
-  if (breed) { data.append('breed', breed); }
-  if (size) { data.append('size', size); }
-  if (specialCareNeed) { data.append('specialCareNeed', specialCareNeed); }
+  if (dob) {
+    data.append('dob', dob);
+  }
+  if (breed) {
+    data.append('breed', breed);
+  }
+  if (size) {
+    data.append('size', size);
+  }
+  if (specialCareNeed) {
+    data.append('specialCareNeed', specialCareNeed);
+  }
   if (petImages) {
     petImages.forEach((uri, index) => {
       data.append('petImages', {
@@ -455,9 +515,15 @@ export const editPetProfile = async (
       });
     });
   }
-  if (weight) { data.append('weight', Number(weight)); }
-  if (height) { data.append('height', Number(height)); }
-  if (color) { data.append('color', color); }
+  if (weight) {
+    data.append('weight', Number(weight));
+  }
+  if (height) {
+    data.append('height', Number(height));
+  }
+  if (color) {
+    data.append('color', color);
+  }
   if (profileImage) {
     data.append('profileImage', {
       uri: profileImage,
@@ -465,8 +531,12 @@ export const editPetProfile = async (
       type: 'image/jpeg',
     });
   }
-  if (behaviour) { data.append('behaviour', behaviour); }
-  if (description) { data.append('description', description); }
+  if (behaviour) {
+    data.append('behaviour', behaviour);
+  }
+  if (description) {
+    data.append('description', description);
+  }
   const config = {
     method: 'post',
     maxBodyLength: Infinity,
@@ -524,7 +594,6 @@ export const getPetProfile = async (petProfileId: string) => {
   } catch (error) {
     throw error;
   }
-
 };
 export const getBusinessProfile = async (businessId: string) => {
   let config = {
@@ -607,10 +676,13 @@ export const getUserData = async (userId: string) => {
     throw error;
   }
 };
-export const updateBookingStatus = async (bookingId: string, status: string) => {
+export const updateBookingStatus = async (
+  bookingId: string,
+  status: string,
+) => {
   let data = JSON.stringify({
-    'bookingId': bookingId,
-    'status': status,
+    bookingId: bookingId,
+    status: status,
   });
 
   let config = {
@@ -632,7 +704,7 @@ export const updateBookingStatus = async (bookingId: string, status: string) => 
 };
 export const deleteBooking = async (bookingId: string) => {
   let data = JSON.stringify({
-    'id': bookingId,
+    id: bookingId,
   });
 
   let config = {
@@ -649,6 +721,20 @@ export const deleteBooking = async (bookingId: string) => {
     return response.data;
   } catch (error) {
     ShowToast('error', error?.response?.data?.message);
+    throw error;
+  }
+};
+export const getAllProducts = async () => {
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: `${BaseUrl}/getAllProducts`,
+    headers: {},
+  };
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
     throw error;
   }
 };

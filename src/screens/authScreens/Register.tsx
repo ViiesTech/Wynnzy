@@ -6,23 +6,23 @@ import {
   Text,
   ActivityIndicator,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Input from '../../Components/Input';
-import { Colors } from '../../assets/colors';
+import {Colors} from '../../assets/colors';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from '../../assets/responsive_dimensions';
-import { BoldText, NormalText } from '../../Components/Titles';
-import { Button } from '../../Components/Button';
-import { mail, security, tick, user } from '../../assets/icons';
+import {BoldText, NormalText} from '../../Components/Titles';
+import {Button} from '../../Components/Button';
+import {mail, security, tick, user} from '../../assets/icons';
 import SvgIcons from '../../Components/SvgIcons';
-import { ShowToast, Signup } from '../../GlobalFunctions/Auth';
-import { setUserData } from '../../redux/Slices';
-import { useDispatch } from 'react-redux';
+import {ShowToast, Signup} from '../../GlobalFunctions/Auth';
+import {setUserData} from '../../redux/Slices';
+import {useDispatch} from 'react-redux';
 
-const Register = ({ navigation, route }) => {
+const Register = ({navigation, route}: any) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [form, setForm] = useState({
@@ -31,12 +31,12 @@ const Register = ({ navigation, route }) => {
     password: '',
     confirmPassword: '',
   });
-  const { fullName, email, password, confirmPassword } = form;
+  const {fullName, email, password, confirmPassword} = form;
   const [accept, setAccept] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
   const handleInputChange = (field: string, value: string) => {
-    setForm(prev => ({ ...prev, [field]: value }));
+    setForm(prev => ({...prev, [field]: value}));
   };
   // const handleRegisteration = () => {
   //   if (!fullName || !email || !password || !confirmPassword) {
@@ -64,14 +64,24 @@ const Register = ({ navigation, route }) => {
     }
     try {
       setIsLoading(true);
-      const response = await Signup(fullName, email, password, route?.params?.currentCategory);
+      const response = await Signup(
+        fullName,
+        email,
+        password,
+        route?.params?.currentCategory,
+      );
+      console.log('response:-', response);
       if (response.success) {
         ShowToast('success', 'Registeration Successful');
-        navigation.navigate('Otp', { registeration: true, email: response.data.email, token: response.accessToken });
+        navigation.navigate('Otp', {
+          registeration: true,
+          email: response.data.email,
+          token: response.accessToken,
+        });
       } else {
         ShowToast('error', response.message);
       }
-      console.log('response', response);
+
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -87,7 +97,7 @@ const Register = ({ navigation, route }) => {
         backgroundColor: Colors.white,
         padding: 20,
       }}>
-      <View style={{ paddingVertical: responsiveHeight(6) }}>
+      <View style={{paddingVertical: responsiveHeight(6)}}>
         <View
           style={{
             gap: responsiveHeight(1),
@@ -100,7 +110,7 @@ const Register = ({ navigation, route }) => {
             title="Sign up and discover around the world!"
           />
         </View>
-        <View style={{ gap: responsiveHeight(2) }}>
+        <View style={{gap: responsiveHeight(2)}}>
           <Input
             icon
             xml={user}
@@ -156,19 +166,56 @@ const Register = ({ navigation, route }) => {
             handlePress={() => handleRegisteration()}
             textColor={Colors.white}
             bgColor={Colors.buttonBg}
-            title={isLoading ? <ActivityIndicator size={'large'} color={Colors.white} /> : 'Sign Up'}
+            title={
+              isLoading ? (
+                <ActivityIndicator size={'large'} color={Colors.white} />
+              ) : (
+                'Sign Up'
+              )
+            }
           />
         </View>
       </View>
-      <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-        <TouchableOpacity onPress={() => setAccept(!accept)} style={{ flexDirection: 'row', gap: responsiveHeight(1), marginTop: responsiveHeight(4) }}>
-          <TouchableOpacity onPress={() => setAccept(!accept)} style={{ height: responsiveHeight(4), marginTop: responsiveHeight(0.5), width: responsiveWidth(8), alignItems: 'center', justifyContent: 'center', borderWidth: accept ? null : 2, borderColor: accept ? null : Colors.buttonBg, borderRadius: responsiveHeight(1), backgroundColor: accept ? Colors.buttonBg : Colors.white }}>
+      <View style={{flex: 1, justifyContent: 'flex-end'}}>
+        <TouchableOpacity
+          onPress={() => setAccept(!accept)}
+          style={{
+            flexDirection: 'row',
+            gap: responsiveHeight(1),
+            marginTop: responsiveHeight(4),
+          }}>
+          <TouchableOpacity
+            onPress={() => setAccept(!accept)}
+            style={{
+              height: responsiveHeight(4),
+              marginTop: responsiveHeight(0.5),
+              width: responsiveWidth(8),
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderWidth: accept ? null : 2,
+              borderColor: accept ? null : Colors.buttonBg,
+              borderRadius: responsiveHeight(1),
+              backgroundColor: accept ? Colors.buttonBg : Colors.white,
+            }}>
             <SvgIcons xml={tick} height={15} width={15} />
           </TouchableOpacity>
-          <NormalText width={responsiveWidth(80)} fontSize={responsiveFontSize(1.8)} color={Colors.themeText} title="By signing up, you agree to Pawcation Terms of Use and Privacy Policy. By providing your email, you consent to receive communications from Pawcation. You can opt-out anytime." />
+          <NormalText
+            width={responsiveWidth(80)}
+            fontSize={responsiveFontSize(1.8)}
+            color={Colors.themeText}
+            title="By signing up, you agree to Pawcation Terms of Use and Privacy Policy. By providing your email, you consent to receive communications from Pawcation. You can opt-out anytime."
+          />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={{ alignItems: 'center', marginTop: responsiveHeight(4) }}>
-          <Text style={{ color: Colors.themeText, fontSize: responsiveFontSize(2) }}>Already have an account ? <Text style={{ color: Colors.buttonBg, fontWeight: '700' }}>Sign in</Text></Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Login')}
+          style={{alignItems: 'center', marginTop: responsiveHeight(4)}}>
+          <Text
+            style={{color: Colors.themeText, fontSize: responsiveFontSize(2)}}>
+            Already have an account ?{' '}
+            <Text style={{color: Colors.buttonBg, fontWeight: '700'}}>
+              Sign in
+            </Text>
+          </Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -176,4 +223,3 @@ const Register = ({ navigation, route }) => {
 };
 
 export default Register;
-

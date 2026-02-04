@@ -1,16 +1,19 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Store from '../screens/mainScreens/UserStack/Store';
 import Home from '../screens/mainScreens/UserStack/Home';
 import DayCareHome from '../screens/mainScreens/DayCareStack/Home';
 import UserProfile from '../screens/mainScreens/UserStack/UserProfile';
-import { responsiveHeight, responsiveWidth } from '../assets/responsive_dimensions';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from '../assets/responsive_dimensions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
-import { Colors } from '../assets/colors';
-import { StyleSheet, View } from 'react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {Colors} from '../assets/colors';
+import {StyleSheet, View} from 'react-native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import StoreDetails from '../screens/mainScreens/UserStack/StoreDetails';
 import Jobs from '../screens/mainScreens/DayCareStack/Jobs';
 import Chat from '../screens/mainScreens/DayCareStack/Chat';
@@ -29,7 +32,7 @@ const Stack = createNativeStackNavigator();
 // Bottom Stack Component
 const HomeStack = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Home2" component={Store} />
     </Stack.Navigator>
@@ -37,7 +40,7 @@ const HomeStack = () => {
 };
 const ShopStack = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Shop" component={Shop} />
       <Stack.Screen name="ProductDetails" component={ProductDetails} />
       <Stack.Screen name="MyCart" component={MyCart} />
@@ -51,13 +54,25 @@ function UserBottomStack() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { backgroundColor: Colors.white, margin: 0, height: responsiveHeight(7), alignItems: 'center', justifyContent: 'center', borderTopRightRadius: responsiveHeight(4), borderTopLeftRadius: responsiveHeight(4) },
+        tabBarStyle: {
+          backgroundColor: Colors.white,
+          margin: 0,
+          height: responsiveHeight(7),
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderTopRightRadius: responsiveHeight(4),
+          borderTopLeftRadius: responsiveHeight(4),
+        },
       }}>
       <Tab.Screen
-        options={({ route }) => ({
-          tabBarIcon: ({ focused, size }) => (
+        options={({route}) => ({
+          tabBarIcon: ({focused, size}) => (
             <View style={styles.bottomTabs}>
-              <AntDesign name='home' size={25} color={focused ? '#554292' : '#BFBFBF'} />
+              <AntDesign
+                name="home"
+                size={25}
+                color={focused ? '#554292' : '#BFBFBF'}
+              />
               {focused && (
                 <View
                   style={{
@@ -73,16 +88,18 @@ function UserBottomStack() {
           tabBarShowLabel: false,
         })}
         name="HomeStack"
-        component={
-          HomeStack
-        }
+        component={HomeStack}
       />
 
       <Tab.Screen
-        options={({ route }) => ({
-          tabBarIcon: ({ focused, size }) => (
+        options={({route}) => ({
+          tabBarIcon: ({focused, size}) => (
             <View style={styles.bottomTabs}>
-              <MaterialIcons name={'storefront'} size={25} color={focused ? '#554292' : '#BFBFBF'} />
+              <MaterialIcons
+                name={'storefront'}
+                size={25}
+                color={focused ? '#554292' : '#BFBFBF'}
+              />
               {focused && (
                 <View
                   style={{
@@ -103,10 +120,14 @@ function UserBottomStack() {
       />
 
       <Tab.Screen
-        options={({ route }) => ({
-          tabBarIcon: ({ focused, size }) => (
+        options={({route}) => ({
+          tabBarIcon: ({focused, size}) => (
             <View style={styles.bottomTabs}>
-              <Feather name={'shopping-cart'} size={25} color={focused ? '#554292' : '#BFBFBF'} />
+              <Feather
+                name={'shopping-cart'}
+                size={25}
+                color={focused ? '#554292' : '#BFBFBF'}
+              />
               {focused && (
                 <View
                   style={{
@@ -129,7 +150,7 @@ function UserBottomStack() {
 
       <Tab.Screen
         options={{
-          tabBarIcon: ({ focused }: { focused: boolean }) => (
+          tabBarIcon: ({focused}: {focused: boolean}) => (
             <View style={styles.bottomTabs}>
               <Feather
                 name="user"
@@ -153,8 +174,6 @@ function UserBottomStack() {
         name="UserProfile"
         component={UserProfile}
       />
-
-
     </Tab.Navigator>
   );
 }
@@ -164,13 +183,23 @@ function DayCareBottomStack() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { backgroundColor: Colors.white, margin: 0, height: responsiveHeight(7), alignItems: 'center', justifyContent: 'center', },
+        tabBarStyle: {
+          backgroundColor: Colors.white,
+          margin: 0,
+          height: responsiveHeight(7),
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
       }}>
       <Tab.Screen
-        options={({ route }) => ({
-          tabBarIcon: ({ focused, size }) => (
+        options={({route}) => ({
+          tabBarIcon: ({focused, size}) => (
             <View style={styles.bottomTabs}>
-              <AntDesign name='home' size={25} color={focused ? '#554292' : '#BFBFBF'} />
+              <AntDesign
+                name="home"
+                size={25}
+                color={focused ? '#554292' : '#BFBFBF'}
+              />
               {focused && (
                 <View
                   style={{
@@ -186,16 +215,18 @@ function DayCareBottomStack() {
           tabBarShowLabel: false,
         })}
         name="Home"
-        component={
-          DayCareHome
-        }
+        component={DayCareHome}
       />
 
       <Tab.Screen
-        options={({ route }) => ({
-          tabBarIcon: ({ focused, size }) => (
+        options={({route}) => ({
+          tabBarIcon: ({focused, size}) => (
             <View style={styles.bottomTabs}>
-              <Ionicons name={'bag-handle-outline'} size={25} color={focused ? '#554292' : '#BFBFBF'} />
+              <Ionicons
+                name={'bag-handle-outline'}
+                size={25}
+                color={focused ? '#554292' : '#BFBFBF'}
+              />
               {focused && (
                 <View
                   style={{
@@ -216,10 +247,14 @@ function DayCareBottomStack() {
       />
 
       <Tab.Screen
-        options={({ route }) => ({
-          tabBarIcon: ({ focused, size }) => (
+        options={({route}) => ({
+          tabBarIcon: ({focused, size}) => (
             <View style={styles.bottomTabs}>
-              <Ionicons name={'chatbox-ellipses-outline'} size={25} color={focused ? '#554292' : '#BFBFBF'} />
+              <Ionicons
+                name={'chatbox-ellipses-outline'}
+                size={25}
+                color={focused ? '#554292' : '#BFBFBF'}
+              />
               {focused && (
                 <View
                   style={{
@@ -241,7 +276,7 @@ function DayCareBottomStack() {
 
       <Tab.Screen
         options={{
-          tabBarIcon: ({ focused }: { focused: boolean }) => (
+          tabBarIcon: ({focused}: {focused: boolean}) => (
             <View style={styles.bottomTabs}>
               <Feather
                 name="user"
@@ -265,15 +300,15 @@ function DayCareBottomStack() {
         name="Profile"
         component={Profile}
       />
-
-
     </Tab.Navigator>
   );
 }
 
-export { UserBottomStack, DayCareBottomStack };
+export {UserBottomStack, DayCareBottomStack};
 const styles = StyleSheet.create({
   bottomTabs: {
-    alignItems: 'center', position: 'relative', top: responsiveHeight(1),
+    alignItems: 'center',
+    position: 'relative',
+    top: responsiveHeight(1),
   },
 });

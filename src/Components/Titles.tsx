@@ -1,7 +1,7 @@
 import React from 'react';
-import { Text, TextStyle } from 'react-native';
-import { responsiveFontSize } from '../assets/responsive_dimensions';
-import { Colors } from '../assets/colors';
+import {Text, TextStyle} from 'react-native';
+import {responsiveFontSize} from '../assets/responsive_dimensions';
+import {Colors} from '../assets/colors';
 interface textProps {
   color?: string;
   title: string;
@@ -30,15 +30,17 @@ export const BoldText: React.FC<textProps> = ({
   return (
     <Text
       numberOfLines={numberOfLines}
-      style={{
-        fontSize,
-        fontWeight: fontWeight ? fontWeight : '900',
-        marginTop: mrgnTop,
-        width,
-        color,
-        textAlign: txtAlign,
-        alignSelf,
-      } as TextStyle}>
+      style={
+        {
+          fontSize,
+          fontWeight: fontWeight ? fontWeight : '900',
+          marginTop: mrgnTop,
+          width,
+          color,
+          textAlign: txtAlign,
+          alignSelf,
+        } as TextStyle
+      }>
       {title}
     </Text>
   );
@@ -60,17 +62,19 @@ export const NormalText: React.FC<textProps> = ({
   return (
     <Text
       numberOfLines={numberOfLines}
-      style={{
-        fontSize,
-        fontWeight,
-        color,
-        width,
-        lineHeight,
-        marginTop: mrgnTop,
-        textAlign: txtAlign,
-        textDecorationLine: txtDecoration,
-        alignSelf,
-      } as TextStyle}>
+      style={
+        {
+          fontSize,
+          fontWeight,
+          color,
+          width,
+          lineHeight,
+          marginTop: mrgnTop,
+          textAlign: txtAlign,
+          textDecorationLine: txtDecoration,
+          alignSelf,
+        } as TextStyle
+      }>
       {title}
     </Text>
   );

@@ -7,16 +7,16 @@ import {
   Text,
   ActivityIndicator,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { Colors } from '../../assets/colors';
+import React, {useEffect, useState} from 'react';
+import {Colors} from '../../assets/colors';
 import {
   responsiveHeight,
   responsiveWidth,
 } from '../../assets/responsive_dimensions';
-import { BoldText, NormalText } from '../../Components/Titles';
-import { Button } from '../../Components/Button';
+import {BoldText, NormalText} from '../../Components/Titles';
+import {Button} from '../../Components/Button';
 import SvgIcons from '../../Components/SvgIcons';
-import { back, otp } from '../../assets/icons';
+import {back, otp} from '../../assets/icons';
 import {
   CodeField,
   Cursor,
@@ -25,31 +25,36 @@ import {
   MaskSymbol,
   isLastFilledCell,
 } from 'react-native-confirmation-code-field';
-import { resendOtp, ShowToast, verifyOtp, verifyOtpPassword } from '../../GlobalFunctions/Auth';
-import { useDispatch, useSelector } from 'react-redux';
-import { setToken, setUserData } from '../../redux/Slices';
-const Otp = ({ navigation, route }) => {
+import {
+  resendOtp,
+  ShowToast,
+  verifyOtp,
+  verifyOtpPassword,
+} from '../../GlobalFunctions/Auth';
+import {useDispatch, useSelector} from 'react-redux';
+import {setToken, setUserData} from '../../redux/Slices';
+const Otp = ({navigation, route}) => {
   const [value, setValue] = useState();
   const [showTime, setShowTime] = useState(true);
   const accessToken = useSelector(state => state.user.token);
-  console.log('token', accessToken)
+  console.log('token', accessToken);
   const [timeLeft, setTimeLeft] = useState<number>(59); // Start from 59 seconds
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [resendOtpLoading, setResendOtpLoading] = useState(false);
   const dispatch = useDispatch();
-  const { registeration, email, token } = route?.params;
-  console.log('route token', token);
-  console.log('type of ', typeof (value));
+  const {registeration, email, token} = route?.params;
+
   const CELL_COUNT = 4;
-  const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
+  const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
   });
-  console.log('registeration', registeration);
 
   useEffect(() => {
-    if (timeLeft === 0) { return; }
+    if (timeLeft === 0) {
+      return;
+    }
     const timer = setInterval(() => {
       setTimeLeft(prevTime => prevTime - 1);
     }, 1000);
@@ -63,13 +68,13 @@ const Otp = ({ navigation, route }) => {
     }
   }, [timeLeft]);
 
-  const renderCell = ({ index, symbol, isFocused }) => {
+  const renderCell = ({index, symbol, isFocused}) => {
     let textChild = null;
     if (symbol) {
       textChild = (
         <MaskSymbol
           maskSymbol="*"
-          isLastFilledCell={isLastFilledCell({ index, value })}>
+          isLastFilledCell={isLastFilledCell({index, value})}>
           {symbol}
         </MaskSymbol>
       );
@@ -111,7 +116,6 @@ const Otp = ({ navigation, route }) => {
         dispatch(setUserData(response.data));
       } else {
         ShowToast('error', response.message);
-
       }
       setIsLoading(false);
     } catch (error) {
@@ -153,7 +157,7 @@ const Otp = ({ navigation, route }) => {
       setIsLoading(false);
       if (response?.success) {
         ShowToast('success', response.msg);
-        navigation.navigate('ResetPass', { email });
+        navigation.navigate('ResetPass', {email});
       } else {
         ShowToast('error', response.msg);
       }
@@ -163,7 +167,7 @@ const Otp = ({ navigation, route }) => {
       console.log('error', error);
       ShowToast('error', error?.response?.data?.msg);
     }
-  }
+  };
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -185,9 +189,13 @@ const Otp = ({ navigation, route }) => {
           justifyContent: 'center',
         }}>
         <SvgIcons align="center" xml={otp} height={150} width={150} />
-        <BoldText alignSelf="center" color={Colors.themeText2} mrgnTop={responsiveHeight(2)} title="Enter OTP" />
+        <BoldText
+          alignSelf="center"
+          color={Colors.themeText2}
+          mrgnTop={responsiveHeight(2)}
+          title="Enter OTP"
+        />
         <NormalText
-
           color={Colors.themeText}
           fontWeight="400"
           txtAlign="center"
@@ -215,20 +223,29 @@ to verify your identity"
             title={
               resendOtpLoading ? (
                 <ActivityIndicator size="large" color={Colors.buttonBg} />
-              ) : `Resend code ${showTime ? `(00:${timeLeft})` : ''}`
-            } />
+              ) : (
+                `Resend code ${showTime ? `(00:${timeLeft})` : ''}`
+              )
+            }
+          />
         </TouchableOpacity>
-        <View style={{ marginTop: responsiveHeight(2.5) }}>
+        <View style={{marginTop: responsiveHeight(2.5)}}>
           <Button
-
-            handlePress={() => registeration ? handleOtpIntegration() : verifyPassOtpHandler()}
+            handlePress={() =>
+              registeration ? handleOtpIntegration() : verifyPassOtpHandler()
+            }
             textColor={Colors.white}
             bgColor={Colors.buttonBg}
-            title={isLoading ? <ActivityIndicator size={'large'} color={Colors.white} /> : 'Continue'}
+            title={
+              isLoading ? (
+                <ActivityIndicator size={'large'} color={Colors.white} />
+              ) : (
+                'Continue'
+              )
+            }
           />
         </View>
       </View>
-
     </ScrollView>
   );
 };
