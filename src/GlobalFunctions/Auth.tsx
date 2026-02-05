@@ -3,6 +3,11 @@ import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import {setBusinessProfileData, setUserData, UserLogin} from '../redux/Slices';
 
+export const socialLoginTypes = {
+  google: 'Google',
+  apple: 'Apple',
+};
+
 export const ShowToast = (type: string, text: string) => {
   return Toast.show({
     type: type,
@@ -59,13 +64,8 @@ export const handleLogin = async (
   };
   dispatch(UserLogin(config));
 };
-export const handleSocialLogin = async (
-  email: string,
-  nickName: string,
-  type: string,
-  socialId: string,
-  dispatch: any,
-) => {
+export const SocialLogin = (body: any, dispatch: any) => {
+  const {email, nickName, type, socialId} = body;
   let data = JSON.stringify({
     email: email.toLowerCase(),
     nickName: nickName,
@@ -82,7 +82,7 @@ export const handleSocialLogin = async (
     },
     data: data,
   };
-  dispatch(UserLogin(config));
+  return dispatch(UserLogin(config));
 };
 export const forgetPasswordApi = async (email: string) => {
   let data = JSON.stringify({

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "590049783523",
+    "project_id": "wynnzy",
+    "storage_bucket": "wynnzy.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:590049783523:android:8d9970d8f956ba7d695fd6",
+        "android_client_info": {
+          "package_name": "com.pawcation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "590049783523-90dlhu5d1pqfvman0049fnhsmmbnebqq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pawcation",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "590049783523-7s2k6cb3d4sfrv4tp1i91es5j7mrvf59.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBR-PO_C3vKDKjnYJLebKHw4KDpW9T-nH4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "590049783523-7s2k6cb3d4sfrv4tp1i91es5j7mrvf59.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

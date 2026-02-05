@@ -20,12 +20,17 @@ import {BoldText, NormalText} from '../../Components/Titles';
 import {Button} from '../../Components/Button';
 import {Apple, Google, mail, security, tick} from '../../assets/icons';
 import SvgIcons from '../../Components/SvgIcons';
-import {handleLogin, ShowToast} from '../../GlobalFunctions/Auth';
+import {
+  handleLogin,
+  ShowToast,
+  SocialLogin,
+  socialLoginTypes,
+} from '../../GlobalFunctions/Auth';
 import {useDispatch, useSelector} from 'react-redux';
-// import {
-//   GoogleSignin,
-//   statusCodes,
-// } from '@react-native-google-signin/google-signin';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 const Login = ({navigation}: any) => {
   const [checked, setIsChecked] = useState(false);
@@ -55,59 +60,54 @@ const Login = ({navigation}: any) => {
     }
   };
 
-  // const handleGoogleButtonPress = async () => {
-  //   setGLoading(true);
-  //   try {
-  //     // iOS does NOT need Play Services check, so you can skip this line safely
-  //     if (Platform.OS === 'android') {
-  //       await GoogleSignin.hasPlayServices({
-  //         showPlayServicesUpdateDialog: true,
-  //       });
-  //     }
+  const handleGoogleButtonPress = async () => {
+    if (gLoading) {
+      return;
+    }
+    setGLoading(true);
+    try {
+      if (Platform.OS === 'android') {
+        await GoogleSignin.hasPlayServices({
+          showPlayServicesUpdateDialog: true,
+        });
+      }
 
-  //     // Optional: signOut to force account picker
-  //     await GoogleSignin.signOut();
+      await GoogleSignin.signOut();
 
-  //     const signInResult = await GoogleSignin.signIn();
+      const signInResult = await GoogleSignin.signIn();
 
-  //     console.log('Google signInResult:', signInResult);
+      console.log('Google signInResult:', signInResult);
 
-  //     const body = {
-  //       email: signInResult?.data?.user?.email,
-  //       nickName: signInResult?.data?.user?.name,
-  //       avatar: null, // signInResult?.data?.user?.photo,
-  //       type: socialLoginTypes?.google,
-  //       socialId: signInResult?.data?.user?.id,
-  //     };
+      const body = {
+        email: signInResult?.data?.user?.email,
+        fullName: signInResult?.data?.user?.name,
+        socialType: socialLoginTypes?.google,
+        socialId: signInResult?.data?.user?.id,
+      };
 
-  //     console.log('body in socialLogin:-', body);
-  //     const res = await socialLogin(body).unwrap();
-  //     console.log('res in socialLogin:-', res);
-  //     if (res?.data) {
-  //       dispatch(setUser(res.data));
-  //       if (!res?.data?.userDetails?.dob || !res?.data?.userName) {
-  //         navigation.navigate('Information', {isSocial: true});
-  //       } else {
-  //         navigation.replace('TabStack', {screen: 'Home'});
-  //       }
-  //     }
-  //   } catch (err) {
-  //     if (err.code === statusCodes.SIGN_IN_CANCELLED) {
-  //       console.log('Google sign-in cancelled');
-  //     } else if (err.code === statusCodes.IN_PROGRESS) {
-  //       console.log('Google sign-in already in progress');
-  //     } else if (err.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-  //       Utility.showErrorToast('Google Play Services not available');
-  //     } else {
-  //       console.log('Google sign-in error:', err);
-  //       // Utility.showErrorToast(err?.message || labels.somethingWentWrong);
-  //     }
-  //   } finally {
-  //     setGLoading(false);
-  //   }
-  // };
+      console.log('body in socialLogin:-', body);
+      const res = await SocialLogin(body, dispatch).unwrap();
+      console.log('res in socialLogin:-', res);
+    } catch (err: any) {
+      if (err.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log('Google sign-in cancelled');
+      } else if (err.code === statusCodes.IN_PROGRESS) {
+        console.log('Google sign-in already in progress');
+      } else if (err.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        ShowToast('error', 'Google Play Services not available');
+      } else {
+        console.log(
+          'Google sign-in error full details:',
+          JSON.stringify(err, null, 2),
+        );
+        console.log('Google sign-in error:', err);
+        ShowToast('error', err?.message || 'Something went wrong');
+      }
+    } finally {
+      setGLoading(false);
+    }
+  };
 
-  console.log('userdata in Login:-', userData);
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -231,23 +231,32 @@ const Login = ({navigation}: any) => {
             />
           </View>
           <Button
+            handlePress={handleGoogleButtonPress}
             xml={Google}
             bgColor={Colors.white}
             borderWidth={1}
             textColor={Colors.themeText}
             borderColor={Colors.buttonBg}
             icon={true}
-            title="Sign in with Google"
+            title={
+              gLoading ? (
+                <ActivityIndicator size={'large'} color={Colors.buttonBg} />
+              ) : (
+                'Sign in with Google'
+              )
+            }
           />
-          <Button
-            xml={Apple}
-            bgColor={Colors.black}
-            borderWidth={1}
-            textColor={Colors.white}
-            // borderColor={Colors.buttonBg}
-            icon={true}
-            title="Sign in with Apple"
-          />
+          {Platform.OS === 'ios' ? (
+            <Button
+              xml={Apple}
+              bgColor={Colors.black}
+              borderWidth={1}
+              textColor={Colors.white}
+              // borderColor={Colors.buttonBg}
+              icon={true}
+              title="Sign in with Apple"
+            />
+          ) : null}
         </View>
       </View>
       <TouchableOpacity

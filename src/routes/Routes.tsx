@@ -20,7 +20,7 @@ export function Routes() {
   // useEffect(()=>{
   //   dispatch(clearToken())
   // },[])
-  // console.log('userData in Routes:-', userData);
+  console.log('userData in Routes:-', userData);
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
