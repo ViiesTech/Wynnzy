@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -21,11 +22,13 @@ import {
   responsiveWidth,
 } from '../../../../assets/responsive_dimensions';
 import BackIcon from '../../../../Components/BackIcon';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {RootState} from '../../../../redux/Store';
 import {useRef, useState} from 'react';
 import {ShowToast} from '../../../../GlobalFunctions/Auth';
 import {createOrder} from '../../../../GlobalFunctions';
+import {CommonActions} from '@react-navigation/native';
+import {clearCart} from '../../../../redux/cartSlice';
 
 const AddressInput = ({
   label,
@@ -55,6 +58,7 @@ const AddressInput = ({
 );
 
 const Checkout = ({navigation}: any) => {
+  const dispatch = useDispatch();
   const userData = useSelector((state: RootState) => state.user.userData);
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const selectedItems = cartItems.filter(item => item.isSelected);
@@ -68,6 +72,8 @@ const Checkout = ({navigation}: any) => {
     zipCode: '',
     phone: '',
   });
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({...prev, [field]: value}));
@@ -132,15 +138,30 @@ const Checkout = ({navigation}: any) => {
     };
 
     console.log('Order Payload:', JSON.stringify(orderPayload, null, 2));
+
+    setIsLoading(true);
     await createOrder(JSON.stringify(orderPayload))
       ?.then((res: any) => {
         console.log('Response in createOrder:-', res);
         ShowToast('success', 'Order created successfully');
-        navigation.navigate('HomeStack');
+
+        // Clear the cart after successful order
+        dispatch(clearCart());
+
+        // Reset navigation to clear the Shop stack and go to Home
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'HomeStack'}],
+          }),
+        );
       })
       .catch((err: any) => {
         console.log('Error in createOrder:-', err);
         ShowToast('error', 'Failed to create order');
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -199,7 +220,7 @@ const Checkout = ({navigation}: any) => {
                 <TouchableOpacity onPress={() => refRBSheet.current?.open()}>
                   <NormalText
                     fontSize={responsiveFontSize(1.8)}
-                    title="Change"
+                    title="Add"
                     color="#4C69FF"
                     fontWeight="600"
                   />
@@ -233,13 +254,20 @@ const Checkout = ({navigation}: any) => {
           />
         </View>
 
-        <TouchableOpacity activeOpacity={0.7} onPress={handleCheckOut}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={handleCheckOut}
+          disabled={isLoading}>
           <LinearGradient
             colors={['#3A8DFF', '#00E0C6']}
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
             style={styles.gradientButton}>
-            <Text style={styles.btnText}>Check Out</Text>
+            {isLoading ? (
+              <ActivityIndicator color={Colors.white} size="small" />
+            ) : (
+              <Text style={styles.btnText}>Check Out</Text>
+            )}
           </LinearGradient>
         </TouchableOpacity>
       </View>
