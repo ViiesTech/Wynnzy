@@ -330,3 +330,19 @@ export const searchBusiness = async name => {
     throw error;
   }
 };
+
+export const createOrder = async _data => {
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: `${BaseUrl}createOrder`,
+    headers: {'Content-Type': 'application/json'},
+    data: _data,
+  };
+  try {
+    const resp = await axios.request(config);
+    return resp.data;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -1,7 +1,8 @@
-import { configureStore } from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { persistReducer, persistStore } from 'redux-persist';
-import authReducer from './Slices'; // ✅ Use `authReducer`, not `authSlice`
+import {persistReducer, persistStore} from 'redux-persist';
+import authReducer from './Slices';
+import cartReducer from './cartSlice';
 
 // Define persist config
 const persistConfig = {
@@ -9,15 +10,16 @@ const persistConfig = {
   storage: AsyncStorage,
 };
 
-// Apply persistence to auth slice
-const persistedReducer = persistReducer(persistConfig, authReducer);
+// Apply persistence to reducers
+const rootReducer = {
+  user: persistReducer(persistConfig, authReducer),
+  cart: persistReducer({key: 'cart', storage: AsyncStorage}, cartReducer),
+};
 
 // Create Redux store
 export const store = configureStore({
-  reducer: {
-    user: persistedReducer,
-  },
-  middleware: (getDefaultMiddleware) =>
+  reducer: rootReducer,
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       immutableCheck: false,
       serializableCheck: false,

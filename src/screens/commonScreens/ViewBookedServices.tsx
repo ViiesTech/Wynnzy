@@ -1,19 +1,32 @@
 /* eslint-disable react-native/no-inline-styles */
-import { View, Text, FlatList, ActivityIndicator, ScrollView } from 'react-native';
-import React, { useState } from 'react';
-import { Colors } from '../../assets/colors';
-import { responsiveHeight, responsiveWidth } from '../../assets/responsive_dimensions';
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  ScrollView,
+} from 'react-native';
+import React, {useState} from 'react';
+import {Colors} from '../../assets/colors';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from '../../assets/responsive_dimensions';
 import moment from 'moment';
 import FilterCard from '../../Components/FilterCard';
 import TextHeader from '../../Components/TextHeader';
-import { Button } from '../../Components/Button';
-import { deleteBooking, ShowToast, updateBookingStatus } from '../../GlobalFunctions/Auth';
+import {Button} from '../../Components/Button';
+import {
+  deleteBooking,
+  ShowToast,
+  updateBookingStatus,
+} from '../../GlobalFunctions/Auth';
 
-const ViewBookedServices = ({ navigation, route }) => {
-  const { type, service, bookingId, bookingStatus } = route?.params;
+const ViewBookedServices = ({navigation, route}: any) => {
+  const {type, service, bookingId, bookingStatus} = route?.params;
   const [isLoading, setIsLoading] = useState(false);
   console.log('bookingId', bookingId);
-  const updateBookingHandler = async (status) => {
+  const updateBookingHandler = async (status: any) => {
     setIsLoading(true);
     const response = await updateBookingStatus(bookingId, status);
     setIsLoading(false);
@@ -36,23 +49,30 @@ const ViewBookedServices = ({ navigation, route }) => {
     } else {
       ShowToast('error', response.message);
     }
-
-  }
+  };
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: Colors.white, padding: responsiveHeight(2) }}>
+    <ScrollView
+      contentContainerStyle={{
+        flexGrow: 1,
+        backgroundColor: Colors.white,
+        padding: responsiveHeight(2),
+      }}>
       <TextHeader title="Services" />
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1}}>
         {isLoading ? (
-          <View style={{ flex: 1, justifyContent: 'center' }}>
+          <View style={{flex: 1, justifyContent: 'center'}}>
             <ActivityIndicator size={50} color={Colors.buttonBg} />
           </View>
         ) : (
-          <View style={{ flex: 1 }}>
+          <View style={{flex: 1}}>
             {service?.length > 0 ? (
               <FlatList
-                contentContainerStyle={{ gap: responsiveHeight(1.5), marginTop: responsiveHeight(2) }}
+                contentContainerStyle={{
+                  gap: responsiveHeight(1.5),
+                  marginTop: responsiveHeight(2),
+                }}
                 data={service}
-                renderItem={({ item }) => (
+                renderItem={({item}) => (
                   <FilterCard
                     status={item?.status}
                     price={item?.price}
@@ -61,24 +81,50 @@ const ViewBookedServices = ({ navigation, route }) => {
                     time={moment(item?.selectDate).format('MMMM/DD/YY')}
                     serviceName={item?.serviceName}
                     imageUrl={item?.images[0]}
-                  // handlePress={() =>
-                  //   navigation.navigate('ViewBookedServices', {
-                  //     type: 'user',
-                  //     service: item.serviceId,
-                  //   })
-                  // }
+                    // handlePress={() =>
+                    //   navigation.navigate('ViewBookedServices', {
+                    //     type: 'user',
+                    //     service: item.serviceId,
+                    //   })
+                    // }
                   />
                 )}
                 keyExtractor={(item, index) => index.toString()}
               />
             ) : null}
             {type === 'daycare' ? (
-              <View style={{ flexDirection: 'row', gap: responsiveHeight(2), marginTop: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', width: '100%', alignSelf: 'center' }}>
-                <Button handlePress={() => updateBookingHandler('Accept')} bgColor={Colors.buttonBg} textColor={Colors.white} title="Accept" width={responsiveWidth(45)} />
-                <Button handlePress={() => updateBookingHandler('Reject')} bgColor={Colors.buttonBg} textColor={Colors.white} title="Reject" width={responsiveWidth(45)} />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  gap: responsiveHeight(2),
+                  marginTop: responsiveHeight(2),
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  alignSelf: 'center',
+                }}>
+                <Button
+                  handlePress={() => updateBookingHandler('Accept')}
+                  bgColor={Colors.buttonBg}
+                  textColor={Colors.white}
+                  title="Accept"
+                  width={responsiveWidth(45)}
+                />
+                <Button
+                  handlePress={() => updateBookingHandler('Reject')}
+                  bgColor={Colors.buttonBg}
+                  textColor={Colors.white}
+                  title="Reject"
+                  width={responsiveWidth(45)}
+                />
               </View>
             ) : bookingStatus !== 'Accept' ? (
-              <Button handlePress={deleteBookingHandler} bgColor={Colors.buttonBg} textColor={Colors.white} title="Delete This Booking" />
+              <Button
+                handlePress={deleteBookingHandler}
+                bgColor={Colors.buttonBg}
+                textColor={Colors.white}
+                title="Delete This Booking"
+              />
             ) : null}
           </View>
         )}

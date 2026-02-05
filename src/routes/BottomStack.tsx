@@ -38,6 +38,7 @@ const HomeStack = () => {
     </Stack.Navigator>
   );
 };
+
 const ShopStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
@@ -49,6 +50,7 @@ const ShopStack = () => {
     </Stack.Navigator>
   );
 };
+
 function UserBottomStack() {
   return (
     <Tab.Navigator
@@ -305,6 +307,7 @@ function DayCareBottomStack() {
 }
 
 export {UserBottomStack, DayCareBottomStack};
+
 const styles = StyleSheet.create({
   bottomTabs: {
     alignItems: 'center',

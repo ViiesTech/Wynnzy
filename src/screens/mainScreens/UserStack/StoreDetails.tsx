@@ -1,19 +1,35 @@
 /* eslint-disable react-native/no-inline-styles */
-import { ActivityIndicator, FlatList, Image, ImageSourcePropType, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { images } from '../../../assets/images';
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  ImageSourcePropType,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {images} from '../../../assets/images';
 import Header2 from '../../../Components/Header2';
-import { heart, rating } from '../../../assets/icons';
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from '../../../assets/responsive_dimensions';
+import {heart, rating} from '../../../assets/icons';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from '../../../assets/responsive_dimensions';
 import SvgIcons from '../../../Components/SvgIcons';
-import { Colors } from '../../../assets/colors';
+import {Colors} from '../../../assets/colors';
 import ServiceCard from '../../../Components/ServicesCard';
-import { Button } from '../../../Components/Button';
-import { getAllServicesByManagerId, getBusinessProfileById } from '../../../GlobalFunctions';
-import { getBusinessProfile, ShowToast } from '../../../GlobalFunctions/Auth';
-import { ImageBaseUrl } from '../../../BaseUrl';
-import { NormalText } from '../../../Components/Titles';
-
+import {Button} from '../../../Components/Button';
+import {
+  getAllServicesByManagerId,
+  getBusinessProfileById,
+} from '../../../GlobalFunctions';
+import {getBusinessProfile, ShowToast} from '../../../GlobalFunctions/Auth';
+import {ImageBaseUrl} from '../../../BaseUrl';
+import {NormalText} from '../../../Components/Titles';
 
 interface galleryImagesTypes {
   id: number;
@@ -35,14 +51,18 @@ const galleryImages: galleryImagesTypes[] = [
   },
 ];
 
-const StoreDetails = ({ navigation, route }) => {
+const StoreDetails = ({navigation, route}) => {
   const [selected, setSelected] = useState<boolean>(false);
   const [storeDetails, setStoreDetails] = useState([]);
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { _id, managerId } = route?.params;
+  const {_id, managerId} = route?.params;
   const [currentService, setCurrentService] = useState();
-  console.log('storeDetails', storeDetails);
+
+  useEffect(() => {
+    fetchBusinessProfileHandler();
+    fetchAllServices();
+  }, []);
 
   const fetchBusinessProfileHandler = async () => {
     const response = await getBusinessProfile(_id);
@@ -60,26 +80,56 @@ const StoreDetails = ({ navigation, route }) => {
       setIsLoading(false);
       ShowToast('error', err?.response?.data?.message);
       console.log('categoriess', response.data);
-
     }
   };
-  useEffect(() => {
-    fetchBusinessProfileHandler();
-    fetchAllServices();
-  }, []);
+
+  console.log('storeDetails:-', JSON.stringify(storeDetails));
   return (
     <View style={styles.container}>
-      <Image source={images.storedetail1} style={styles.backImage} />
+      <Image
+        source={
+          storeDetails?.image?.length > 0
+            ? {uri: `${ImageBaseUrl}${storeDetails?.image?.[0]}`}
+            : images.storedetail1
+        }
+        style={styles.backImage}
+      />
       <Header2 />
-      <View style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, flex: 1, bottom: 10, backgroundColor: Colors.white, zIndex: 10 }}>
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.storeView}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+      <View
+        style={{
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
+          flex: 1,
+          bottom: 10,
+          backgroundColor: Colors.white,
+          zIndex: 10,
+        }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.storeView}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <View>
               <Text style={styles.heading}>{storeDetails?.businessName}</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Reviews', { type: 'user', managerId: storeDetails?.managerId, ratings: storeDetails?.ratings, totalReviews: storeDetails?.totalreviews })} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: responsiveHeight(1) }}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('Reviews', {
+                    type: 'user',
+                    managerId: storeDetails?.managerId,
+                    ratings: storeDetails?.ratings,
+                    totalReviews: storeDetails?.totalreviews,
+                  })
+                }
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 10,
+                  marginTop: responsiveHeight(1),
+                }}>
                 <View style={styles.ratingView}>
                   <SvgIcons xml={rating} height={13} width={13} />
-                  <Text style={styles.ratingText}>{storeDetails?.ratings || 0}</Text>
+                  <Text style={styles.ratingText}>
+                    {storeDetails?.ratings || 0}
+                  </Text>
                 </View>
                 <Text style={styles.rating}>Rating</Text>
               </TouchableOpacity>
@@ -88,23 +138,33 @@ const StoreDetails = ({ navigation, route }) => {
               <SvgIcons xml={heart} height={20} width={20} />
             </TouchableOpacity>
           </View>
-          <Text style={styles.desc}>
-            {storeDetails?.bio}
-          </Text>
-          <View style={{ paddingTop: responsiveHeight(2) }}>
+          <Text style={styles.desc}>{storeDetails?.bio}</Text>
+          <View style={{paddingTop: responsiveHeight(2)}}>
             <Text style={styles.heading}>Gallery</Text>
-            <View style={{ marginTop: responsiveHeight(2) }}>
+            <View style={{marginTop: responsiveHeight(2)}}>
               <FlatList
                 data={storeDetails?.image}
                 numColumns={2}
                 // keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                  <Image  source={{ uri: `${ImageBaseUrl}${item}` }} borderRadius={15} style={[styles.imageStyle, { width: item.id == 3 ? responsiveWidth(92) : responsiveWidth(45) }]} />
+                renderItem={({item}) => (
+                  <Image
+                    source={{uri: `${ImageBaseUrl}${item}`}}
+                    borderRadius={15}
+                    style={[
+                      styles.imageStyle,
+                      {
+                        width:
+                          item.id == 3
+                            ? responsiveWidth(92)
+                            : responsiveWidth(45),
+                      },
+                    ]}
+                  />
                 )}
               />
             </View>
           </View>
-          <View style={{ paddingTop: responsiveHeight(2) }}>
+          <View style={{paddingTop: responsiveHeight(2)}}>
             <Text style={styles.heading}>Services</Text>
             {/* <ServiceCard
               title="Grooming"
@@ -124,13 +184,13 @@ const StoreDetails = ({ navigation, route }) => {
               onPress={() => setSelected(!selected)}
             /> */}
             {isLoading ? (
-              <View style={{marginTop:responsiveHeight(2)}}>
-              <ActivityIndicator size="large" color={Colors.buttonBg} />
+              <View style={{marginTop: responsiveHeight(2)}}>
+                <ActivityIndicator size="large" color={Colors.buttonBg} />
               </View>
             ) : services?.length ? (
               <FlatList
                 data={services}
-                renderItem={({ item }) => (
+                renderItem={({item}) => (
                   <ServiceCard
                     onCardPress={() => setCurrentService(item._id)}
                     title={item?.categoryName}
@@ -139,7 +199,7 @@ const StoreDetails = ({ navigation, route }) => {
                     onPress={() => setSelected(!selected)}
                   />
                 )}
-                keyExtractor={(item) => item._id.toString()}
+                keyExtractor={item => item._id.toString()}
               />
             ) : (
               <NormalText
@@ -149,15 +209,33 @@ const StoreDetails = ({ navigation, route }) => {
                 title="No services available at the moment."
               />
             )}
-
-
           </View>
           {services?.length ? (
-            <View style={{ paddingTop: responsiveHeight(2) }}>
-              <Button handlePress={() => currentService ? navigation.navigate('AllServices', { serviceId: currentService, managerId }) : ShowToast('error', 'Plz Select A Service Category To Proceed')} textColor={Colors.white} title="Next" bgColor={Colors.buttonBg} borderColor={''} borderRadius={0} xml={''} width={0} height={0} textFont={0} />
+            <View style={{paddingTop: responsiveHeight(2)}}>
+              <Button
+                handlePress={() =>
+                  currentService
+                    ? navigation.navigate('AllServices', {
+                        serviceId: currentService,
+                        managerId,
+                      })
+                    : ShowToast(
+                        'error',
+                        'Plz Select A Service Category To Proceed',
+                      )
+                }
+                textColor={Colors.white}
+                title="Next"
+                bgColor={Colors.buttonBg}
+                borderColor={''}
+                borderRadius={0}
+                xml={''}
+                width={0}
+                height={0}
+                textFont={0}
+              />
             </View>
           ) : null}
-
         </ScrollView>
       </View>
     </View>

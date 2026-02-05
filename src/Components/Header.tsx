@@ -1,11 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import React, { FC } from 'react';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
+import React, {FC} from 'react';
 import SvgIcons from './SvgIcons';
-import { currentLoc, filter } from '../assets/icons';
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from '../assets/responsive_dimensions';
-import { Colors } from '../assets/colors';
-import { BoldText, NormalText } from './Titles';
+import {currentLoc, filter} from '../assets/icons';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from '../assets/responsive_dimensions';
+import {Colors} from '../assets/colors';
+import {BoldText, NormalText} from './Titles';
 
 interface HeaderProps {
   bgColor: string;
@@ -15,12 +19,12 @@ interface HeaderProps {
   handleNotificationPress: () => void;
   handleFilterPress: () => void;
   navigation: any;
-  title?: string;  // ✅ Make title optional
+  title?: string; // ✅ Make title optional
 }
 export const IconContainer: FC<HeaderProps> = ({
   bgColor,
   iconName,
-  title,  // ✅ Ensure title is received
+  title, // ✅ Ensure title is received
   handlePress,
   handleFilterPress,
   handleNotificationPress,
@@ -28,9 +32,12 @@ export const IconContainer: FC<HeaderProps> = ({
   return (
     <TouchableOpacity
       onPress={title === 'notification' ? handleNotificationPress : handlePress}
-      style={[styles.iconContainer, { backgroundColor: bgColor }]}
-    >
-      <SvgIcons xml={iconName} height={responsiveHeight(4)} width={responsiveWidth(6)} />
+      style={[styles.iconContainer, {backgroundColor: bgColor}]}>
+      <SvgIcons
+        xml={iconName}
+        height={responsiveHeight(4)}
+        width={responsiveWidth(6)}
+      />
     </TouchableOpacity>
   );
 };
@@ -43,8 +50,13 @@ const Header: FC<HeaderProps> = ({
   handleNotificationPress,
 }) => {
   return (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveHeight(1.2) }}>
+    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: responsiveHeight(1.2),
+        }}>
         <IconContainer
           iconName={currentLoc}
           handlePress={handlePress}
@@ -66,7 +78,8 @@ const Header: FC<HeaderProps> = ({
           />
         </View>
       </View>
-      <View style={{ flexDirection: 'row', gap: responsiveHeight(1) }}>
+
+      <View style={{flexDirection: 'row', gap: responsiveHeight(1)}}>
         <IconContainer
           iconName={filter}
           handlePress={handleFilterPress}
@@ -74,7 +87,7 @@ const Header: FC<HeaderProps> = ({
           whiteNotification={whiteNotification}
         />
         <IconContainer
-          title="notification"  // ✅ Ensure title is passed
+          title="notification" // ✅ Ensure title is passed
           handleNotificationPress={handleNotificationPress}
           iconName={iconName}
           bgColor={bgColor ? bgColor : Colors.buttonBg}
@@ -85,9 +98,7 @@ const Header: FC<HeaderProps> = ({
   );
 };
 
-
 export default Header;
-
 
 const styles = StyleSheet.create({
   iconContainer: {

@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { FC } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Colors } from '../assets/colors';
+import React, {FC} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Colors} from '../assets/colors';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -18,11 +18,18 @@ interface ButtonProps {
   xml?: string;
   width?: number;
   height?: number;
-  alignSelf?: 'auto' | 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline';
+  alignSelf?:
+    | 'auto'
+    | 'flex-start'
+    | 'flex-end'
+    | 'center'
+    | 'stretch'
+    | 'baseline';
   textFont?: number;
   icon?: boolean;
   mrgnTop?: number;
   handlePress?: () => void;
+  activeOpacity?: number;
 }
 
 export const Button: FC<ButtonProps> = ({
@@ -40,9 +47,11 @@ export const Button: FC<ButtonProps> = ({
   mrgnTop,
   textFont,
   icon = false,
+  activeOpacity = 0.7,
 }) => {
   return (
     <TouchableOpacity
+      activeOpacity={activeOpacity}
       onPress={handlePress}
       style={[
         styles.buttonContainer,
@@ -56,15 +65,32 @@ export const Button: FC<ButtonProps> = ({
           alignSelf: alignSelf ? alignSelf : 'center',
           borderRadius: borderRadius ? borderRadius : responsiveHeight(1.4),
         },
-      ]}
-    >
+      ]}>
       {icon ? (
         <View style={styles.iconContainer}>
           <SvgIcons xml={xml} width={25} height={25} />
-          <Text style={[styles.textStyle, { color: textColor, fontSize: textFont ? textFont : responsiveFontSize(2.4) }]}>{title}</Text>
+          <Text
+            style={[
+              styles.textStyle,
+              {
+                color: textColor,
+                fontSize: textFont ? textFont : responsiveFontSize(2.4),
+              },
+            ]}>
+            {title}
+          </Text>
         </View>
       ) : (
-        <Text style={[styles.textStyle, { color: textColor, fontSize: textFont ? textFont : responsiveFontSize(2.4) }]}>{title}</Text>
+        <Text
+          style={[
+            styles.textStyle,
+            {
+              color: textColor,
+              fontSize: textFont ? textFont : responsiveFontSize(2.4),
+            },
+          ]}>
+          {title}
+        </Text>
       )}
     </TouchableOpacity>
   );

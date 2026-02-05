@@ -1,24 +1,41 @@
 /* eslint-disable react-native/no-inline-styles */
-import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
-import React, { useState } from 'react';
-import { Colors } from '../../../assets/colors';
-import { images } from '../../../assets/images';
-import { responsiveFontSize, responsiveHeight } from '../../../assets/responsive_dimensions';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  TextInput,
+  ActivityIndicator,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Colors} from '../../../assets/colors';
+import {images} from '../../../assets/images';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+} from '../../../assets/responsive_dimensions';
 import Octicons from 'react-native-vector-icons/Octicons';
-import { launchImageLibrary } from 'react-native-image-picker';
-import { Button } from '../../../Components/Button';
-import { updateUser } from '../../../GlobalFunctions/Auth';
-import { useDispatch, useSelector } from 'react-redux';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {Button} from '../../../Components/Button';
+import {updateUser} from '../../../GlobalFunctions/Auth';
+import {useDispatch, useSelector} from 'react-redux';
 import BackIcon from '../../../Components/BackIcon';
-import { NormalText } from '../../../Components/Titles';
+import {NormalText} from '../../../Components/Titles';
+import {ImageBaseUrl} from '../../../BaseUrl';
 
-const EditUserProfile = ({ navigation }) => {
-  const [imagePath, setImagePath] = useState();
+const EditUserProfile = ({navigation, route}: any) => {
+  const [imagePath, setImagePath] = useState(null);
   const [fullName, setFullName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { userData } = useSelector(state => state.user);
-  console.log('fullName', userData);
+  const {userData} = useSelector(state => state.user);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setFullName(userData?.fullName);
+    // setImagePath(userData?.profileImage);
+  }, [userData]);
+
   const selectImage = async () => {
     try {
       const options = {
@@ -42,43 +59,102 @@ const EditUserProfile = ({ navigation }) => {
   const handleEditProfile = async () => {
     setIsLoading(true);
     try {
-      await updateUser(userData?._id ? userData?._id : userData.id, imagePath, fullName, navigation, dispatch);
+      await updateUser(
+        userData?._id ? userData?._id : userData.id,
+        imagePath,
+        fullName,
+        navigation,
+        dispatch,
+      );
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
     }
     setIsLoading(false);
   };
+  console.log('imagePath in EditUserProfile:-', imagePath);
+  console.log('userData in EditUserProfile:-', userData);
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.white, padding: responsiveHeight(3) }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: Colors.white,
+        padding: responsiveHeight(3),
+      }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
         <BackIcon />
-        <NormalText alignSelf="center" fontWeight="900" fontSize={responsiveFontSize(2.7)} title="Edit Profile" />
-        <Text style={{ color: Colors.white }}>a</Text>
+        <NormalText
+          alignSelf="center"
+          fontWeight="900"
+          fontSize={responsiveFontSize(2.7)}
+          title="Edit Profile"
+        />
+        <Text style={{color: Colors.white}}>a</Text>
       </View>
       <View style={styles.profileContainer}>
-        <Image source={imagePath ? { uri: imagePath } : images.greyProfileBg} style={styles.profileImage} />
-        <TouchableOpacity onPress={selectImage} style={styles.editProfileButton}>
-          <Octicons name={'plus'} size={responsiveFontSize(2)} color={'#FFFFFF'} />
+        <Image
+          source={
+            imagePath
+              ? {uri: imagePath}
+              : userData?.profileImage
+              ? {uri: `${ImageBaseUrl}${userData?.profileImage}`}
+              : images.greyProfileBg
+          }
+          style={styles.profileImage}
+        />
+        <TouchableOpacity
+          onPress={selectImage}
+          style={styles.editProfileButton}>
+          <Octicons
+            name={'plus'}
+            size={responsiveFontSize(2)}
+            color={'#FFFFFF'}
+          />
         </TouchableOpacity>
       </View>
       <View style={styles.container}>
         <Text style={styles.heading}>Full Name</Text>
         <TextInput
+          value={fullName}
           onChangeText={text => setFullName(text)}
-          placeholder="Enter Name" placeholderTextColor={'#A6A6A6'} style={styles.InputStyles} />
+          placeholder="Enter Name"
+          placeholderTextColor={'#A6A6A6'}
+          style={styles.InputStyles}
+        />
       </View>
-      <Button textColor="white" handlePress={handleEditProfile} title={isLoading ? (<ActivityIndicator size={'large'} color={Colors.white} />) : 'Edit Profile'} bgColor={Colors.buttonBg} mrgnTop={responsiveHeight(4)} />
-
+      <Button
+        textColor="white"
+        handlePress={handleEditProfile}
+        title={
+          isLoading ? (
+            <ActivityIndicator size={'large'} color={Colors.white} />
+          ) : (
+            'Edit Profile'
+          )
+        }
+        bgColor={Colors.buttonBg}
+        mrgnTop={responsiveHeight(4)}
+      />
     </View>
   );
 };
 
 export default EditUserProfile;
 const styles = StyleSheet.create({
-  profileImage: { height: responsiveHeight(14.7), width: responsiveHeight(15), borderRadius: responsiveHeight(10), resizeMode: 'stretch' },
+  profileImage: {
+    height: responsiveHeight(14.7),
+    width: responsiveHeight(15),
+    borderRadius: responsiveHeight(10),
+    resizeMode: 'stretch',
+  },
   InputStyles: {
-    height: responsiveHeight(5), color: '#2A1F51',
+    height: responsiveHeight(5),
+    color: '#2A1F51',
   },
   profileContainer: {
     height: responsiveHeight(15),
@@ -110,6 +186,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
   },
-  heading: { fontSize: responsiveFontSize(2), color: Colors.labelText, fontWeight: '600' },
-
+  heading: {
+    fontSize: responsiveFontSize(2),
+    color: Colors.labelText,
+    fontWeight: '600',
+  },
 });

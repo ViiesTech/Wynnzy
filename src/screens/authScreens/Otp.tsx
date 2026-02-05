@@ -125,23 +125,52 @@ const Otp = ({navigation, route}) => {
     }
   };
 
+  // const resendOtpIntegration = async () => {
+  //   if (timeLeft < 1) {
+  //     setShowTime(true);
+  //     setTimeLeft(59);
+  //     return;
+  //   }
+  //   try {
+  //     setResendOtpLoading(true);
+  //     const response = await resendOtp(email);
+  //     console.log('response in resendOtp:-', response);
+  //     ShowToast('success', 'Otp Sent Successfully');
+  //     setTimeLeft(59);
+  //     setResendOtpLoading(false);
+  //   } catch (error) {
+  //     setResendOtpLoading(false);
+  //     ShowToast('error', error);
+  //     console.log('error', error);
+  //   }
+  // };
+
   const resendOtpIntegration = async () => {
-    if (timeLeft < 1) {
-      setShowTime(true);
-      setTimeLeft(59);
+    // 1. Guard Clause: Don't allow clicking if timer is still running
+    if (timeLeft > 0) {
+      ShowToast('error', `Please wait ${timeLeft}s`);
       return;
     }
+
     try {
       setResendOtpLoading(true);
-      const response = await resendOtp(email);
-      ShowToast('success', 'Otp Sent Successfully');
+
+      // 2. Trigger API
+      const response = await resendOtp(email); // Use .unwrap() if using RTK Query
+      console.log('response in resendOtp:-', response);
+
+      // 3. Update UI only on SUCCESS
+      ShowToast('success', 'OTP Sent Successfully');
+      setShowTime(true);
       setTimeLeft(59);
-      console.log('response', response);
-      setResendOtpLoading(false);
     } catch (error) {
-      setResendOtpLoading(false);
-      ShowToast('error', error);
       console.log('error', error);
+      // Extract a readable message
+      const errorMsg =
+        error?.data?.message || error?.message || 'Failed to resend OTP';
+      ShowToast('error', errorMsg);
+    } finally {
+      setResendOtpLoading(false);
     }
   };
 
