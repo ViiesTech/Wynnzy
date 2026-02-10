@@ -1,7 +1,7 @@
-export const Colors: { [key: string]: string } = {
+export const Colors: {[key: string]: string} = {
   black: '#000',
-  white: '#fff',
-  labelText:'#2A1F51',
+  white: '#FFFFFF',
+  labelText: '#2A1F51',
   themeText: '#3B4B68',
   themeText2: '#131E5E',
   descriptionText: '#3B4C68',

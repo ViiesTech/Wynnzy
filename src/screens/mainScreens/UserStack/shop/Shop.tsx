@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import Header from '../../../../Components/Header';
 import SearchInput from '../../../../Components/SearchInput';
@@ -28,6 +29,7 @@ const PRODUCT_DATA = [1, 2, 3, 4, 5, 6, 7, 8]; // Replace with real data later
 
 const Shop = ({navigation}: {navigation: any}) => {
   const [products, setProducts] = useState<any>([]);
+  const [loader, setLoader] = useState<boolean>(false);
 
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
@@ -38,9 +40,16 @@ const Shop = ({navigation}: {navigation: any}) => {
   }, []);
 
   const _getAllProducts = async () => {
+    setLoader(true);
     await getAllProducts()
-      ?.then((res: any) => setProducts(res?.data))
-      ?.catch((err: any) => console.log('err in getAllProducts:-', err));
+      ?.then((res: any) => {
+        setProducts(res?.data);
+        setLoader(false);
+      })
+      ?.catch((err: any) => {
+        console.log('err in getAllProducts:-', err);
+        setLoader(false);
+      });
   };
 
   const handleAddToCart = (item: any) => {
@@ -139,6 +148,14 @@ const Shop = ({navigation}: {navigation: any}) => {
       </View>
     );
   };
+
+  if (loader) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color={Colors.buttonBg} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.mainContainer}>
@@ -248,6 +265,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1.5,
     borderColor: Colors.white,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
   },
 });
 

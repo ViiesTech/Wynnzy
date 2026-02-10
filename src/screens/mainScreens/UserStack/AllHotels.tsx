@@ -1,4 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   View,
   Text,
@@ -6,9 +7,8 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
-  ScrollView,
+  StyleSheet,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
 import {Colors} from '../../../assets/colors';
 import BackIcon from '../../../Components/BackIcon';
 import {BoldText, NormalText} from '../../../Components/Titles';
@@ -22,7 +22,7 @@ import {ImageBaseUrl} from '../../../BaseUrl';
 import SvgIcons from '../../../Components/SvgIcons';
 import {rating} from '../../../assets/icons';
 
-const AllHotels = ({navigation}) => {
+const AllHotels = ({navigation}: any) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -32,120 +32,166 @@ const AllHotels = ({navigation}) => {
 
   const getNearbyBusinesses = async () => {
     setIsLoading(true);
-    const response = await fetchAllBusinesses();
-    setIsLoading(false);
-
-    setData(response.data);
+    try {
+      const response = await fetchAllBusinesses();
+      // Ensure data is an array
+      setData(Array.isArray(response?.data) ? response.data : []);
+    } catch (error) {
+      console.error('Error fetching businesses:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const renderHotels = ({item, index}) => {
+  const renderHotels = ({item}: any) => {
     return (
       <TouchableOpacity
+        activeOpacity={0.7}
         onPress={() =>
           navigation.navigate('StoreDetails', {
             _id: item._id,
             managerId: item.managerId,
           })
         }
-        key={index}
-        style={{padding: 10, width: responsiveWidth(48)}}>
+        style={styles.cardContainer}>
         <Image
           source={{uri: `${ImageBaseUrl}${item?.profileImage}`}}
-          style={{
-            width: '100%',
-            height: responsiveHeight(17),
-            borderRadius: responsiveHeight(1),
-          }}
+          style={styles.hotelImage}
+          resizeMode="cover"
         />
         <BoldText
-          title={item.businessName}
+          title={item.businessName || 'Unnamed Business'}
           mrgnTop={10}
-          fontSize={responsiveFontSize(2.4)}
+          fontSize={responsiveFontSize(2.2)}
           color="#2A1E51"
         />
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 10,
-            marginTop: 10,
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 10,
-              borderRadius: 5,
-              backgroundColor: '#F5F5F5',
-              padding: 7,
-            }}>
-            <SvgIcons xml={rating} height={20} width={20} />
+        <View style={styles.ratingSection}>
+          <View style={styles.ratingBadge}>
+            <SvgIcons xml={rating} height={16} width={16} />
             <NormalText
               title={item?.ratings || 0}
               alignSelf="center"
               color="#5F5F63"
+              fontSize={responsiveFontSize(1.8)}
             />
           </View>
-          <NormalText title="Rating" alignSelf="center" color="#5F5F63" />
+          <NormalText
+            title="Rating"
+            alignSelf="center"
+            color="#5F5F63"
+            fontSize={responsiveFontSize(1.8)}
+          />
         </View>
       </TouchableOpacity>
     );
   };
-  return (
-    <ScrollView
-      contentContainerStyle={{
-        flexGrow: 1,
-        backgroundColor: Colors.white,
-        padding: responsiveHeight(2),
-      }}>
-      <View
-        style={{
-          flexDirection: 'row',
-          paddingVertical: responsiveHeight(1),
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
-        <BackIcon />
-        <NormalText
-          color={Colors.themeText2}
-          alignSelf="center"
-          fontWeight="900"
-          fontSize={responsiveFontSize(2.7)}
-          title="Hotels/DayCares"
-        />
-        <Text style={{color: Colors.white}}>a</Text>
+
+  const renderHeader = () => (
+    <View style={styles.headerRow}>
+      <BackIcon />
+      <NormalText
+        color={Colors.themeText2}
+        alignSelf="center"
+        fontWeight="900"
+        fontSize={responsiveFontSize(2.7)}
+        title="Hotels/DayCares"
+      />
+      {/* Spacer for centering */}
+      <View style={{width: 30}} />
+    </View>
+  );
+
+  const renderEmpty = () => (
+    <View style={styles.emptyContainer}>
+      <NormalText
+        fontSize={responsiveFontSize(2.5)}
+        alignSelf="center"
+        txtAlign="center"
+        title="No Business Stores Found"
+      />
+    </View>
+  );
+
+  if (isLoading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color={Colors.buttonBg} />
       </View>
-      {isLoading ? (
-        <View style={{flex: 1, justifyContent: 'center'}}>
-          <ActivityIndicator size={50} color={Colors.buttonBg} />
-        </View>
-      ) : (
-        <View style={{flex: 0.9}}>
-          {data?.length > 0 ? (
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              numColumns={2}
-              contentContainerStyle={{
-                justifyContent: 'space-between',
-                gap: responsiveHeight(1),
-              }}
-              data={data}
-              renderItem={renderHotels}
-              keyExtractor={item => item._id.toString()} // Unique key for each item
-            />
-          ) : (
-            <NormalText
-              fontSize={responsiveFontSize(2.5)}
-              mrgnTop={responsiveHeight(10)}
-              alignSelf="center"
-              txtAlign="center"
-              title="No Business Stores Found"
-            />
-          )}
-        </View>
-      )}
-    </ScrollView>
+    );
+  }
+
+  return (
+    <View style={styles.mainContainer}>
+      <FlatList
+        data={data}
+        renderItem={renderHotels}
+        keyExtractor={(item, index) =>
+          item?._id?.toString() || index.toString()
+        }
+        numColumns={2}
+        ListHeaderComponent={renderHeader}
+        ListEmptyComponent={renderEmpty}
+        showsVerticalScrollIndicator={false}
+        columnWrapperStyle={styles.columnWrapper}
+        contentContainerStyle={styles.listPadding}
+      />
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+  },
+  listPadding: {
+    padding: responsiveHeight(2),
+    paddingBottom: responsiveHeight(4),
+  },
+  headerRow: {
+    flexDirection: 'row',
+    paddingVertical: responsiveHeight(1),
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: responsiveHeight(2),
+  },
+  columnWrapper: {
+    justifyContent: 'space-between',
+  },
+  cardContainer: {
+    width: responsiveWidth(44), // Slightly reduced to accommodate column spacing
+    marginBottom: responsiveHeight(2),
+  },
+  hotelImage: {
+    width: '100%',
+    height: responsiveHeight(17),
+    borderRadius: responsiveHeight(1),
+    backgroundColor: '#F0F0F0',
+  },
+  ratingSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 8,
+  },
+  ratingBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    borderRadius: 5,
+    backgroundColor: '#F5F5F5',
+    padding: 6,
+  },
+  emptyContainer: {
+    marginTop: responsiveHeight(15),
+    alignItems: 'center',
+  },
+});
 
 export default AllHotels;
