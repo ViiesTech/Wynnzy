@@ -194,8 +194,7 @@ const Home = ({navigation}: any) => {
       <View style={styles.emptyContainer}>
         <NormalText
           title="No Daycares or Pet Hotels Available"
-          txtAlign={'center'}
-          mrgnTop={responsiveHeight(5)}
+          alignSelf="center"
         />
       </View>
     );
@@ -238,7 +237,7 @@ const Home = ({navigation}: any) => {
 
 const styles = StyleSheet.create({
   container: {flex: 1, backgroundColor: Colors.white},
-  listContent: {paddingVertical: responsiveHeight(2)},
+  listContent: {flexGrow: 1, paddingVertical: responsiveHeight(2)},
   columnWrapper: {
     justifyContent: 'space-between',
     paddingHorizontal: responsiveHeight(2),
@@ -288,8 +287,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: 'red',
     paddingHorizontal: responsiveHeight(2),
+    // backgroundColor: 'red',
   },
 });
 
