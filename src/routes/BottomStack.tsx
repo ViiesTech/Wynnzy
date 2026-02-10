@@ -32,7 +32,13 @@ const Stack = createNativeStackNavigator();
 // Bottom Stack Component
 const HomeStack = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator
+      screenOptions={{
+        contentStyle: {
+          backgroundColor: Colors.white,
+        },
+        headerShown: false,
+      }}>
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Home2" component={Store} />
     </Stack.Navigator>
@@ -41,7 +47,13 @@ const HomeStack = () => {
 
 const ShopStack = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator
+      screenOptions={{
+        contentStyle: {
+          backgroundColor: Colors.white,
+        },
+        headerShown: false,
+      }}>
       <Stack.Screen name="Shop" component={Shop} />
       <Stack.Screen name="ProductDetails" component={ProductDetails} />
       <Stack.Screen name="MyCart" component={MyCart} />

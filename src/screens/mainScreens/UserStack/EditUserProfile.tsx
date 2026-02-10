@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(14.7),
     width: responsiveHeight(15),
     borderRadius: responsiveHeight(10),
-    resizeMode: 'stretch',
+    resizeMode: 'cover',
   },
   InputStyles: {
     height: responsiveHeight(5),
