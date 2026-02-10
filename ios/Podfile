@@ -17,6 +17,9 @@ end
 target 'PawCation' do
   config = use_native_modules!
 
+  # Manually add react-native-maps-generated podspec
+  pod 'react-native-maps-generated', :path => '../node_modules/react-native-maps'
+
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.

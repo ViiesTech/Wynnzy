@@ -33,16 +33,16 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to take photos.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app needs access to your location in background as well.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app requires access to your location.</string>
-	<key>NSCameraUsageDescription</key>
-  <string>This app needs camera access to take photos.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs permission to save photos to your library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-  <string>This app needs access to your photo library.</string>
-  <key>NSPhotoLibraryAddUsageDescription</key>
-  <string>This app needs permission to save photos to your library.</string>
+	<string>This app needs access to your photo library.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SimpleLineIcons.ttf</string>
@@ -74,8 +74,12 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
