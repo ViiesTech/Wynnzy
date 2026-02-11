@@ -94,7 +94,7 @@ const ViewBookings = ({navigation, route}: any) => {
     setBookings(response.data);
   };
 
-  console.log('type===', type);
+  // console.log('type===', type);
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}

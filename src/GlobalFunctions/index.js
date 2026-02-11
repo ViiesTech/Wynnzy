@@ -331,13 +331,69 @@ export const searchBusiness = async name => {
   }
 };
 
-export const createOrder = async _data => {
+export const createOrder = async (_data, token) => {
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
     url: `${BaseUrl}createOrder`,
-    headers: {'Content-Type': 'application/json'},
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
     data: _data,
+  };
+  try {
+    const resp = await axios.request(config);
+    return resp.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createShippingAddress = async (_data, token) => {
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: `${BaseUrl}createShippingAddress`,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    data: _data,
+  };
+  try {
+    const resp = await axios.request(config);
+    return resp.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const deleteShippingAddress = async (shippingAddressId, token) => {
+  let config = {
+    method: 'delete',
+    maxBodyLength: Infinity,
+    url: `${BaseUrl}deleteShippingAddress?shippingAddressId=${shippingAddressId}`,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  try {
+    const resp = await axios.request(config);
+    return resp.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const getAllShippingAddresses = async token => {
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: `${BaseUrl}getUserShippingAddresses`,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
   };
   try {
     const resp = await axios.request(config);

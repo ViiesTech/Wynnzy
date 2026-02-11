@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -24,9 +24,13 @@ import {
 import BackIcon from '../../../../Components/BackIcon';
 import {useSelector, useDispatch} from 'react-redux';
 import {RootState} from '../../../../redux/Store';
-import {useRef, useState} from 'react';
 import {ShowToast} from '../../../../GlobalFunctions/Auth';
-import {createOrder} from '../../../../GlobalFunctions';
+import {
+  createOrder,
+  getAllShippingAddresses,
+  createShippingAddress,
+  deleteShippingAddress,
+} from '../../../../GlobalFunctions';
 import {CommonActions} from '@react-navigation/native';
 import {clearCart} from '../../../../redux/cartSlice';
 
@@ -60,6 +64,7 @@ const AddressInput = ({
 const Checkout = ({navigation}: any) => {
   const dispatch = useDispatch();
   const userData = useSelector((state: RootState) => state.user.userData);
+  const token = useSelector((state: RootState) => state.user.token);
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const selectedItems = cartItems.filter(item => item.isSelected);
   const refRBSheet = useRef<any>(null);
@@ -74,6 +79,52 @@ const Checkout = ({navigation}: any) => {
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [addresses, setAddresses] = useState<any[]>([]);
+  const [isFetchingAddresses, setIsFetchingAddresses] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState<any>(null);
+
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
+  const fetchAddresses = async () => {
+    setIsFetchingAddresses(true);
+    try {
+      const res: any = await getAllShippingAddresses(token);
+      console.log('Fetched Addresses:', res);
+      if (res?.success) {
+        setAddresses(res.data || []);
+        if (res.data?.length > 0) {
+          // If the selected address is not in the new list, select the first one
+          const stillExists = res.data.find(
+            (a: any) => a._id === selectedAddressId,
+          );
+          if (!stillExists) {
+            setSelectedAddressId(res.data[0]._id);
+          }
+        } else {
+          setSelectedAddressId(null);
+        }
+      }
+    } catch (error) {
+      console.log('Error fetching addresses:', error);
+    } finally {
+      setIsFetchingAddresses(false);
+    }
+  };
+
+  const handleDeleteAddress = async (id: string) => {
+    try {
+      const res: any = await deleteShippingAddress(id, token);
+      if (res?.success) {
+        ShowToast('success', 'Address deleted successfully');
+        fetchAddresses();
+      }
+    } catch (error) {
+      console.log('Error deleting address:', error);
+      ShowToast('error', 'Failed to delete address');
+    }
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({...prev, [field]: value}));
@@ -98,16 +149,8 @@ const Checkout = ({navigation}: any) => {
   ];
 
   const handleCheckOut = async () => {
-    const {fullName, streetAddress, city, state, zipCode, phone} = formData;
-    if (
-      !fullName.trim() ||
-      !streetAddress.trim() ||
-      !city.trim() ||
-      !state.trim() ||
-      !zipCode.trim() ||
-      !phone.trim()
-    ) {
-      ShowToast('error', 'Please fill all shipping details');
+    if (!selectedAddressId) {
+      ShowToast('error', 'Please select a shipping address');
       return;
     }
 
@@ -119,28 +162,19 @@ const Checkout = ({navigation}: any) => {
         quantity: item.quantity,
         price: item.price,
       })),
-      shippingAddress: {
-        fullName: formData.fullName,
-        phoneNumber: formData.phone,
-        addressLine1: formData.streetAddress,
-        city: formData.city,
-        state: formData.state,
-        zipCode: formData.zipCode,
-      },
+      shippingAddressId: selectedAddressId,
       paymentMethod: 'Card',
       subtotal: subtotal,
       tax: 0,
       shippingFee: shippingFee,
       discount: 0,
       totalAmount: total,
-      // couponCode: '',
-      // notes: '',
     };
 
     console.log('Order Payload:', JSON.stringify(orderPayload, null, 2));
 
     setIsLoading(true);
-    await createOrder(JSON.stringify(orderPayload))
+    await createOrder(JSON.stringify(orderPayload), token)
       ?.then((res: any) => {
         console.log('Response in createOrder:-', res);
         ShowToast('success', 'Order created successfully');
@@ -164,6 +198,8 @@ const Checkout = ({navigation}: any) => {
         setIsLoading(false);
       });
   };
+
+  // console.log('Selected Address ID:-', selectedAddressId);
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.white}}>
@@ -226,14 +262,78 @@ const Checkout = ({navigation}: any) => {
                   />
                 </TouchableOpacity>
               </View>
-              <NormalText
-                fontSize={responsiveFontSize(1.9)}
-                title={`${formData.streetAddress}, ${formData.city}, ${formData.zipCode}`}
-                color="#5F6063"
-                numberOfLines={1}
-                width={responsiveWidth(85)}
-                mrgnTop={responsiveHeight(1)}
-              />
+
+              {isFetchingAddresses ? (
+                <ActivityIndicator
+                  color={Colors.buttonBg}
+                  style={{marginTop: responsiveHeight(2)}}
+                />
+              ) : addresses.length > 0 ? (
+                <View style={{marginTop: responsiveHeight(2)}}>
+                  {addresses.map((item: any) => {
+                    const isActive = item._id === selectedAddressId;
+                    return (
+                      <TouchableOpacity
+                        key={item._id}
+                        onPress={() => setSelectedAddressId(item._id)}
+                        activeOpacity={0.8}
+                        style={[
+                          styles.addressCard,
+                          isActive && styles.activeAddressCard,
+                          {flexDirection: 'row', alignItems: 'center'},
+                        ]}>
+                        <View style={{flex: 1}}>
+                          <NormalText
+                            color={Colors.black}
+                            fontSize={responsiveFontSize(2)}
+                            title={item.fullName}
+                            fontWeight="700"
+                          />
+                          <NormalText
+                            color="#5F6063"
+                            fontSize={responsiveFontSize(1.7)}
+                            title={`${item.address}, ${item.city}, ${item.zipCode}`}
+                            mrgnTop={responsiveHeight(0.5)}
+                          />
+                        </View>
+                        <View
+                          style={{
+                            alignItems: 'center',
+                            gap: responsiveHeight(1),
+                          }}>
+                          {isActive && (
+                            <Ionicons
+                              name="checkmark-circle"
+                              size={20}
+                              color="#4C69FF"
+                            />
+                          )}
+                          <TouchableOpacity
+                            onPress={() => handleDeleteAddress(item._id)}
+                            style={{
+                              padding: 5,
+                              backgroundColor: '#4C69FF',
+                              borderRadius: 20,
+                            }}>
+                            <Ionicons
+                              name="trash-outline"
+                              color="white"
+                              size={20}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              ) : (
+                <NormalText
+                  fontSize={responsiveFontSize(1.9)}
+                  title="No saved addresses found. Please add one."
+                  color="#9B9EA9"
+                  mrgnTop={responsiveHeight(2)}
+                />
+              )}
             </View>
           </View>
         </View>
@@ -360,15 +460,69 @@ const Checkout = ({navigation}: any) => {
             </View>
 
             <TouchableOpacity
-              onPress={() => refRBSheet.current?.close()}
+              onPress={async () => {
+                const {fullName, streetAddress, city, state, zipCode, phone} =
+                  formData;
+                if (
+                  !fullName ||
+                  !streetAddress ||
+                  !city ||
+                  !state ||
+                  !zipCode ||
+                  !phone
+                ) {
+                  ShowToast('error', 'Please fill all details');
+                  return;
+                }
+
+                setIsLoading(true);
+                try {
+                  const addrPayload = {
+                    userId: userData?._id,
+                    fullName,
+                    address: streetAddress,
+                    city,
+                    state,
+                    zipCode,
+                    phoneNumber: phone,
+                  };
+                  const res: any = await createShippingAddress(
+                    JSON.stringify(addrPayload),
+                    token,
+                  );
+                  if (res?.success) {
+                    ShowToast('success', 'Address added successfully');
+                    await fetchAddresses();
+                    refRBSheet.current?.close();
+                    setFormData({
+                      fullName: '',
+                      streetAddress: '',
+                      city: '',
+                      state: '',
+                      zipCode: '',
+                      phone: '',
+                    });
+                  }
+                } catch (error) {
+                  console.log('Error creating address:', error);
+                  ShowToast('error', 'Failed to add address');
+                } finally {
+                  setIsLoading(false);
+                }
+              }}
               activeOpacity={0.8}
+              disabled={isLoading}
               style={{marginTop: responsiveHeight(4)}}>
               <LinearGradient
                 colors={['#3A8DFF', '#00E0C6']}
                 start={{x: 0, y: 0}}
                 end={{x: 1, y: 0}}
                 style={styles.saveBtn}>
-                <Text style={styles.btnText}>Save Address</Text>
+                {isLoading ? (
+                  <ActivityIndicator color={Colors.white} />
+                ) : (
+                  <Text style={styles.btnText}>Save Address</Text>
+                )}
               </LinearGradient>
             </TouchableOpacity>
           </ScrollView>
@@ -478,6 +632,18 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  addressCard: {
+    backgroundColor: '#F9FAFB',
+    padding: responsiveHeight(1.5),
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#E5E5E5',
+    marginBottom: responsiveHeight(1.5),
+  },
+  activeAddressCard: {
+    borderColor: '#4C69FF',
+    backgroundColor: '#F0F3FF',
   },
 });
 

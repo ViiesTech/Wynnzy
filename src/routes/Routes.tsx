@@ -16,11 +16,9 @@ const Stack = createNativeStackNavigator<routeParams>();
 
 export function Routes() {
   const {userData, token} = useSelector(state => state.user);
-  // const dispatch = useDispatch()
-  // useEffect(()=>{
-  //   dispatch(clearToken())
-  // },[])
-  console.log('userData in Routes:-', userData);
+
+  // console.log('userData in Routes:-', userData);
+  // console.log('token in Routes:-', token);
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
