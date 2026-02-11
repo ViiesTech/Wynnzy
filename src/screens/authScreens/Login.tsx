@@ -138,10 +138,11 @@ const Login = ({navigation}: any) => {
             placeholderTxtColor={Colors.themeText}
             handlePress={text => handleInputChange('email', text)}
             color={Colors.themeText}
+            keyboardType={'email-address'}
             backgroundColor={Colors.white}
             fontSize={16}
             fontWeight="bold"
-            placeHolder="Exampleemail@com"
+            placeHolder="Email"
           />
           <Input
             icon
@@ -155,7 +156,7 @@ const Login = ({navigation}: any) => {
             backgroundColor={Colors.white}
             fontSize={16}
             fontWeight="bold"
-            placeHolder="password"
+            placeHolder="Password"
           />
 
           <View

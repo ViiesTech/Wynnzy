@@ -1,14 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import {View, Text, TextInput, TouchableOpacity} from 'react-native';
 import React from 'react';
 import SvgIcons from './SvgIcons';
-import { eye, eyeOff } from '../assets/icons';
+import {eye, eyeOff} from '../assets/icons';
 import {
   responsiveFontSize,
   responsiveHeight,
 } from '../assets/responsive_dimensions';
-import { Colors } from '../assets/colors';
-import { NormalText } from './Titles';
+import {Colors} from '../assets/colors';
+import {NormalText} from './Titles';
 interface inputProps {
   placeHolder: string;
   color?: string;
@@ -76,15 +76,21 @@ const Input = ({
               height: '60%',
               width: 0.9,
               backgroundColor: Colors.themeText,
-            }}></View>
+            }}
+          />
         </View>
       )}
 
-      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-        <View style={{ flex: security ? 0.99 : 1 }}>
+      <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+        <View style={{flex: security ? 0.99 : 1}}>
           {label && (
-            <View style={{ left: 4 }}>
-              <NormalText txtAlign="center" title="Address" color="#808ca0" fontSize={responsiveFontSize(1.8)} />
+            <View style={{left: 4}}>
+              <NormalText
+                txtAlign="center"
+                title="Address"
+                color="#808ca0"
+                fontSize={responsiveFontSize(1.8)}
+              />
             </View>
           )}
           <TextInput
@@ -103,7 +109,7 @@ const Input = ({
         </View>
         {security && (
           <TouchableOpacity
-            style={{ left: 3 }}
+            style={{left: 3}}
             onPress={() => setShowPassword(!showPassword)}>
             {showPassword ? (
               <SvgIcons xml={eyeOff} height={20} width={20} />

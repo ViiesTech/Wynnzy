@@ -129,9 +129,10 @@ const Register = ({navigation, route}: any) => {
             handlePress={text => handleInputChange('email', text)}
             color={Colors.themeText}
             backgroundColor={Colors.white}
+            keyboardType={'email-address'}
             fontSize={16}
             fontWeight="bold"
-            placeHolder="Exampleemail@com"
+            placeHolder="Email"
           />
           <Input
             icon
@@ -145,7 +146,7 @@ const Register = ({navigation, route}: any) => {
             backgroundColor={Colors.white}
             fontSize={16}
             fontWeight="bold"
-            placeHolder="password"
+            placeHolder="Password"
           />
           <Input
             icon
@@ -159,7 +160,7 @@ const Register = ({navigation, route}: any) => {
             backgroundColor={Colors.white}
             fontSize={16}
             fontWeight="bold"
-            placeHolder="confirm Password"
+            placeHolder="Confirm Password"
           />
 
           <Button

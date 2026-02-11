@@ -5,21 +5,20 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import React, { useState } from 'react';
-import { Colors } from '../../assets/colors';
-import {
-  responsiveHeight,
-} from '../../assets/responsive_dimensions';
-import { BoldText, NormalText } from '../../Components/Titles';
-import { Button } from '../../Components/Button';
+import React, {useState} from 'react';
+import {Colors} from '../../assets/colors';
+import {responsiveHeight} from '../../assets/responsive_dimensions';
+import {BoldText, NormalText} from '../../Components/Titles';
+import {Button} from '../../Components/Button';
 import SvgIcons from '../../Components/SvgIcons';
-import { back, mail, otp } from '../../assets/icons';
+import {back, mail, otp} from '../../assets/icons';
 import Input from '../../Components/Input';
-import { forgetPasswordApi, ShowToast } from '../../GlobalFunctions/Auth';
+import {forgetPasswordApi, ShowToast} from '../../GlobalFunctions/Auth';
 
-const ForgotPass = ({ navigation }) => {
+const ForgotPass = ({navigation}: any) => {
   const [email, setEmail] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const handleForgotPass = async () => {
     if (!email) {
       ShowToast('error', 'Please enter your email');
@@ -31,7 +30,7 @@ const ForgotPass = ({ navigation }) => {
       const response = await forgetPasswordApi(email);
       ShowToast('success', 'Otp Sent Successfully');
       console.log('response', response);
-      navigation.navigate('Otp', { registeration: false, email: email });
+      navigation.navigate('Otp', {registeration: false, email: email});
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -39,6 +38,7 @@ const ForgotPass = ({ navigation }) => {
       console.log('error', error);
     }
   };
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -60,7 +60,11 @@ const ForgotPass = ({ navigation }) => {
           justifyContent: 'center',
         }}>
         <SvgIcons align="center" xml={otp} height={150} width={150} />
-        <BoldText alignSelf="center" mrgnTop={responsiveHeight(2)} title="Forgot password" />
+        <BoldText
+          alignSelf="center"
+          mrgnTop={responsiveHeight(2)}
+          title="Forgot password"
+        />
         <NormalText
           color="#3B4C68"
           fontWeight="400"
@@ -68,30 +72,36 @@ const ForgotPass = ({ navigation }) => {
           alignSelf="center"
           title="Please enter your email to reset password"
         />
-        <View style={{ marginTop: responsiveHeight(4), gap: responsiveHeight(4) }}>
+        <View
+          style={{marginTop: responsiveHeight(4), gap: responsiveHeight(4)}}>
           <Input
             icon
             xml={mail}
             placeholderTxtColor={Colors.themeText}
             handlePress={text => setEmail(text)}
+            keyboardType={'email-address'}
             color={Colors.themeText}
             backgroundColor={Colors.white}
             fontSize={16}
             fontWeight="bold"
-            placeHolder="Exampleemail@com"
+            placeHolder="Email"
           />
           <Button
             handlePress={() => handleForgotPass()}
             textColor={Colors.white}
             bgColor={Colors.buttonBg}
-            title={isLoading ? <ActivityIndicator size={'large'} color={Colors.white} /> : 'Continue'}
+            title={
+              isLoading ? (
+                <ActivityIndicator size={'large'} color={Colors.white} />
+              ) : (
+                'Continue'
+              )
+            }
           />
         </View>
       </View>
-
     </ScrollView>
   );
 };
 
 export default ForgotPass;
-
