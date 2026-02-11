@@ -8,7 +8,8 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Input from '../../Components/Input';
 import {Colors} from '../../assets/colors';
 import {
@@ -43,6 +44,28 @@ const Login = ({navigation}: any) => {
     password: '',
   });
 
+  useEffect(() => {
+    loadCredentials();
+  }, []);
+
+  const loadCredentials = async () => {
+    try {
+      const savedEmail = await AsyncStorage.getItem('email');
+      const savedPassword = await AsyncStorage.getItem('password');
+      const rememberMe = await AsyncStorage.getItem('rememberMe');
+
+      if (rememberMe === 'true') {
+        setIsChecked(true);
+        setForm({
+          email: savedEmail || '',
+          password: savedPassword || '',
+        });
+      }
+    } catch (error) {
+      console.log('Error loading credentials', error);
+    }
+  };
+
   const handleInputChange = (field: string, value: string) => {
     setForm(prev => ({...prev, [field]: value}));
   };
@@ -54,6 +77,15 @@ const Login = ({navigation}: any) => {
       return;
     }
     try {
+      if (checked) {
+        await AsyncStorage.setItem('email', email);
+        await AsyncStorage.setItem('password', password);
+        await AsyncStorage.setItem('rememberMe', 'true');
+      } else {
+        await AsyncStorage.removeItem('email');
+        await AsyncStorage.removeItem('password');
+        await AsyncStorage.setItem('rememberMe', 'false');
+      }
       const response = await handleLogin(email, password, dispatch);
     } catch (error) {
       console.log('error', error);
@@ -135,6 +167,7 @@ const Login = ({navigation}: any) => {
           <Input
             icon
             xml={mail}
+            value={form.email}
             placeholderTxtColor={Colors.themeText}
             handlePress={text => handleInputChange('email', text)}
             color={Colors.themeText}
@@ -147,6 +180,7 @@ const Login = ({navigation}: any) => {
           <Input
             icon
             xml={security}
+            value={form.password}
             showPassword={showPassword}
             setShowPassword={setShowPassword}
             security={true}

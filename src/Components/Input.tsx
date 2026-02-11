@@ -23,6 +23,7 @@ interface inputProps {
   showPassword?: boolean;
   keyboardType?: string;
   label?: string;
+  value?: string;
   handlePress?: (param: string) => void;
   setShowPassword?: (param: boolean) => void;
 }
@@ -42,6 +43,7 @@ const Input = ({
   xml,
   label,
   security,
+  value,
 }: inputProps) => {
   return (
     <View
@@ -98,6 +100,7 @@ const Input = ({
             placeholderTextColor={placeholderTxtColor}
             placeholder={placeHolder}
             secureTextEntry={showPassword ? false : true}
+            value={value}
             style={{
               color: color,
               fontSize: fontSize,
