@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -141,188 +142,218 @@ const Login = ({navigation}: any) => {
   };
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{
-        flexGrow: 1,
-        justifyContent: 'center',
-        backgroundColor: Colors.white,
-        padding: 20,
-      }}>
-      <View style={{paddingVertical: responsiveHeight(6)}}>
-        <View
-          style={{
-            gap: responsiveHeight(1),
-            marginBottom: responsiveHeight(3.5),
-            flex: 0.2,
-            alignItems: 'center',
-          }}>
-          <BoldText alignSelf="center" title="Login Account" />
-          <NormalText
-            alignSelf="center"
-            title="Stay signed in with your account"
-          />
-        </View>
-        <View style={{gap: responsiveHeight(2)}}>
-          <Input
-            icon
-            xml={mail}
-            value={form.email}
-            placeholderTxtColor={Colors.themeText}
-            handlePress={text => handleInputChange('email', text)}
-            color={Colors.themeText}
-            keyboardType={'email-address'}
-            backgroundColor={Colors.white}
-            fontSize={16}
-            fontWeight="bold"
-            placeHolder="Email"
-          />
-          <Input
-            icon
-            xml={security}
-            value={form.password}
-            showPassword={showPassword}
-            setShowPassword={setShowPassword}
-            security={true}
-            placeholderTxtColor={Colors.themeText}
-            handlePress={text => handleInputChange('password', text)}
-            color={Colors.themeText}
-            backgroundColor={Colors.white}
-            fontSize={16}
-            fontWeight="bold"
-            placeHolder="Password"
-          />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={{flex: 1}}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.innerContainer}>
+          <View style={styles.headerContainer}>
+            <BoldText alignSelf="center" title="Login Account" />
+            <NormalText
+              alignSelf="center"
+              title="Stay signed in with your account"
+            />
+          </View>
 
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
-              onPress={() => setIsChecked(!checked)} // Toggle checked state
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: responsiveHeight(1),
-              }}>
+          <View style={styles.formContainer}>
+            <Input
+              icon
+              xml={mail}
+              value={form.email}
+              placeholderTxtColor={Colors.themeText}
+              handlePress={text => handleInputChange('email', text)}
+              color={Colors.themeText}
+              keyboardType="email-address"
+              backgroundColor={Colors.white}
+              fontSize={16}
+              fontWeight="bold"
+              placeHolder="Email"
+            />
+
+            <Input
+              icon
+              xml={security}
+              value={form.password}
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+              security
+              placeholderTxtColor={Colors.themeText}
+              handlePress={text => handleInputChange('password', text)}
+              color={Colors.themeText}
+              backgroundColor={Colors.white}
+              fontSize={16}
+              fontWeight="bold"
+              placeHolder="Password"
+            />
+
+            <View style={styles.rowBetween}>
+              <View style={styles.rememberContainer}>
+                <TouchableOpacity
+                  onPress={() => setIsChecked(prev => !prev)}
+                  style={[
+                    styles.checkbox,
+                    checked ? styles.checkedBox : styles.uncheckedBox,
+                  ]}>
+                  {checked && <SvgIcons xml={tick} height={15} width={15} />}
+                </TouchableOpacity>
+
+                <NormalText
+                  alignSelf="center"
+                  color={Colors.black}
+                  title="Remember me"
+                />
+              </View>
+
               <TouchableOpacity
-                onPress={() => setIsChecked(!checked)} // Toggle checked state
-                style={[
-                  styles.button,
-                  checked
-                    ? {backgroundColor: Colors.buttonBg}
-                    : {
-                        backgroundColor: Colors.white,
-                        borderWidth: 1.5,
-                        borderColor: Colors.buttonBg,
-                      },
-                ]}>
-                {checked && <SvgIcons xml={tick} height={15} width={15} />}{' '}
-                {/* Show SVG when checked */}
+                onPress={() => navigation.navigate('ForgotPass')}>
+                <NormalText color={Colors.buttonBg} title="Forgot Password?" />
               </TouchableOpacity>
-              <NormalText
-                alignSelf="center"
-                color={Colors.black}
-                title="Remember me"
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('ForgotPass')}>
-              <NormalText color={Colors.buttonBg} title="Forgot Password?" />
-            </TouchableOpacity>
-          </View>
-          <Button
-            handlePress={() => loginHandler()}
-            textColor={Colors.white}
-            bgColor={Colors.buttonBg}
-            title={
-              isLoading ? (
-                <ActivityIndicator size={'large'} color={Colors.white} />
-              ) : (
-                'Sign In'
-              )
-            }
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: responsiveHeight(1),
-            }}>
-            <View
-              style={{
-                backgroundColor: Colors.buttonBg,
-                height: 1,
-                flex: 1,
-              }}
-            />
-            <NormalText title="Or Sign In With" />
-            <View
-              style={{
-                backgroundColor: Colors.buttonBg,
-                height: 1,
-                flex: 1,
-              }}
-            />
-          </View>
-          <Button
-            handlePress={handleGoogleButtonPress}
-            xml={Google}
-            bgColor={Colors.white}
-            borderWidth={1}
-            textColor={Colors.themeText}
-            borderColor={Colors.buttonBg}
-            icon={true}
-            title={
-              gLoading ? (
-                <ActivityIndicator size={'large'} color={Colors.buttonBg} />
-              ) : (
-                'Sign in with Google'
-              )
-            }
-          />
-          {Platform.OS === 'ios' ? (
+            </View>
+
             <Button
-              xml={Apple}
-              bgColor={Colors.black}
-              borderWidth={1}
+              handlePress={loginHandler}
               textColor={Colors.white}
-              // borderColor={Colors.buttonBg}
-              icon={true}
-              title="Sign in with Apple"
+              bgColor={Colors.buttonBg}
+              disabled={isLoading}
+              title={
+                isLoading ? (
+                  <ActivityIndicator size="small" color={Colors.white} />
+                ) : (
+                  'Sign In'
+                )
+              }
             />
-          ) : null}
+
+            <View style={styles.dividerRow}>
+              <View style={styles.divider} />
+              <NormalText title="Or Sign In With" />
+              <View style={styles.divider} />
+            </View>
+
+            <Button
+              handlePress={handleGoogleButtonPress}
+              xml={Google}
+              bgColor={Colors.white}
+              borderWidth={1}
+              textColor={Colors.themeText}
+              borderColor={Colors.buttonBg}
+              icon
+              disabled={gLoading}
+              title={
+                gLoading ? (
+                  <ActivityIndicator size="small" color={Colors.buttonBg} />
+                ) : (
+                  'Sign in with Google'
+                )
+              }
+            />
+
+            {Platform.OS === 'ios' && (
+              <Button
+                xml={Apple}
+                bgColor={Colors.black}
+                textColor={Colors.white}
+                icon
+                title="Sign in with Apple"
+              />
+            )}
+          </View>
         </View>
-      </View>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('SelectType')}
-        style={{
-          alignItems: 'center',
-          marginTop: responsiveHeight(4),
-          flex: 1,
-          bottom: 10,
-          justifyContent: 'flex-end',
-        }}>
-        <Text style={{color: '#3B4B68', fontSize: responsiveFontSize(2)}}>
-          Don't have an account ?{' '}
-          <Text style={{color: Colors.buttonBg, fontWeight: '700'}}>
-            Register
+
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>
+            Don't have an account?{' '}
+            <Text
+              style={styles.registerText}
+              onPress={() => navigation.navigate('SelectType')}>
+              Register
+            </Text>
           </Text>
-        </Text>
-      </TouchableOpacity>
-    </ScrollView>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 export default Login;
-
 const styles = StyleSheet.create({
-  button: {
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    backgroundColor: Colors.white,
+    padding: 20,
+  },
+
+  innerContainer: {
+    paddingVertical: responsiveHeight(6),
+  },
+
+  headerContainer: {
+    gap: responsiveHeight(1),
+    marginBottom: responsiveHeight(3.5),
+    alignItems: 'center',
+  },
+
+  formContainer: {
+    gap: responsiveHeight(2),
+  },
+
+  rowBetween: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  rememberContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: responsiveHeight(1),
+  },
+
+  checkbox: {
     justifyContent: 'center',
     alignItems: 'center',
     width: responsiveWidth(7),
     height: responsiveHeight(3.5),
-    padding: 10, // Add padding for touchable area
-    borderRadius: responsiveHeight(1), // Add border radius if required
+    borderRadius: responsiveHeight(1),
+  },
+
+  checkedBox: {
+    backgroundColor: Colors.buttonBg,
+  },
+
+  uncheckedBox: {
+    backgroundColor: Colors.white,
+    borderWidth: 1.5,
+    borderColor: Colors.buttonBg,
+  },
+
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: responsiveHeight(1),
+  },
+
+  divider: {
+    backgroundColor: Colors.buttonBg,
+    height: 1,
+    flex: 1,
+  },
+
+  footer: {
+    alignItems: 'center',
+    marginTop: responsiveHeight(4),
+  },
+
+  footerText: {
+    color: Colors.themeText,
+    fontSize: responsiveFontSize(2),
+  },
+
+  registerText: {
+    color: Colors.buttonBg,
+    fontWeight: '700',
   },
 });

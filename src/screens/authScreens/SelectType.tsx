@@ -5,23 +5,42 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
-import React, { useState } from 'react';
-import { Colors } from '../../assets/colors';
+import React, {useState} from 'react';
+import {Colors} from '../../assets/colors';
 import {
   responsiveHeight,
   responsiveWidth,
 } from '../../assets/responsive_dimensions';
-import { BoldText } from '../../Components/Titles';
-import { Button } from '../../Components/Button';
+import {BoldText} from '../../Components/Titles';
+import {Button} from '../../Components/Button';
 import SvgIcons from '../../Components/SvgIcons';
-import { back } from '../../assets/icons';
-import { images } from '../../assets/images';
-import { CheckBox } from '../../Components/CheckBox';
+import {back} from '../../assets/icons';
+import {images} from '../../assets/images';
+import {CheckBox} from '../../Components/CheckBox';
+import {useDispatch, useSelector} from 'react-redux';
+import {updateType} from '../../GlobalFunctions/Auth';
 
-const SelectType = ({ navigation }) => {
+const SelectType = ({navigation}: any) => {
   const [currentCategory, setCurrentCategory] = useState('User');
-  console.log('currentCategory', currentCategory);
+  const [loading, setLoading] = useState(false);
+  const {userData} = useSelector((state: any) => state.user);
+  const dispatch = useDispatch();
 
+  const handleUpdateType = async () => {
+    if (!userData._id) {
+      navigation.navigate('Signup', {currentCategory});
+    } else {
+      setLoading(true);
+      let res = await updateType(userData._id, currentCategory, dispatch);
+      if (res) {
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
+    }
+  };
+
+  // console.log('userData:-', JSON.stringify(userData, null, 2));
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -30,7 +49,11 @@ const SelectType = ({ navigation }) => {
         <SvgIcons xml={back} height={20} width={20} />
       </TouchableOpacity>
       <View style={styles.mainContainer}>
-        <BoldText alignSelf="center" mrgnTop={responsiveHeight(2)} title="Select Experience" />
+        <BoldText
+          alignSelf="center"
+          mrgnTop={responsiveHeight(2)}
+          title="Select Experience"
+        />
 
         <View style={styles.selectExpContainer}>
           <TouchableOpacity onPress={() => setCurrentCategory('User')}>
@@ -49,7 +72,11 @@ const SelectType = ({ navigation }) => {
               />
               {currentCategory === 'User' && <CheckBox />}
             </TouchableOpacity>
-            <BoldText alignSelf="center" title="User" mrgnTop={responsiveHeight(4)} />
+            <BoldText
+              alignSelf="center"
+              title="User"
+              mrgnTop={responsiveHeight(4)}
+            />
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => setCurrentCategory('Daycare')}>
@@ -66,16 +93,21 @@ const SelectType = ({ navigation }) => {
               />
               {currentCategory === 'Daycare' && <CheckBox />}
             </TouchableOpacity>
-            <BoldText alignSelf="center" title="Hotel/Daycare" mrgnTop={responsiveHeight(4)} />
+            <BoldText
+              alignSelf="center"
+              title="Hotel/Daycare"
+              mrgnTop={responsiveHeight(4)}
+            />
           </TouchableOpacity>
         </View>
       </View>
       <View style={styles.buttonContainer}>
         <Button
-          handlePress={() => navigation.navigate('Signup',{currentCategory})}
+          handlePress={handleUpdateType}
           textColor={Colors.white}
           title="Continue"
           bgColor={Colors.buttonBg}
+          disabled={loading}
         />
       </View>
     </ScrollView>

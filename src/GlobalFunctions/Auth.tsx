@@ -84,6 +84,49 @@ export const SocialLogin = (body: any, dispatch: any) => {
   };
   return dispatch(UserLogin(config));
 };
+export const updateType = async (
+  userId: string,
+  type: string,
+  dispatch: any,
+) => {
+  let data = new FormData();
+  data.append('userId', userId);
+  if (type) {
+    data.append('type', type);
+  }
+  const config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: `${BaseUrl}user/updateUser`,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    data: data,
+  };
+
+  try {
+    const res = await axios.request(config);
+    console.log('res in updateType:-', res.data);
+    if (res.data.success) {
+      ShowToast('success', res.data.message);
+      dispatch(setUserData(res.data.data));
+      return true;
+    } else {
+      ShowToast('error', res.data.message);
+      return false;
+    }
+  } catch (error: any) {
+    ShowToast(
+      'error',
+      error?.response?.data?.message || 'Something went wrong',
+    );
+    console.error(
+      'Error creating post:',
+      error?.response?.data || error.message,
+    );
+    return false;
+  }
+};
 export const forgetPasswordApi = async (email: string) => {
   let data = JSON.stringify({
     email: email,

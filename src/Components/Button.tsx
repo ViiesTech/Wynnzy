@@ -30,6 +30,7 @@ interface ButtonProps {
   mrgnTop?: number;
   handlePress?: () => void;
   activeOpacity?: number;
+  disabled?: boolean;
 }
 
 export const Button: FC<ButtonProps> = ({
@@ -48,11 +49,13 @@ export const Button: FC<ButtonProps> = ({
   textFont,
   icon = false,
   activeOpacity = 0.7,
+  disabled = false,
 }) => {
   return (
     <TouchableOpacity
       activeOpacity={activeOpacity}
       onPress={handlePress}
+      disabled={disabled}
       style={[
         styles.buttonContainer,
         {

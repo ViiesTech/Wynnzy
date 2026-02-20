@@ -6,10 +6,12 @@ import {UserStack} from './UserStack';
 import {DayCareStack} from './DayCareStack';
 import {useDispatch, useSelector} from 'react-redux';
 import {clearToken} from '../redux/Slices';
+import SelectType from '../screens/authScreens/SelectType';
 type routeParams = {
   authStack: undefined;
   dayCareStack: undefined;
   userStack: undefined;
+  SelectType: undefined;
 };
 
 const Stack = createNativeStackNavigator<routeParams>();
@@ -24,6 +26,8 @@ export function Routes() {
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {!token ? (
           <Stack.Screen name="authStack" component={AuthStack} />
+        ) : userData?.type === null ? (
+          <Stack.Screen name="SelectType" component={SelectType} />
         ) : userData?.type === 'User' ? (
           <Stack.Screen name="userStack" component={UserStack} />
         ) : (
