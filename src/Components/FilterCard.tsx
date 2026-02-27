@@ -7,7 +7,7 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from '../assets/responsive_dimensions';
-import {calendar, pin, time} from '../assets/icons';
+import {calendar, pin, time as timeIcon} from '../assets/icons';
 import SvgIcons from './SvgIcons';
 import {Colors} from '../assets/colors';
 import {Button} from './Button';
@@ -27,8 +27,6 @@ interface FilterCardProps {
 }
 const FilterCard: React.FC<FilterCardProps> = ({
   handlePress,
-  price,
-  imageUrl,
   data,
   status,
   serviceName,
@@ -36,11 +34,13 @@ const FilterCard: React.FC<FilterCardProps> = ({
   date,
   time,
   address,
+  price,
+  imageUrl,
 }) => {
-  console.log('data', data);
+  // console.log('data in FilterCard:-', data);
   return (
     <TouchableOpacity
-      activeOpacity={1}
+      activeOpacity={0.7}
       onPress={handlePress}
       style={{
         borderRadius: responsiveHeight(1),
@@ -117,7 +117,7 @@ const FilterCard: React.FC<FilterCardProps> = ({
                     alignItems: 'center',
                     gap: responsiveHeight(1),
                   }}>
-                  <SvgIcons xml={time} height={20} width={20} />
+                  <SvgIcons xml={timeIcon} height={20} width={20} />
                   <NormalText
                     fontSize={responsiveFontSize(1.5)}
                     color="#9DA5B3"

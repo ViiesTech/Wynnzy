@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Linking,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 
@@ -126,16 +127,22 @@ const Home = ({navigation}: any) => {
         style={styles.cardImage}
       />
       <BoldText
-        title={item.businessName}
-        fontSize={responsiveFontSize(2.2)}
+        title={item.fullName}
+        fontSize={responsiveFontSize(2)}
         color="#2A1E51"
+        numberOfLines={1}
+        mrgnTop={responsiveHeight(0.5)}
       />
       <View style={styles.ratingRow}>
         <View style={styles.ratingBadge}>
           <SvgIcons xml={rating} height={16} width={16} />
           <NormalText title={item?.ratings || 0} color="#5F5F63" />
         </View>
-        <NormalText title="Rating" color="#5F5F63" />
+        <NormalText
+          title="Rating"
+          color="#5F5F63"
+          mrgnTop={responsiveHeight(0.5)}
+        />
       </View>
     </TouchableOpacity>
   );
@@ -191,16 +198,18 @@ const Home = ({navigation}: any) => {
 
   const listEmptyComponent = () => {
     return (
-      <View style={styles.emptyContainer}>
-        <NormalText
-          title="No Daycares or Pet Hotels Available"
-          alignSelf="center"
-        />
-      </View>
+      !loading && (
+        <View style={styles.emptyContainer}>
+          <NormalText
+            title="No Daycares or Pet Hotels Available"
+            alignSelf="center"
+          />
+        </View>
+      )
     );
   };
 
-  // console.log('nearByHotels:-', nearByHotels);
+  // console.log('nearByHotels:-', JSON.stringify(nearByHotels, null, 2));
 
   return (
     <View style={styles.container}>
@@ -249,11 +258,16 @@ const styles = StyleSheet.create({
     borderRadius: responsiveHeight(1),
     backgroundColor: '#eee',
   },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   ratingRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 5,
     gap: 10,
-    marginTop: 10,
   },
   ratingBadge: {
     flexDirection: 'row',
@@ -262,6 +276,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#F5F5F5',
     padding: 5,
+    paddingHorizontal: 15,
   },
   bannerContainer: {
     marginVertical: responsiveHeight(2),

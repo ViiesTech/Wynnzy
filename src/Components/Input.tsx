@@ -36,7 +36,6 @@ const Input = ({
   handlePress,
   setShowPassword,
   showPassword = true,
-  backgroundColor,
   keyboardType,
   elevation = true,
   icon = false,

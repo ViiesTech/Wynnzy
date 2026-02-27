@@ -1,19 +1,17 @@
 /* eslint-disable react-native/no-inline-styles */
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
-  FlatList,
   Image,
-  ImageSourcePropType,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {images} from '../../../assets/images';
 import Header2 from '../../../Components/Header2';
 import {heart, rating} from '../../../assets/icons';
+import {images} from '../../../assets/images';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -23,67 +21,49 @@ import SvgIcons from '../../../Components/SvgIcons';
 import {Colors} from '../../../assets/colors';
 import ServiceCard from '../../../Components/ServicesCard';
 import {Button} from '../../../Components/Button';
-import {
-  getAllServicesByManagerId,
-  getBusinessProfileById,
-} from '../../../GlobalFunctions';
 import {getBusinessProfile, ShowToast} from '../../../GlobalFunctions/Auth';
+import {getAllCategoriesByManagerId} from '../../../GlobalFunctions';
 import {ImageBaseUrl} from '../../../BaseUrl';
 import {NormalText} from '../../../Components/Titles';
 
-interface galleryImagesTypes {
-  id: number;
-  image: ImageSourcePropType;
-}
-
-const galleryImages: galleryImagesTypes[] = [
-  {
-    id: 1,
-    image: images.storedetail2,
-  },
-  {
-    id: 2,
-    image: images.storedetail3,
-  },
-  {
-    id: 3,
-    image: images.storedetail4,
-  },
-];
-
-const StoreDetails = ({navigation, route}) => {
-  const [selected, setSelected] = useState<boolean>(false);
-  const [storeDetails, setStoreDetails] = useState([]);
+const StoreDetails = ({navigation, route}: any) => {
+  const {_id, managerId} = route?.params;
+  const [storeDetails, setStoreDetails] = useState<any>(null);
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const {_id, managerId} = route?.params;
-  const [currentService, setCurrentService] = useState();
+  const [currentService, setCurrentService] = useState(null);
 
   useEffect(() => {
-    fetchBusinessProfileHandler();
-    fetchAllServices();
+    fetchData();
   }, []);
 
-  const fetchBusinessProfileHandler = async () => {
-    const response = await getBusinessProfile(_id);
-    console.log('rsponse', response);
-    setStoreDetails(response.data);
-  };
-
-  const fetchAllServices = async () => {
+  const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await getAllServicesByManagerId(managerId);
-      setServices(response.data);
-      setIsLoading(false);
+      const [profileRes, servicesRes] = await Promise.all([
+        getBusinessProfile(_id),
+        getAllCategoriesByManagerId(managerId),
+      ]);
+
+      setStoreDetails(profileRes.data);
+      setServices(servicesRes.data);
     } catch (err) {
+      ShowToast('error', 'Failed to load store data');
+    } finally {
       setIsLoading(false);
-      ShowToast('error', err?.response?.data?.message);
-      console.log('categoriess', response.data);
     }
   };
 
-  console.log('storeDetails:-', JSON.stringify(storeDetails));
+  if (isLoading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color={Colors.buttonBg} />
+      </View>
+    );
+  }
+
+  console.log('services:-', JSON.stringify(services, null, 2));
+
   return (
     <View style={styles.container}>
       <Image
@@ -95,123 +75,109 @@ const StoreDetails = ({navigation, route}) => {
         style={styles.backImage}
       />
       <Header2 />
-      <View
-        style={{
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-          flex: 1,
-          bottom: 10,
-          backgroundColor: Colors.white,
-          zIndex: 10,
-        }}>
+
+      <View style={styles.contentWrapper}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.storeView}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <View>
-              <Text style={styles.heading}>{storeDetails?.businessName}</Text>
+          contentContainerStyle={styles.scrollContent}>
+          {/* Header Info */}
+          <View style={styles.headerRow}>
+            <View style={{flex: 1}}>
+              <Text style={styles.heading}>
+                {storeDetails?.fullName || 'Store Name'}
+              </Text>
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('Reviews', {
-                    type: 'user',
                     managerId: storeDetails?.managerId,
                     ratings: storeDetails?.ratings,
                     totalReviews: storeDetails?.totalreviews,
                   })
                 }
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 10,
-                  marginTop: responsiveHeight(1),
-                }}>
-                <View style={styles.ratingView}>
+                style={styles.ratingContainer}>
+                <View style={styles.ratingBadge}>
                   <SvgIcons xml={rating} height={13} width={13} />
                   <Text style={styles.ratingText}>
                     {storeDetails?.ratings || 0}
                   </Text>
                 </View>
-                <Text style={styles.rating}>Rating</Text>
+                <Text style={styles.ratingLabel}>Rating</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.heartView}>
+            <TouchableOpacity style={styles.heartBtn}>
               <SvgIcons xml={heart} height={20} width={20} />
             </TouchableOpacity>
           </View>
+
           <Text style={styles.desc}>{storeDetails?.bio}</Text>
-          <View style={{paddingTop: responsiveHeight(2)}}>
-            <Text style={styles.heading}>Gallery</Text>
-            <View style={{marginTop: responsiveHeight(2)}}>
-              <FlatList
-                data={storeDetails?.image}
-                numColumns={2}
-                // keyExtractor={(item) => item.id.toString()}
-                renderItem={({item}) => (
-                  <Image
-                    source={{uri: `${ImageBaseUrl}${item}`}}
-                    borderRadius={15}
-                    style={[
-                      styles.imageStyle,
-                      {
-                        width:
-                          item.id == 3
+
+          {/* Gallery Section */}
+          {storeDetails?.image?.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.heading}>Gallery</Text>
+              <View style={styles.galleryGrid}>
+                {storeDetails.image.map((item: any, index: number) => {
+                  // If it's the 3rd item and we are in a 2-column mindset, make it full width
+                  const isFullWidth =
+                    index === 2 && storeDetails.image.length === 3;
+                  return (
+                    <Image
+                      key={index}
+                      source={{uri: `${ImageBaseUrl}${item}`}}
+                      style={[
+                        styles.galleryImage,
+                        {
+                          width: isFullWidth
                             ? responsiveWidth(92)
-                            : responsiveWidth(45),
-                      },
-                    ]}
-                  />
-                )}
-              />
-            </View>
-          </View>
-          <View style={{paddingTop: responsiveHeight(2)}}>
-            <Text style={styles.heading}>Services</Text>
-            {/* <ServiceCard
-              title="Grooming"
-              cardStyle={{ marginTop: responsiveHeight(2), marginBottom: responsiveHeight(2) }}
-              price="$1,499.00"
-              frequency="Per day"
-              imageUrl="https://your-image-link.com/dog.jpg"
-              selected={true}
-              onPress={() => setSelected(!selected)}
-            />
-            <ServiceCard
-              title="Grooming"
-              price="$1,499.00"
-              frequency="Per day"
-              imageUrl="https://your-image-link.com/dog.jpg"
-              selected={true}
-              onPress={() => setSelected(!selected)}
-            /> */}
-            {isLoading ? (
-              <View style={{marginTop: responsiveHeight(2)}}>
-                <ActivityIndicator size="large" color={Colors.buttonBg} />
+                            : responsiveWidth(44),
+                        },
+                      ]}
+                    />
+                  );
+                })}
               </View>
-            ) : services?.length ? (
-              <FlatList
-                data={services}
-                renderItem={({item}) => (
+            </View>
+          )}
+
+          {/* Services Section */}
+          <View style={styles.section}>
+            <Text style={styles.heading}>Services</Text>
+            {isLoading ? (
+              <View style={styles.loaderContainer}>
+                <ActivityIndicator
+                  style={{marginTop: 20}}
+                  size="large"
+                  color={Colors.buttonBg}
+                />
+              </View>
+            ) : services?.length > 0 ? (
+              <View style={{marginTop: 10}}>
+                {services.map((item: any) => (
                   <ServiceCard
-                    onCardPress={() => setCurrentService(item._id)}
+                    key={item?._id}
                     title={item?.categoryName}
-                    imageUrl={item.image ? item.image : null}
-                    selected={currentService === item._id}
-                    onPress={() => setSelected(!selected)}
+                    imageUrl={item?.image ? item?.image : null}
+                    selected={currentService === item?._id}
+                    onCardPress={() => {
+                      setCurrentService((prev: any) =>
+                        prev === item?._id ? null : item?._id,
+                      );
+                    }}
                   />
-                )}
-                keyExtractor={item => item._id.toString()}
-              />
+                ))}
+              </View>
             ) : (
               <NormalText
                 mrgnTop={responsiveHeight(1.5)}
-                fontSize={responsiveFontSize(2.4)}
-                fontWeight="600"
-                title="No services available at the moment."
+                fontSize={responsiveFontSize(2)}
+                title="No services available."
               />
             )}
           </View>
-          {services?.length ? (
-            <View style={{paddingTop: responsiveHeight(2)}}>
+
+          {/* Action Button */}
+          {services?.length > 0 && (
+            <View style={{marginVertical: 20}}>
               <Button
                 handlePress={() =>
                   currentService
@@ -219,88 +185,97 @@ const StoreDetails = ({navigation, route}) => {
                         serviceId: currentService,
                         managerId,
                       })
-                    : ShowToast(
-                        'error',
-                        'Plz Select A Service Category To Proceed',
-                      )
+                    : ShowToast('error', 'Please select a service category')
                 }
-                textColor={Colors.white}
                 title="Next"
                 bgColor={Colors.buttonBg}
-                borderColor={''}
-                borderRadius={0}
-                xml={''}
-                width={0}
-                height={0}
-                textFont={0}
+                textColor={Colors.white}
+                borderRadius={10}
               />
             </View>
-          ) : null}
+          )}
         </ScrollView>
       </View>
     </View>
   );
 };
 
-export default StoreDetails;
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: {flex: 1, backgroundColor: Colors.white},
   backImage: {
-    height: responsiveHeight(40),
+    height: responsiveHeight(35),
     width: responsiveWidth(100),
-    // position: 'absolute',
-    // top: 0,
-    // left: 0,
   },
-  scrollContainer: {
-    flexGrow: 1,
+  contentWrapper: {
+    flex: 1,
+    backgroundColor: Colors.white,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    marginTop: -30,
+    paddingTop: 10,
   },
-  storeView: {
-    flexGrow: 1,
-    padding: responsiveHeight(2),
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+  },
+  scrollContent: {
+    padding: responsiveWidth(4),
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
   },
   heading: {
     color: Colors.themeText,
     fontSize: responsiveFontSize(2.4),
     fontWeight: 'bold',
   },
-  heartView: {
-    backgroundColor: Colors.buttonBg,
-    height: responsiveHeight(5),
-    width: responsiveHeight(5),
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  ratingView: {
+  ratingContainer: {
     flexDirection: 'row',
-    gap: 5,
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.lightGray,
-    height: responsiveHeight(3),
-    width: responsiveWidth(15),
-    borderRadius: 10,
+    gap: 8,
+    marginTop: 5,
   },
-  ratingText: {
-    color: Colors.black,
-    fontSize: responsiveFontSize(1.7),
+  ratingBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F6F6F6',
+    paddingHorizontal: 15,
+    paddingVertical: 4,
+    borderRadius: 8,
+    gap: 4,
   },
-  rating: {
-    color: Colors.black,
-    fontSize: responsiveFontSize(1.8),
+  ratingText: {color: Colors.black, fontSize: responsiveFontSize(1.6)},
+  ratingLabel: {color: Colors.black, fontSize: responsiveFontSize(1.6)},
+  heartBtn: {
+    backgroundColor: Colors.buttonBg,
+    padding: 10,
+    borderRadius: 12,
   },
   desc: {
     color: Colors.txtColor,
-    fontSize: responsiveFontSize(1.7),
-    marginTop: responsiveHeight(2.5),
+    fontSize: responsiveFontSize(1.8),
+    lineHeight: 22,
+    marginTop: 15,
   },
-  imageStyle: {
-    height: responsiveHeight(20),
-    marginBottom: responsiveHeight(2),
-    marginHorizontal: responsiveWidth(1),
+  section: {
+    marginTop: 25,
+  },
+  galleryGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginTop: 15,
+  },
+  galleryImage: {
+    height: responsiveHeight(18),
+    borderRadius: 15,
+    marginBottom: 10,
+    backgroundColor: Colors.lightGray,
   },
 });
+
+export default StoreDetails;

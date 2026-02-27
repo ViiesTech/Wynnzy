@@ -1,10 +1,15 @@
-import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet, ViewStyle } from "react-native";
-import { images } from "../assets/images";
-import { Colors } from "../assets/colors";
-import { responsiveHeight } from "../assets/responsive_dimensions";
-import { ImageBaseUrl } from "../BaseUrl";
-
+import React from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ViewStyle,
+} from 'react-native';
+import {Colors} from '../assets/colors';
+import {responsiveHeight} from '../assets/responsive_dimensions';
+import {ImageBaseUrl} from '../BaseUrl';
 
 interface ServiceCardProps {
   title: string;
@@ -17,7 +22,7 @@ interface ServiceCardProps {
   onCardPress: () => void;
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({
+const ServiceCard = ({
   title,
   price,
   frequency,
@@ -26,10 +31,16 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   selected,
   onCardPress,
   onPress,
-}) => {
+}: ServiceCardProps) => {
   return (
-    <TouchableOpacity style={[styles.card, cardStyle]} onPress={onCardPress}>
-      <Image source={{ uri: `${ImageBaseUrl}${imageUrl}` }} style={styles.image} />
+    <TouchableOpacity
+      activeOpacity={0.7}
+      style={[styles.card, cardStyle]}
+      onPress={onCardPress}>
+      <Image
+        source={{uri: `${ImageBaseUrl}${imageUrl}`}}
+        style={styles.image}
+      />
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.price}>{price}</Text>
@@ -50,11 +61,11 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: "row",
+    flexDirection: 'row',
     backgroundColor: Colors.white,
     borderRadius: 12,
     padding: 16,
-    alignItems: "center",
+    alignItems: 'center',
     elevation: 2,
     marginBottom: 10,
   },
@@ -63,13 +74,14 @@ const styles = StyleSheet.create({
     height: responsiveHeight(12),
     borderRadius: 10,
     marginRight: 12,
+    backgroundColor: Colors.lightGray,
   },
   infoContainer: {
     flex: 1,
   },
   title: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: Colors.black,
   },
   price: {
@@ -81,15 +93,15 @@ const styles = StyleSheet.create({
     marginTop: 4,
     borderWidth: 0.5,
     borderColor: Colors.black,
-    backgroundColor: "#E5E7EB",
+    backgroundColor: '#E5E7EB',
     borderRadius: 5,
     paddingHorizontal: 8,
     paddingVertical: 4,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
   },
   tagText: {
     fontSize: 12,
-    color: "#4B5563",
+    color: '#4B5563',
   },
   radioButton: {
     marginLeft: 12,
@@ -107,8 +119,8 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: Colors.buttonBg,
     height: responsiveHeight(2),
-    width: responsiveHeight(2.),
-  }
+    width: responsiveHeight(2),
+  },
 });
 
 export default ServiceCard;

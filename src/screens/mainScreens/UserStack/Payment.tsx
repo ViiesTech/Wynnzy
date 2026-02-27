@@ -35,6 +35,7 @@ import Modal from 'react-native-modal';
 import Rating from '../../../Components/Rating';
 import {ShowToast} from '../../../GlobalFunctions/Auth';
 import StarRating from 'react-native-star-rating-widget';
+import TextHeader from '../../../Components/TextHeader';
 
 interface servicesType {
   id: number;
@@ -65,9 +66,8 @@ const Payment = ({navigation, route}) => {
     responsiveness: 'Good',
     amenities: 'Good',
   });
-  console.log('feedbackGiven', feedbackGiven);
   const [rating, setRating] = useState(0);
-  console.log('comment', comment);
+
   const services: servicesType[] = [
     // {
     //   id: 1,
@@ -105,8 +105,9 @@ const Payment = ({navigation, route}) => {
     } else {
       ShowToast('error', response.message);
     }
-    console.log('repsonse', response);
+    console.log('repsonse:-', response);
   };
+
   const addReviewHandler = async () => {
     const {satisfaction, responsiveness, amenities} = reviewDetails;
     setReviewLoading(true);
@@ -129,10 +130,14 @@ const Payment = ({navigation, route}) => {
       setModalVisible(false);
     }
   };
+
+  console.log('feedbackGiven:-', feedbackGiven);
+  console.log('comment:-', comment);
+
   return (
     <View style={styles.container}>
       <View style={styles.subContainer}>
-        <BackIcon />
+        <TextHeader title="Payment" />
         <FlatList
           horizontal
           data={allServices}

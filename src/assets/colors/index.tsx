@@ -7,4 +7,5 @@ export const Colors: {[key: string]: string} = {
   descriptionText: '#3B4C68',
   buttonBg: '#51C2BE',
   borderColor: '#EFEFEF',
+  lightGray: '#F5F5F5',
 };

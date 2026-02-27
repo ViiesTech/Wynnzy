@@ -14,7 +14,7 @@ interface Header3Props {
   textContainer?: boolean;
   onEditPress?: () => void;
 }
-const Header2 = ({handlePress}) => {
+const Header2 = ({handlePress}: any) => {
   return (
     <TouchableOpacity
       onPress={() => Alert.alert('working')}

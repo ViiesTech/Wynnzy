@@ -162,7 +162,7 @@ const Checkout = ({navigation}: any) => {
         quantity: item.quantity,
         price: item.price,
       })),
-      shippingAddressId: selectedAddressId,
+      shippingAddress: selectedAddressId,
       paymentMethod: 'Card',
       subtotal: subtotal,
       tax: 0,

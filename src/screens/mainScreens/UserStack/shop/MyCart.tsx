@@ -118,7 +118,14 @@ const MyCart = ({navigation}: any) => {
               <View style={styles.quantityControls}>
                 <TouchableOpacity
                   onPress={() => handleDecrease(item.id, item.variationId)}
-                  style={styles.quantityBtn}>
+                  activeOpacity={0.7}
+                  style={[
+                    styles.quantityBtn,
+                    {
+                      borderColor:
+                        item.quantity > 1 ? Colors.buttonBg : '#DBE1FF',
+                    },
+                  ]}>
                   <AntDesign
                     name="minus"
                     color={item.quantity > 1 ? Colors.buttonBg : '#DBE1FF'}
@@ -133,7 +140,8 @@ const MyCart = ({navigation}: any) => {
 
                 <TouchableOpacity
                   onPress={() => handleIncrease(item.id, item.variationId)}
-                  style={[styles.quantityBtn, {borderColor: Colors.buttonBg}]}>
+                  activeOpacity={0.7}
+                  style={styles.quantityBtn}>
                   <AntDesign name="plus" color={Colors.buttonBg} size={16} />
                 </TouchableOpacity>
               </View>
@@ -256,7 +264,7 @@ const styles = StyleSheet.create({
   quantityControls: {flexDirection: 'row', alignItems: 'center', gap: 12},
   quantityBtn: {
     borderWidth: 1,
-    borderColor: '#DBE1FF',
+    borderColor: Colors.buttonBg,
     borderRadius: 6,
     padding: 4,
   },

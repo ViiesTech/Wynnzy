@@ -34,6 +34,7 @@ const AllHotels = ({navigation}: any) => {
     setIsLoading(true);
     try {
       const response = await fetchAllBusinesses();
+      console.log('response:-', JSON.stringify(response, null, 2));
       // Ensure data is an array
       setData(Array.isArray(response?.data) ? response.data : []);
     } catch (error) {
@@ -60,10 +61,11 @@ const AllHotels = ({navigation}: any) => {
           resizeMode="cover"
         />
         <BoldText
-          title={item.businessName || 'Unnamed Business'}
+          title={item.fullName || 'Unnamed Business'}
           mrgnTop={10}
-          fontSize={responsiveFontSize(2.2)}
+          fontSize={responsiveFontSize(2)}
           color="#2A1E51"
+          numberOfLines={1}
         />
         <View style={styles.ratingSection}>
           <View style={styles.ratingBadge}>
@@ -125,9 +127,7 @@ const AllHotels = ({navigation}: any) => {
       <FlatList
         data={data}
         renderItem={renderHotels}
-        keyExtractor={(item, index) =>
-          item?._id?.toString() || index.toString()
-        }
+        keyExtractor={(item, index) => index?.toString()}
         numColumns={2}
         ListHeaderComponent={renderHeader}
         ListEmptyComponent={renderEmpty}

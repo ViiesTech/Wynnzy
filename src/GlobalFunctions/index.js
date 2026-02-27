@@ -210,7 +210,7 @@ export const fetchAllBusinesses = async () => {
     throw error;
   }
 };
-export const getAllServicesByManagerId = async managerId => {
+export const getAllCategoriesByManagerId = async managerId => {
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
