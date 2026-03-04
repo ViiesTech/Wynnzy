@@ -9,6 +9,7 @@ import {
 } from '../assets/responsive_dimensions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import {Colors} from '../assets/colors';
@@ -25,6 +26,7 @@ import ProductDetails from '../screens/mainScreens/UserStack/shop/ProductDetails
 import MyCart from '../screens/mainScreens/UserStack/shop/MyCart';
 import Checkout from '../screens/mainScreens/UserStack/shop/Checkout';
 import ChangeDetails from '../screens/mainScreens/UserStack/shop/ChangeDetails';
+import Orders from '../screens/mainScreens/DayCareStack/Orders';
 // Create Bottom Tab Navigator
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -171,13 +173,13 @@ function DayCareBottomStack() {
       />
 
       <Tab.Screen
-        name="Jobs"
-        component={Jobs}
+        name="Orders"
+        component={Orders}
         options={({route}) => ({
           tabBarIcon: ({focused, size}) => (
             <View style={styles.bottomTabs}>
-              <Ionicons
-                name={'bag-handle-outline'}
+              <Octicons
+                name={'checklist'}
                 size={25}
                 color={focused ? '#554292' : '#BFBFBF'}
               />

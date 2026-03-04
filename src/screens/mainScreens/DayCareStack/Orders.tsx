@@ -22,7 +22,7 @@ import {getAllBookingsByManagerId} from '../../../GlobalFunctions';
 import BookingCard from '../../../Components/BookingCard';
 import TextHeader from '../../../Components/TextHeader';
 
-const ViewOrders = ({navigation}: any) => {
+const Orders = ({navigation}: any) => {
   const [currentCategory, setCurrentCategory] = useState('Pending');
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -66,7 +66,7 @@ const ViewOrders = ({navigation}: any) => {
 
   const renderHeader = () => (
     <View style={{marginBottom: responsiveHeight(1)}}>
-      <TextHeader title="View Orders" />
+      <TextHeader title="Orders" />
       <FlatList
         data={categories}
         horizontal
@@ -196,4 +196,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ViewOrders;
+export default Orders;

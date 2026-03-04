@@ -181,7 +181,7 @@ const Profile = ({navigation}: any) => {
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() =>
-              item.title1 === 'View' && navigation.navigate('ViewOrders')
+              item.title1 === 'View' && navigation.navigate('Orders')
             }
             style={styles.statsCard}>
             <NormalText
@@ -580,7 +580,7 @@ export default Profile;
 //         renderItem={({item}) => (
 //           <TouchableOpacity
 //             onPress={() =>
-//               item.title1 === 'View' ? navigation.navigate('ViewOrders') : null
+//               item.title1 === 'View' ? navigation.navigate('Orders') : null
 //             }
 //             style={{
 //               backgroundColor: Colors.buttonBg,

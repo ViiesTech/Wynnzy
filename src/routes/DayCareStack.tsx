@@ -9,7 +9,7 @@ import Notification from '../screens/commonScreens/Notification';
 import Reviews from '../screens/commonScreens/Reviews';
 import {useSelector} from 'react-redux';
 import ReviewDetails from '../screens/commonScreens/ReviewDetails';
-import ViewOrders from '../screens/mainScreens/DayCareStack/ViewOrders';
+import Orders from '../screens/mainScreens/DayCareStack/Orders';
 import ViewBookedServices from '../screens/commonScreens/ViewBookedServices';
 import {Colors} from '../assets/colors';
 // Define types for the navigation parameters
@@ -41,7 +41,7 @@ export function DayCareStack() {
       {/* <Stack.Screen name="Map" component={Map} /> */}
       <Stack.Screen name="FilterDetail" component={FilterDetail} />
       <Stack.Screen name="ViewBookedServices" component={ViewBookedServices} />
-      <Stack.Screen name="ViewOrders" component={ViewOrders} />
+      <Stack.Screen name="Orders" component={Orders} />
       <Stack.Screen name="ReviewDetails" component={ReviewDetails} />
       <Stack.Screen name="CreateProfile" component={CreateProfile} />
       <Stack.Screen name="CreateBussProfile" component={CreateBussProfile} />
