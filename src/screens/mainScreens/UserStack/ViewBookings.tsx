@@ -35,6 +35,7 @@ const ViewBookings = ({navigation}: any) => {
   const {_id, type} = useSelector((state: any) => state.user.userData);
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
+  // const {userData} = useSelector((state: any) => state.user);
 
   useEffect(() => {
     fetchBookingsHandler();
@@ -104,12 +105,31 @@ const ViewBookings = ({navigation}: any) => {
     return (
       <BookingCard
         data={item}
+        handlePayNow={() =>
+          navigation.navigate('Payment', {
+            allServices: Array.isArray(item.serviceId)
+              ? item.serviceId
+              : [item.serviceId],
+            petId: item.petId?._id || item.petId,
+            managerId: item.managerId?._id || item.managerId,
+            address: item.address,
+            userId: _id,
+            total: item.total,
+            categoryId: item.categoryId?._id || item.categoryId,
+            serviceId: Array.isArray(item.serviceId)
+              ? item.serviceId.map((s: any) => s._id || s)
+              : [item.serviceId?._id || item.serviceId],
+            selectDate: item.selectDate,
+            bookingId: item?._id,
+          })
+        }
         handlePress={() =>
           navigation.navigate('ViewBookedServices', {
-            type: 'user',
+            type: type || 'user',
             service: item.serviceId,
             bookingId: item?._id,
             bookingStatus: item?.status,
+            paymentStatus: item?.paymentStatus,
           })
         }
       />

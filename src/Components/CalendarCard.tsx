@@ -19,9 +19,13 @@ import {Colors} from '../assets/colors';
 import {calendarIcon} from '../assets/icons';
 import moment from 'moment';
 
-const CalendarCard = ({onDateSelect}: {onDateSelect: (date: Date) => void}) => {
+const CalendarCard = ({
+  onDatesSelect,
+}: {
+  onDatesSelect: (dates: Date[]) => void;
+}) => {
   const [isCalendarVisible, setCalendarVisible] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const showCalendar = () => {
@@ -42,37 +46,62 @@ const CalendarCard = ({onDateSelect}: {onDateSelect: (date: Date) => void}) => {
     }).start(() => setCalendarVisible(false));
   }, [fadeAnim]);
 
-  const handleDateChange = (date: any) => {
-    setSelectedDate(date); // ✅ Keep it as a Date object
-    onDateSelect(date); // ✅ Send full Date object to parent
-    hideCalendar();
+  const handleDateChange = (date: any, type: 'START_DATE' | 'END_DATE') => {
+    if (type === 'END_DATE') {
+      const startDate = selectedDates[0];
+      const endDate = moment(date).startOf('day').toDate();
+      const range: Date[] = [];
+      let current = moment(startDate);
+      while (current.isSameOrBefore(endDate)) {
+        range.push(current.toDate());
+        current.add(1, 'days');
+      }
+      setSelectedDates(range);
+      onDatesSelect(range);
+    } else {
+      const startDate = moment(date).startOf('day').toDate();
+      setSelectedDates([startDate]);
+      onDatesSelect([startDate]);
+    }
+  };
+
+  const formatDates = () => {
+    if (selectedDates.length === 0) {return 'Select Date';}
+    if (selectedDates.length === 1)
+      {return moment(selectedDates[0]).format('MMMM DD, YYYY');}
+    return `${moment(selectedDates[0]).format('MMM DD')} - ${moment(
+      selectedDates[selectedDates.length - 1],
+    ).format('MMM DD, YYYY')}`;
   };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.datePicker} onPress={showCalendar}>
-        <Text style={[styles.dateText, !selectedDate && styles.placeholder]}>
-          {selectedDate
-            ? moment(selectedDate).format('MMMM DD, YYYY')
-            : 'Select Date'}
+        <Text
+          style={[
+            styles.dateText,
+            selectedDates.length === 0 && styles.placeholder,
+          ]}>
+          {formatDates()}
         </Text>
         <SvgXml xml={calendarIcon} height={20} width={20} />
       </TouchableOpacity>
 
       <Modal
         visible={isCalendarVisible}
-        animationType="fade" // 'fade' works well as a fallback for the Animated View
+        animationType="fade"
         transparent={true}
         onRequestClose={hideCalendar}>
         <View style={styles.modalContainer}>
           <Animated.View
             style={[styles.calendarContainer, {opacity: fadeAnim}]}>
             <CalendarPicker
+              allowRangeSelection={true}
               onDateChange={handleDateChange}
               selectedDayColor={Colors.buttonBg}
               selectedDayTextColor={Colors.white}
               todayBackgroundColor="#E6E6E6"
-              minDate={new Date()} // Prevent past date selection
+              minDate={new Date()}
               width={responsiveWidth(90)}
               textStyle={{color: '#000'}}
             />

@@ -10,10 +10,10 @@ import {Colors} from '../assets/colors';
 import {ImageBaseUrl} from '../BaseUrl';
 import {images} from '../assets/images';
 
-const ServiceCard = ({data, handlePress}: any) => {
+const ServiceCard = ({data, handlePress, activeOpacity = 0.7}: any) => {
   return (
     <TouchableOpacity
-      activeOpacity={0.7}
+      activeOpacity={activeOpacity}
       onPress={handlePress}
       style={styles.cardContainer}>
       <View style={styles.contentRow}>

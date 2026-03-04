@@ -744,10 +744,12 @@ export const getUserData = async (userId: string) => {
 export const updateBookingStatus = async (
   bookingId: string,
   status: string,
+  paymentStatus: string,
 ) => {
   let data = JSON.stringify({
     bookingId: bookingId,
     status: status,
+    paymentStatus: paymentStatus,
   });
 
   let config = {

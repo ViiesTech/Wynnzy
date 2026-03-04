@@ -21,14 +21,27 @@ import {
 import ServiceCard from '../../Components/ServiceCard';
 
 const ViewBookedServices = ({navigation, route}: any) => {
-  // Safe destructuring
-  const {type, service = [], bookingId, bookingStatus} = route?.params || {};
-  const [isLoading, setIsLoading] = useState(false);
+  const {
+    type,
+    service = [],
+    bookingId,
+    bookingStatus,
+    paymentStatus,
+  } = route?.params || {};
+
+  const [isLoading, setIsLoading] = useState(false); // Global list loader
+  const [loader, setLoader] = useState(false); // Accept/Complete loader
+  const [secondLoader, setSecondLoader] = useState(false); // Reject loader
+
+  const isPaid = paymentStatus === 'Succeeded';
 
   const updateBookingHandler = async (status: string) => {
+    const isReject = status === 'Reject';
     try {
-      setIsLoading(true);
+      isReject ? setSecondLoader(true) : setLoader(true);
+
       const response = await updateBookingStatus(bookingId, status);
+
       if (response?.success) {
         ShowToast('success', response.message);
         navigation.goBack();
@@ -36,9 +49,10 @@ const ViewBookedServices = ({navigation, route}: any) => {
         ShowToast('error', response?.message || 'Update failed');
       }
     } catch (error) {
-      ShowToast('error', 'Something went wrong');
+      ShowToast('error', 'Network error. Please try again.');
     } finally {
-      setIsLoading(false);
+      setLoader(false);
+      setSecondLoader(false);
     }
   };
 
@@ -59,41 +73,84 @@ const ViewBookedServices = ({navigation, route}: any) => {
     }
   };
 
-  // Logic to render buttons based on type and status
+  const completeBookingHandler = async () => {
+    try {
+      setLoader(true);
+      // Ensure updateBookingStatus handles the payment status update if required by your backend
+      const response = await updateBookingStatus(bookingId, 'Completed');
+
+      if (response?.success) {
+        ShowToast('success', 'Booking marked as Completed');
+        navigation.goBack();
+      } else {
+        ShowToast('error', response?.message || 'Update failed');
+      }
+    } catch (error) {
+      ShowToast('error', 'Something went wrong');
+    } finally {
+      setLoader(false);
+    }
+  };
+
   const renderFooter = () => {
     if (isLoading) {
       return null;
     }
 
+    // DAYCARE MANAGER VIEW
     if (type === 'daycare') {
-      return (
-        <View style={styles.bottomButtonContainer}>
-          <Button
-            title="Accept"
-            bgColor={Colors.buttonBg}
-            textColor={Colors.white}
-            width={responsiveWidth(44)}
-            handlePress={() => updateBookingHandler('Accept')}
-          />
-          <Button
-            title="Reject"
-            bgColor={Colors.buttonBg}
-            textColor={Colors.white}
-            width={responsiveWidth(44)}
-            handlePress={() => updateBookingHandler('Reject')}
-          />
-        </View>
-      );
+      // Flow 1: Booking is accepted and paid -> Show Complete button
+      if (isPaid && bookingStatus === 'Accept') {
+        return (
+          <View style={styles.bottomButtonContainer}>
+            <Button
+              title="Mark as Completed"
+              bgColor={Colors.buttonBg}
+              textColor={Colors.white}
+              isLoading={loader}
+              handlePress={completeBookingHandler}
+            />
+          </View>
+        );
+      }
+
+      // Flow 2: Booking is new -> Show Accept/Reject
+      if (bookingStatus === 'Pending') {
+        return (
+          <View style={styles.bottomButtonContainer}>
+            <Button
+              title="Accept"
+              bgColor={Colors.buttonBg}
+              textColor={Colors.white}
+              width={responsiveWidth(42)}
+              isLoading={loader}
+              disabled={secondLoader} // Prevent overlap
+              handlePress={() => updateBookingHandler('Accept')}
+            />
+            <Button
+              title="Reject"
+              bgColor="#FF4D4D" // Distinct color for rejection
+              textColor={Colors.white}
+              width={responsiveWidth(42)}
+              isLoading={secondLoader}
+              disabled={loader} // Prevent overlap
+              handlePress={() => updateBookingHandler('Reject')}
+            />
+          </View>
+        );
+      }
     }
 
-    if (bookingStatus !== 'Accept') {
+    // USER VIEW
+    if (type === 'User' && bookingStatus !== 'Completed') {
       return (
         <View style={styles.bottomButtonContainer}>
           <Button
-            title="Delete This Booking"
-            bgColor={Colors.buttonBg}
+            title="Cancel Booking"
+            bgColor="#9DA5B3"
             textColor={Colors.white}
             handlePress={deleteBookingHandler}
+            isLoading={isLoading}
           />
         </View>
       );
@@ -105,7 +162,7 @@ const ViewBookedServices = ({navigation, route}: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <TextHeader title="Booked Services" />
+        <TextHeader title="Booking Details" />
       </View>
 
       <View style={styles.contentWrapper}>
@@ -116,15 +173,20 @@ const ViewBookedServices = ({navigation, route}: any) => {
         ) : (
           <FlatList
             data={service}
-            keyExtractor={(_, index) => index.toString()}
+            keyExtractor={(item, index) => item?._id || index.toString()}
             contentContainerStyle={styles.listContent}
-            renderItem={({item}) => <ServiceCard data={item} />}
+            renderItem={({item}) => (
+              <ServiceCard data={item} activeOpacity={1} />
+            )}
             showsVerticalScrollIndicator={false}
+            // If you want the buttons to scroll with the list,
+            // you could use ListFooterComponent={renderFooter} instead.
           />
         )}
       </View>
 
-      {renderFooter()}
+      {/* Fixed buttons at the bottom for better accessibility */}
+      {!isLoading && renderFooter()}
     </SafeAreaView>
   );
 };
@@ -135,7 +197,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   headerContainer: {
-    paddingHorizontal: responsiveHeight(2),
+    paddingHorizontal: responsiveWidth(4),
     paddingTop: responsiveHeight(1),
   },
   loaderContainer: {
@@ -144,34 +206,46 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   listContent: {
-    padding: responsiveHeight(2),
+    paddingHorizontal: responsiveWidth(4),
+    paddingTop: responsiveHeight(2),
+    paddingBottom: responsiveHeight(10), // Space for fixed footer
     gap: responsiveHeight(1.5),
   },
   contentWrapper: {
     flex: 1,
   },
   bottomButtonContainer: {
+    position: 'absolute',
+    bottom: 0,
     flexDirection: 'row',
     gap: responsiveWidth(4),
     paddingHorizontal: responsiveWidth(4),
     paddingVertical: responsiveHeight(2),
     backgroundColor: Colors.white,
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+    // Shadow for iOS/Android
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: -3},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
 });
 
 export default ViewBookedServices;
 
-// /* eslint-disable react-native/no-inline-styles */
+// import React, {useState} from 'react';
 // import {
 //   View,
 //   FlatList,
 //   ActivityIndicator,
-//   ScrollView,
+//   StyleSheet,
+//   SafeAreaView,
 // } from 'react-native';
-// import React, {useState} from 'react';
 // import {Colors} from '../../assets/colors';
 // import {
 //   responsiveHeight,
@@ -187,102 +261,200 @@ export default ViewBookedServices;
 // import ServiceCard from '../../Components/ServiceCard';
 
 // const ViewBookedServices = ({navigation, route}: any) => {
-//   const {type, service, bookingId, bookingStatus} = route?.params;
+//   // Safe destructuring
+//   const {
+//     type,
+//     service = [],
+//     bookingId,
+//     bookingStatus,
+//     paymentStatus,
+//   } = route?.params || {};
 //   const [isLoading, setIsLoading] = useState(false);
+//   const [loader, setLoader] = useState(false);
+//   const [secondLoader, setSecondLoader] = useState(false);
+//   const isPaid = paymentStatus === 'Succeeded';
 
-//   const updateBookingHandler = async (status: any) => {
-//     setIsLoading(true);
-//     const response = await updateBookingStatus(bookingId, status);
-//     setIsLoading(false);
-//     if (response.success) {
-//       ShowToast('success', response.message);
-//       navigation.goBack();
-//     } else {
-//       ShowToast('error', response.message);
+//   const updateBookingHandler = async (status: string) => {
+//     let reject = status === 'Reject';
+//     try {
+//       if (reject) {
+//         setSecondLoader(true);
+//       } else {
+//         setLoader(true);
+//       }
+//       const response = await updateBookingStatus(bookingId, status);
+//       if (response?.success) {
+//         ShowToast('success', response.message);
+//         navigation.goBack();
+//       } else {
+//         ShowToast('error', response?.message || 'Update failed');
+//       }
+//     } catch (error) {
+//       ShowToast('error', 'Something went wrong');
+//     } finally {
+//       setLoader(false);
+//       setSecondLoader(false);
 //     }
-//     console.log('response', response);
 //   };
 
 //   const deleteBookingHandler = async () => {
-//     setIsLoading(true);
-//     const response = await deleteBooking(bookingId);
-//     setIsLoading(false);
-//     if (response.success) {
-//       ShowToast('success', response.message);
-//       navigation.goBack();
-//     } else {
-//       ShowToast('error', response.message);
+//     try {
+//       setIsLoading(true);
+//       const response = await deleteBooking(bookingId);
+//       if (response?.success) {
+//         ShowToast('success', response.message);
+//         navigation.goBack();
+//       } else {
+//         ShowToast('error', response?.message || 'Deletion failed');
+//       }
+//     } catch (error) {
+//       ShowToast('error', 'Something went wrong');
+//     } finally {
+//       setIsLoading(false);
 //     }
 //   };
 
-//   console.log('bookingId:-', bookingId);
+//   const completeBookingHandler = async () => {
+//     try {
+//       setLoader(true);
+//       const response = await updateBookingStatus(
+//         bookingId,
+//         'Completed',
+//         'Succeeded',
+//       );
+//       if (response?.success) {
+//         ShowToast('success', response.message);
+//         navigation.goBack();
+//       } else {
+//         ShowToast('error', response?.message || 'Update failed');
+//       }
+//     } catch (error) {
+//       ShowToast('error', 'Something went wrong');
+//     } finally {
+//       setLoader(false);
+//     }
+//   };
+
+//   // Logic to render buttons based on type and status
+//   const renderFooter = () => {
+//     if (isLoading) {
+//       return null;
+//     }
+
+//     if (type === 'daycare') {
+//       if (isPaid && bookingStatus === 'Accept') {
+//         return (
+//           <View style={styles.bottomButtonContainer}>
+//             <Button
+//               title="Complete Booking"
+//               bgColor={Colors.buttonBg}
+//               textColor={Colors.white}
+//               isLoading={loader}
+//               handlePress={completeBookingHandler}
+//             />
+//           </View>
+//         );
+//       }
+
+//       if (bookingStatus === 'Pending') {
+//         return (
+//           <View style={styles.bottomButtonContainer}>
+//             <Button
+//               title="Accept"
+//               bgColor={Colors.buttonBg}
+//               textColor={Colors.white}
+//               width={responsiveWidth(44)}
+//               isLoading={loader}
+//               handlePress={() => updateBookingHandler('Accept')}
+//             />
+//             <Button
+//               title="Reject"
+//               bgColor={Colors.buttonBg}
+//               textColor={Colors.white}
+//               width={responsiveWidth(44)}
+//               isLoading={secondLoader}
+//               handlePress={() => updateBookingHandler('Reject')}
+//             />
+//           </View>
+//         );
+//       }
+//     }
+
+//     if (type === 'User') {
+//       return (
+//         <View style={styles.bottomButtonContainer}>
+//           <Button
+//             title="Delete This Booking"
+//             bgColor={Colors.buttonBg}
+//             textColor={Colors.white}
+//             handlePress={deleteBookingHandler}
+//           />
+//         </View>
+//       );
+//     }
+
+//     return null;
+//   };
+
+//   // console.log('paymentStatus:------', paymentStatus);
 //   return (
-//     <ScrollView
-//       contentContainerStyle={{
-//         flexGrow: 1,
-//         backgroundColor: Colors.white,
-//         padding: responsiveHeight(2),
-//       }}>
-//       <TextHeader title="Services" />
-//       <View style={{flex: 1}}>
+//     <SafeAreaView style={styles.container}>
+//       <View style={styles.headerContainer}>
+//         <TextHeader title="Booked Services" />
+//       </View>
+
+//       <View style={styles.contentWrapper}>
 //         {isLoading ? (
-//           <View style={{flex: 1, justifyContent: 'center'}}>
-//             <ActivityIndicator size={50} color={Colors.buttonBg} />
+//           <View style={styles.loaderContainer}>
+//             <ActivityIndicator size="large" color={Colors.buttonBg} />
 //           </View>
 //         ) : (
-//           <View style={{flex: 1}}>
-//             {service?.length > 0 ? (
-//               <FlatList
-//                 contentContainerStyle={{
-//                   gap: responsiveHeight(1.5),
-//                   marginTop: responsiveHeight(2),
-//                 }}
-//                 data={service}
-//                 renderItem={({item}) => {
-//                   return <ServiceCard data={item} />;
-//                 }}
-//                 keyExtractor={(item, index) => index.toString()}
-//               />
-//             ) : null}
-//             {type === 'daycare' ? (
-//               <View
-//                 style={{
-//                   flexDirection: 'row',
-//                   gap: responsiveHeight(2),
-//                   marginTop: responsiveHeight(2),
-//                   alignItems: 'center',
-//                   justifyContent: 'center',
-//                   width: '100%',
-//                   alignSelf: 'center',
-//                 }}>
-//                 <Button
-//                   handlePress={() => updateBookingHandler('Accept')}
-//                   bgColor={Colors.buttonBg}
-//                   textColor={Colors.white}
-//                   title="Accept"
-//                   width={responsiveWidth(45)}
-//                 />
-//                 <Button
-//                   handlePress={() => updateBookingHandler('Reject')}
-//                   bgColor={Colors.buttonBg}
-//                   textColor={Colors.white}
-//                   title="Reject"
-//                   width={responsiveWidth(45)}
-//                 />
-//               </View>
-//             ) : bookingStatus !== 'Accept' ? (
-//               <Button
-//                 handlePress={deleteBookingHandler}
-//                 bgColor={Colors.buttonBg}
-//                 textColor={Colors.white}
-//                 title="Delete This Booking"
-//               />
-//             ) : null}
-//           </View>
+//           <FlatList
+//             data={service}
+//             keyExtractor={(_, index) => index.toString()}
+//             contentContainerStyle={styles.listContent}
+//             renderItem={({item}) => <ServiceCard data={item} />}
+//             showsVerticalScrollIndicator={false}
+//           />
 //         )}
 //       </View>
-//     </ScrollView>
+
+//       {renderFooter()}
+//     </SafeAreaView>
 //   );
 // };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: Colors.white,
+//   },
+//   headerContainer: {
+//     paddingHorizontal: responsiveHeight(2),
+//     paddingTop: responsiveHeight(1),
+//   },
+//   loaderContainer: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   listContent: {
+//     padding: responsiveHeight(2),
+//     gap: responsiveHeight(1.5),
+//   },
+//   contentWrapper: {
+//     flex: 1,
+//   },
+//   bottomButtonContainer: {
+//     flexDirection: 'row',
+//     gap: responsiveWidth(4),
+//     paddingHorizontal: responsiveWidth(4),
+//     paddingVertical: responsiveHeight(2),
+//     backgroundColor: Colors.white,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     width: '100%',
+//   },
+// });
 
 // export default ViewBookedServices;

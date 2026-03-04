@@ -34,7 +34,7 @@ import TextHeader from '../../../Components/TextHeader';
 import SvgIcons from '../../../Components/SvgIcons';
 import Rating from '../../../Components/Rating';
 import {BoldText, NormalText} from '../../../Components/Titles';
-import {ShowToast} from '../../../GlobalFunctions/Auth';
+import {ShowToast, updateBookingStatus} from '../../../GlobalFunctions/Auth';
 import {addReview, bookService} from '../../../GlobalFunctions';
 
 const Payment = ({navigation, route}: any) => {
@@ -48,6 +48,7 @@ const Payment = ({navigation, route}: any) => {
     serviceId,
     selectDate,
     categoryId,
+    bookingId,
   } = route?.params;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -84,6 +85,33 @@ const Payment = ({navigation, route}: any) => {
       }
     } catch (error) {
       ShowToast('error', 'Something went wrong with the booking');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePayNow = async (status: string) => {
+    let payload = {
+      bookingId: bookingId,
+      status: status,
+      paymentStatus: 'Succeeded',
+    };
+    console.log('payload:-', payload);
+    try {
+      setIsLoading(true);
+      const response = await updateBookingStatus(
+        bookingId,
+        status,
+        'Succeeded',
+      );
+      if (response?.success) {
+        ShowToast('success', response.message);
+        navigation.goBack();
+      } else {
+        ShowToast('error', response?.message || 'Update failed');
+      }
+    } catch (error) {
+      ShowToast('error', 'Something went wrong');
     } finally {
       setIsLoading(false);
     }
@@ -152,6 +180,12 @@ const Payment = ({navigation, route}: any) => {
         {/* Payment Summary */}
         <View style={styles.summaryContainer}>
           <View style={styles.summaryRow}>
+            <Text style={styles.heading}>Booking Dates</Text>
+            <Text style={styles.priceText}>
+              {Array.isArray(selectDate) ? selectDate.length : 1} Days
+            </Text>
+          </View>
+          <View style={styles.summaryRow}>
             <Text style={styles.heading}>Subtotal</Text>
             <Text style={styles.priceText}>${total.toFixed(2)}</Text>
           </View>
@@ -167,7 +201,10 @@ const Payment = ({navigation, route}: any) => {
         </View>
 
         {/* Payment Method Selector */}
-        <TouchableOpacity activeOpacity={0.7} style={styles.paymentSelector}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('PaymentMethod')}
+          activeOpacity={0.7}
+          style={styles.paymentSelector}>
           <NormalText
             title="Payment Method"
             color="#2A2A2A"
@@ -192,11 +229,11 @@ const Payment = ({navigation, route}: any) => {
           <Text style={styles.linkText}>privacy policy</Text>
         </Text>
         <Button
-          isLoading={isLoading}
-          handlePress={bookServiceHandler}
           title="Pay Now"
+          isLoading={isLoading}
           bgColor={Colors.buttonBg}
           textColor={Colors.white}
+          handlePress={() => handlePayNow('Accept')}
         />
       </View>
 

@@ -12,13 +12,21 @@ import {Colors} from '../assets/colors';
 import {Button} from './Button';
 import {ImageBaseUrl} from '../BaseUrl';
 import moment from 'moment';
+import {useSelector} from 'react-redux';
 
 interface BookingCardProps {
   data: any;
   handlePress: () => void;
+  handlePayNow?: () => void;
 }
 
-const BookingCard: React.FC<BookingCardProps> = ({data, handlePress}) => {
+const BookingCard: React.FC<BookingCardProps> = ({
+  data,
+  handlePress,
+  handlePayNow,
+}) => {
+  const {userData} = useSelector((state: any) => state.user);
+  const isPaid = data?.paymentStatus === 'Succeeded';
   const displayImage = data?.categoryId?.image || data?.images?.[0];
 
   // Helper to get status colors dynamically
@@ -36,7 +44,27 @@ const BookingCard: React.FC<BookingCardProps> = ({data, handlePress}) => {
   };
 
   const statusStyle = getStatusStyles(data?.status);
-  console.log('Data:------', data?.address);
+
+  const formatDates = () => {
+    const selectedDates = Array.isArray(data?.selectDate)
+      ? data?.selectDate
+      : data?.selectDate
+      ? [data?.selectDate]
+      : [];
+
+    if (selectedDates.length === 0) {
+      return 'Select Date';
+    }
+    if (selectedDates.length === 1) {
+      return moment(selectedDates[0]).format('MMMM DD, YYYY');
+    }
+    return `${moment(selectedDates[0]).format('MMM DD')} - ${moment(
+      selectedDates[selectedDates.length - 1],
+    ).format('MMM DD, YYYY')}`;
+  };
+
+  console.log('bookingData:------', JSON.stringify(data, null, 2));
+  // console.log('userData:------', JSON.stringify(userData?.type, null, 2));
   return (
     <TouchableOpacity
       activeOpacity={0.8}
@@ -68,7 +96,7 @@ const BookingCard: React.FC<BookingCardProps> = ({data, handlePress}) => {
                 <NormalText
                   fontSize={responsiveFontSize(1.4)}
                   color="#9DA5B3"
-                  title={moment(data?.selectDate).format('MMM DD, YYYY')}
+                  title={formatDates()}
                 />
               </View>
               {/* <View style={styles.subItem}>
@@ -100,7 +128,7 @@ const BookingCard: React.FC<BookingCardProps> = ({data, handlePress}) => {
             activeOpacity={1}
             textColor={statusStyle.text}
             textFont={responsiveFontSize(1.6)}
-            title={data?.status || 'Pending'}
+            title={data?.paymentStatus === 'Succeeded' ? 'Paid' : 'Unpaid'}
             bgColor={statusStyle.bg}
             height={responsiveHeight(3.5)}
             width={responsiveWidth(25)}
@@ -108,14 +136,29 @@ const BookingCard: React.FC<BookingCardProps> = ({data, handlePress}) => {
             handlePress={() => {}} // Disabled interaction
           />
           <NormalText
+            title={`$${data?.total?.toFixed(1) || 0}`}
             fontWeight="800"
             fontSize={responsiveFontSize(2)}
             color={Colors.themeText}
-            title={`$${data?.total?.toFixed(1) || 0}`}
             alignSelf="flex-end"
           />
         </View>
       </View>
+
+      {userData?.type === 'User' &&
+        data?.status === 'Accept' &&
+        data?.paymentStatus !== 'Succeeded' && (
+          <View style={styles.bottomContainner}>
+            <Button
+              title={isPaid ? 'Paid' : 'Pay Now'}
+              disabled={isPaid}
+              borderRadius={10}
+              bgColor={Colors.buttonBg}
+              textColor={Colors.white}
+              handlePress={handlePayNow}
+            />
+          </View>
+        )}
     </TouchableOpacity>
   );
 };
@@ -162,6 +205,9 @@ const styles = StyleSheet.create({
   rightSide: {
     height: responsiveHeight(10),
     justifyContent: 'space-between',
+  },
+  bottomContainner: {
+    marginTop: responsiveHeight(2),
   },
 });
 
