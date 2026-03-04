@@ -21,6 +21,7 @@ import FilterCard from '../../../Components/FilterCard';
 import moment from 'moment';
 import TextHeader from '../../../Components/TextHeader';
 import {useIsFocused} from '@react-navigation/native';
+import BookingCard from '../../../Components/BookingCard';
 
 const CATEGORIES = [
   {id: '1', title: 'Pending'},
@@ -101,13 +102,8 @@ const ViewBookings = ({navigation}: any) => {
 
   const renderItem = ({item}: any) => {
     return (
-      <FilterCard
-        status={item?.status}
-        price={item?.total}
-        address={item?.address}
-        time={moment(item?.selectDate).format('MMMM DD, YYYY')}
-        serviceName={item?.categoryId?.categoryName}
-        imageUrl={item?.categoryId?.image}
+      <BookingCard
+        data={item}
         handlePress={() =>
           navigation.navigate('ViewBookedServices', {
             type: 'user',
@@ -119,6 +115,8 @@ const ViewBookings = ({navigation}: any) => {
       />
     );
   };
+
+  console.log('Bookings:------', bookings);
 
   return (
     <View style={styles.container}>
@@ -132,6 +130,7 @@ const ViewBookings = ({navigation}: any) => {
         <FlatList
           data={bookings}
           renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
           ListEmptyComponent={listEmptyComponent}
           contentContainerStyle={styles.bookingList}
           keyExtractor={(item: any) => item?._id?.toString()}

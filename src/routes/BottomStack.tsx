@@ -12,7 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import {Colors} from '../assets/colors';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, ViewStyle} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import StoreDetails from '../screens/mainScreens/UserStack/StoreDetails';
 import Jobs from '../screens/mainScreens/DayCareStack/Jobs';
@@ -68,17 +68,11 @@ function UserBottomStack() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: Colors.white,
-          margin: 0,
-          height: responsiveHeight(7),
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderTopRightRadius: responsiveHeight(4),
-          borderTopLeftRadius: responsiveHeight(4),
-        },
+        tabBarStyle: styles.tabBarStyle,
       }}>
       <Tab.Screen
+        name="HomeStack"
+        component={HomeStack}
         options={({route}) => ({
           tabBarIcon: ({focused, size}) => (
             <View style={styles.bottomTabs}>
@@ -87,25 +81,16 @@ function UserBottomStack() {
                 size={25}
                 color={focused ? '#554292' : '#BFBFBF'}
               />
-              {focused && (
-                <View
-                  style={{
-                    height: 2,
-                    marginTop: 3,
-                    width: responsiveWidth(4),
-                    backgroundColor: Colors.themeText,
-                  }}
-                />
-              )}
+              {focused && <View style={focusedStyle(false)} />}
             </View>
           ),
           tabBarShowLabel: false,
         })}
-        name="HomeStack"
-        component={HomeStack}
       />
 
       <Tab.Screen
+        name="Shop"
+        component={ShopStack}
         options={({route}) => ({
           tabBarIcon: ({focused, size}) => (
             <View style={styles.bottomTabs}>
@@ -114,26 +99,16 @@ function UserBottomStack() {
                 size={25}
                 color={focused ? '#554292' : '#BFBFBF'}
               />
-              {focused && (
-                <View
-                  style={{
-                    height: 2,
-                    marginTop: 3,
-                    alignSelf: 'center',
-                    width: responsiveWidth(4),
-                    backgroundColor: Colors.themeText,
-                  }}
-                />
-              )}
+              {focused && <View style={focusedStyle(false)} />}
             </View>
           ),
           tabBarShowLabel: false,
         })}
-        name="Shop"
-        component={ShopStack}
       />
 
       <Tab.Screen
+        name="Bookings"
+        component={ViewBookings}
         options={({route}) => ({
           tabBarIcon: ({focused, size}) => (
             <View style={styles.bottomTabs}>
@@ -142,27 +117,16 @@ function UserBottomStack() {
                 size={25}
                 color={focused ? '#554292' : '#BFBFBF'}
               />
-              {focused && (
-                <View
-                  style={{
-                    height: 2,
-                    marginTop: 3,
-                    alignSelf: 'center',
-                    left: 3,
-                    width: responsiveWidth(4),
-                    backgroundColor: Colors.themeText,
-                  }}
-                />
-              )}
+              {focused && <View style={focusedStyle(true)} />}
             </View>
           ),
           tabBarShowLabel: false,
         })}
-        name="Bookings"
-        component={ViewBookings}
       />
 
       <Tab.Screen
+        name="UserProfile"
+        component={UserProfile}
         options={{
           tabBarIcon: ({focused}: {focused: boolean}) => (
             <View style={styles.bottomTabs}>
@@ -171,22 +135,11 @@ function UserBottomStack() {
                 size={25}
                 color={focused ? '#554292' : '#BFBFBF'}
               />
-              {focused && (
-                <View
-                  style={{
-                    height: 2,
-                    marginTop: 3,
-                    width: responsiveWidth(4),
-                    backgroundColor: Colors.themeText,
-                  }}
-                />
-              )}
+              {focused && <View style={focusedStyle(false)} />}
             </View>
           ),
           tabBarShowLabel: false,
         }}
-        name="UserProfile"
-        component={UserProfile}
       />
     </Tab.Navigator>
   );
@@ -197,15 +150,11 @@ function DayCareBottomStack() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: Colors.white,
-          margin: 0,
-          height: responsiveHeight(7),
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
+        tabBarStyle: styles.tabBarStyle,
       }}>
       <Tab.Screen
+        name="Home"
+        component={DayCareHome}
         options={({route}) => ({
           tabBarIcon: ({focused, size}) => (
             <View style={styles.bottomTabs}>
@@ -214,25 +163,16 @@ function DayCareBottomStack() {
                 size={25}
                 color={focused ? '#554292' : '#BFBFBF'}
               />
-              {focused && (
-                <View
-                  style={{
-                    height: 2,
-                    marginTop: 3,
-                    width: responsiveWidth(4),
-                    backgroundColor: Colors.themeText,
-                  }}
-                />
-              )}
+              {focused && <View style={focusedStyle(false)} />}
             </View>
           ),
           tabBarShowLabel: false,
         })}
-        name="Home"
-        component={DayCareHome}
       />
 
       <Tab.Screen
+        name="Jobs"
+        component={Jobs}
         options={({route}) => ({
           tabBarIcon: ({focused, size}) => (
             <View style={styles.bottomTabs}>
@@ -241,26 +181,16 @@ function DayCareBottomStack() {
                 size={25}
                 color={focused ? '#554292' : '#BFBFBF'}
               />
-              {focused && (
-                <View
-                  style={{
-                    height: 2,
-                    marginTop: 3,
-                    alignSelf: 'center',
-                    width: responsiveWidth(4),
-                    backgroundColor: Colors.themeText,
-                  }}
-                />
-              )}
+              {focused && <View style={focusedStyle(false)} />}
             </View>
           ),
           tabBarShowLabel: false,
         })}
-        name="Jobs"
-        component={Jobs}
       />
 
       <Tab.Screen
+        name="Chat"
+        component={Chat}
         options={({route}) => ({
           tabBarIcon: ({focused, size}) => (
             <View style={styles.bottomTabs}>
@@ -269,26 +199,16 @@ function DayCareBottomStack() {
                 size={25}
                 color={focused ? '#554292' : '#BFBFBF'}
               />
-              {focused && (
-                <View
-                  style={{
-                    height: 2,
-                    marginTop: 3,
-                    alignSelf: 'center',
-                    width: responsiveWidth(4),
-                    backgroundColor: Colors.themeText,
-                  }}
-                />
-              )}
+              {focused && <View style={focusedStyle(false)} />}
             </View>
           ),
           tabBarShowLabel: false,
         })}
-        name="Chat"
-        component={Chat}
       />
 
       <Tab.Screen
+        name="Profile"
+        component={Profile}
         options={{
           tabBarIcon: ({focused}: {focused: boolean}) => (
             <View style={styles.bottomTabs}>
@@ -297,22 +217,11 @@ function DayCareBottomStack() {
                 size={25}
                 color={focused ? '#554292' : '#BFBFBF'}
               />
-              {focused && (
-                <View
-                  style={{
-                    height: 2,
-                    marginTop: 3,
-                    width: responsiveWidth(4),
-                    backgroundColor: Colors.themeText,
-                  }}
-                />
-              )}
+              {focused && <View style={focusedStyle(false)} />}
             </View>
           ),
           tabBarShowLabel: false,
         }}
-        name="Profile"
-        component={Profile}
       />
     </Tab.Navigator>
   );
@@ -326,4 +235,22 @@ const styles = StyleSheet.create({
     position: 'relative',
     top: responsiveHeight(1),
   },
+  tabBarStyle: {
+    backgroundColor: Colors.white,
+    margin: 0,
+    height: responsiveHeight(7),
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderTopRightRadius: responsiveHeight(4),
+    borderTopLeftRadius: responsiveHeight(4),
+  },
+});
+
+const focusedStyle = (bool: boolean): ViewStyle => ({
+  height: 2,
+  marginTop: 3,
+  alignSelf: 'center',
+  width: responsiveWidth(4),
+  backgroundColor: Colors.themeText,
+  left: bool ? 3 : 0,
 });

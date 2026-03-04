@@ -243,26 +243,45 @@ export const resendOtp = async (email: string) => {
   }
 };
 
-export const createBusinessProfile = async (
-  managerId: string,
-  image: any,
-  fullName: string,
-  businessName: string,
-  contactNo: any,
-  bio: string,
-  experienceLvl: number,
-  bType: string,
-  services: string,
-  address: string,
-  certificates: any,
-  portfolioImages: any,
-  locationName: string,
-  lat: number,
-  lng: number,
-  dispatch: any,
-  navigation: any,
-  userData: any,
-) => {
+export const createBusinessProfile = async ({
+  managerId,
+  image,
+  fullName,
+  businessName,
+  contactNumber,
+  bio,
+  experienceLvl,
+  bType,
+  services,
+  address,
+  certificates,
+  portfolioImages,
+  locationName,
+  lat,
+  lng,
+  dispatch,
+  navigation,
+  userData,
+}: {
+  managerId: string;
+  image: any;
+  fullName: string;
+  businessName: string;
+  contactNumber: any;
+  bio: string;
+  experienceLvl: number;
+  bType: any;
+  services: any;
+  address: string;
+  certificates: any[];
+  portfolioImages: any[];
+  locationName: string;
+  lat: number;
+  lng: number;
+  dispatch: any;
+  navigation: any;
+  userData: any;
+}) => {
   let data = new FormData();
   // data.append('candayName', candyName);
   data.append('managerId', managerId);
@@ -273,7 +292,7 @@ export const createBusinessProfile = async (
   });
   data.append('fullName', fullName);
   data.append('businessName', businessName);
-  data.append('contactNumber', contactNo);
+  data.append('contactNumber', contactNumber);
   data.append('bio', bio);
   data.append('expLevel', experienceLvl);
   data.append('bType', JSON.stringify(bType));
@@ -306,7 +325,7 @@ export const createBusinessProfile = async (
     },
     data: data,
   };
-  console.log('data', data);
+  console.log('data:-', data);
   try {
     const response = await axios.request(config);
     console.log('Post Response:', response.data);
@@ -337,7 +356,7 @@ export const editBusinessProfile = async ({
   services,
   certificates,
   portfolio,
-  contactNo,
+  contactNumber,
   bio,
   experienceLvl,
   location,
@@ -353,7 +372,7 @@ export const editBusinessProfile = async ({
   services?: string;
   certificates?: any[];
   portfolio?: any[];
-  contactNo?: string;
+  contactNumber?: string;
   bio?: string;
   experienceLvl?: number;
   location?: {lat: number; lng: number; address: string};
@@ -384,14 +403,14 @@ export const editBusinessProfile = async ({
   if (services) {
     data.append('services', services);
   }
-  if (contactNo) {
-    data.append('contactNo', contactNo);
+  if (contactNumber) {
+    data.append('contactNumber', contactNumber);
   }
   if (bio) {
     data.append('bio', bio);
   }
   if (experienceLvl !== undefined) {
-    data.append('experienceLvl', experienceLvl.toString());
+    data.append('expLevel', experienceLvl.toString());
   }
   if (location) {
     data.append('lat', location.lat.toString());
@@ -400,20 +419,24 @@ export const editBusinessProfile = async ({
   }
   if (certificates?.length) {
     certificates.forEach((file, index) => {
-      data.append('certificate', {
-        uri: file.uri,
-        name: file.name || `certificate_${index}.pdf`,
-        type: file.type || 'application/pdf',
-      });
+      if (file && file.uri) {
+        data.append('certificate', {
+          uri: file.uri,
+          name: file.name || `certificate_${index}.pdf`,
+          type: file.type || 'application/pdf',
+        });
+      }
     });
   }
   if (portfolio?.length) {
     portfolio.forEach((file, index) => {
-      data.append('image', {
-        uri: file.uri,
-        name: file.name,
-        type: file.type,
-      });
+      if (file && file.uri) {
+        data.append('image', {
+          uri: file.uri,
+          name: file.name || `portfolio_${index}.jpg`,
+          type: file.type || 'image/jpeg',
+        });
+      }
     });
   }
   const config = {
@@ -445,7 +468,6 @@ export const editBusinessProfile = async ({
     );
     throw error;
   }
-  // axios request code remains the same...
 };
 
 export const createPetProfile = async (

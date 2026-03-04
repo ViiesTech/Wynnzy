@@ -8,8 +8,8 @@ import {
   responsiveHeight,
 } from '../../../assets/responsive_dimensions';
 import {getAllServicesByCategory} from '../../../GlobalFunctions';
-import FilterCard from '../../../Components/FilterCard';
 import {NormalText} from '../../../Components/Titles';
+import ServiceCard from '../../../Components/ServiceCard';
 
 const AllServices = ({navigation, route}: any) => {
   const {serviceId, managerId} = route?.params;
@@ -45,9 +45,9 @@ const AllServices = ({navigation, route}: any) => {
   );
 
   const renderItem = ({item}: any) => {
-    // console.log('item:-', item);
+    console.log('item:--------', item);
     return (
-      <FilterCard
+      <ServiceCard
         data={item}
         handlePress={() =>
           navigation.navigate('Booking', {

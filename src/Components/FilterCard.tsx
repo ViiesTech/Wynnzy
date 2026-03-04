@@ -37,7 +37,7 @@ const FilterCard: React.FC<FilterCardProps> = ({
   price,
   imageUrl,
 }) => {
-  // console.log('data in FilterCard:-', data);
+  console.log('data in FilterCard:-', date);
   return (
     <TouchableOpacity
       activeOpacity={0.7}

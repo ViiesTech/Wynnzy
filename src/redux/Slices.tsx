@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import axios, { AxiosRequestConfig } from 'axios';
-import { ShowToast } from '../GlobalFunctions/Auth';
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import axios, {AxiosRequestConfig} from 'axios';
+import {ShowToast} from '../GlobalFunctions/Auth';
 
 // Define types for initial state
 interface UserState {
@@ -33,11 +33,11 @@ interface LoginResponse {
 // Async Thunk with TypeScript
 export const UserLogin = createAsyncThunk<LoginResponse, AxiosRequestConfig>(
   'auth/UserLogin',
-  async (config, { rejectWithValue }) => {
+  async (config, {rejectWithValue}) => {
     try {
       const response = await axios.request<LoginResponse>(config);
-      console.log('response===>>>', JSON.stringify(response.data));
-      console.log('response===>>>', response.data.token);
+      console.log('response.data:-', JSON.stringify(response.data));
+      console.log('response.data.token:-', response.data.token);
       if (response.data.success) {
         ShowToast('success', 'Login Successful');
         return response?.data;
@@ -51,7 +51,7 @@ export const UserLogin = createAsyncThunk<LoginResponse, AxiosRequestConfig>(
       ShowToast('error', error.response.data.message);
       return rejectWithValue('Something went wrong');
     }
-  }
+  },
 );
 
 // Redux Slice with TypeScript
@@ -59,7 +59,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    clearToken: (state) => {
+    clearToken: state => {
       state.token = '';
       state.userData = {};
     },
@@ -69,22 +69,28 @@ const authSlice = createSlice({
     setUserData: (state, action: PayloadAction<Record<string, any>>) => {
       state.userData = action.payload;
     },
-    setBusinessProfileData: (state, action: PayloadAction<Record<string, any>>) => {
+    setBusinessProfileData: (
+      state,
+      action: PayloadAction<Record<string, any>>,
+    ) => {
       state.businessProfileData = action.payload;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(UserLogin.pending, (state) => {
+      .addCase(UserLogin.pending, state => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(UserLogin.fulfilled, (state, action: PayloadAction<LoginResponse>) => {
-        state.isLoading = false;
-        state.token = action.payload.token;
-        state.userData = action.payload.data;
-        console.log('action.payload<<<<=====', action.payload);
-      })
+      .addCase(
+        UserLogin.fulfilled,
+        (state, action: PayloadAction<LoginResponse>) => {
+          state.isLoading = false;
+          state.token = action.payload.token;
+          state.userData = action.payload.data;
+          console.log('action.payload<<<<=====', action.payload);
+        },
+      )
       .addCase(UserLogin.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string; // ✅ Ensured `error` is always a string
@@ -92,5 +98,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearToken, setUserData, setToken, setBusinessProfileData } = authSlice.actions;
+export const {clearToken, setUserData, setToken, setBusinessProfileData} =
+  authSlice.actions;
 export default authSlice.reducer;

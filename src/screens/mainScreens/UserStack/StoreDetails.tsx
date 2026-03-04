@@ -19,7 +19,7 @@ import {
 } from '../../../assets/responsive_dimensions';
 import SvgIcons from '../../../Components/SvgIcons';
 import {Colors} from '../../../assets/colors';
-import ServiceCard from '../../../Components/ServicesCard';
+import CategoryCard from '../../../Components/CategoryCard';
 import {Button} from '../../../Components/Button';
 import {getBusinessProfile, ShowToast} from '../../../GlobalFunctions/Auth';
 import {getAllCategoriesByManagerId} from '../../../GlobalFunctions';
@@ -29,7 +29,7 @@ import {NormalText} from '../../../Components/Titles';
 const StoreDetails = ({navigation, route}: any) => {
   const {_id, managerId} = route?.params;
   const [storeDetails, setStoreDetails] = useState<any>(null);
-  const [services, setServices] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentService, setCurrentService] = useState(null);
 
@@ -46,7 +46,7 @@ const StoreDetails = ({navigation, route}: any) => {
       ]);
 
       setStoreDetails(profileRes.data);
-      setServices(servicesRes.data);
+      setCategories(servicesRes.data);
     } catch (err) {
       ShowToast('error', 'Failed to load store data');
     } finally {
@@ -62,7 +62,7 @@ const StoreDetails = ({navigation, route}: any) => {
     );
   }
 
-  console.log('services:-', JSON.stringify(services, null, 2));
+  console.log('categories:-', JSON.stringify(categories, null, 2));
 
   return (
     <View style={styles.container}>
@@ -141,7 +141,7 @@ const StoreDetails = ({navigation, route}: any) => {
 
           {/* Services Section */}
           <View style={styles.section}>
-            <Text style={styles.heading}>Services</Text>
+            <Text style={styles.heading}>Categories</Text>
             {isLoading ? (
               <View style={styles.loaderContainer}>
                 <ActivityIndicator
@@ -150,15 +150,14 @@ const StoreDetails = ({navigation, route}: any) => {
                   color={Colors.buttonBg}
                 />
               </View>
-            ) : services?.length > 0 ? (
+            ) : categories?.length > 0 ? (
               <View style={{marginTop: 10}}>
-                {services.map((item: any) => (
-                  <ServiceCard
+                {categories.map((item: any) => (
+                  <CategoryCard
                     key={item?._id}
-                    title={item?.categoryName}
-                    imageUrl={item?.image ? item?.image : null}
+                    data={item}
                     selected={currentService === item?._id}
-                    onCardPress={() => {
+                    onPress={() => {
                       setCurrentService((prev: any) =>
                         prev === item?._id ? null : item?._id,
                       );
@@ -170,13 +169,13 @@ const StoreDetails = ({navigation, route}: any) => {
               <NormalText
                 mrgnTop={responsiveHeight(1.5)}
                 fontSize={responsiveFontSize(2)}
-                title="No services available."
+                title="No categories available."
               />
             )}
           </View>
 
           {/* Action Button */}
-          {services?.length > 0 && (
+          {categories?.length > 0 && (
             <View style={{marginVertical: 20}}>
               <Button
                 handlePress={() =>
@@ -185,7 +184,7 @@ const StoreDetails = ({navigation, route}: any) => {
                         serviceId: currentService,
                         managerId,
                       })
-                    : ShowToast('error', 'Please select a service category')
+                    : ShowToast('error', 'Please select a category')
                 }
                 title="Next"
                 bgColor={Colors.buttonBg}

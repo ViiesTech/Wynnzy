@@ -198,14 +198,12 @@ const Home = ({navigation}: any) => {
 
   const listEmptyComponent = () => {
     return (
-      !loading && (
-        <View style={styles.emptyContainer}>
-          <NormalText
-            title="No Daycares or Pet Hotels Available"
-            alignSelf="center"
-          />
-        </View>
-      )
+      <View style={styles.emptyContainer}>
+        <NormalText
+          title="No Daycares or Pet Hotels Available"
+          alignSelf="center"
+        />
+      </View>
     );
   };
 
@@ -219,7 +217,7 @@ const Home = ({navigation}: any) => {
         keyExtractor={item => item._id.toString()}
         numColumns={2}
         ListHeaderComponent={renderHeader}
-        ListEmptyComponent={listEmptyComponent()}
+        ListEmptyComponent={loading ? null : listEmptyComponent()}
         columnWrapperStyle={styles.columnWrapper}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}

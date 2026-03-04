@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  ViewStyle,
+  ImageStyle,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {
@@ -126,7 +128,7 @@ const ServiceDetail = ({navigation, route}: any) => {
           {data?.images?.[0] && (
             <Image
               source={{uri: `${ImageBaseUrl}${data.images[0]}`}}
-              style={styles.imageStyle}
+              style={styles.imageStyle as ImageStyle}
             />
           )}
           <View style={{flex: 1}}>
@@ -150,13 +152,13 @@ const ServiceDetail = ({navigation, route}: any) => {
             <TouchableOpacity
               key={item._id}
               activeOpacity={0.7}
-              style={styles.petCard(selectedPet)}
+              style={petCardStyle(selectedPet || '', item._id)}
               onPress={() => {
                 setSelectedPet(prev => (prev === item._id ? null : item._id));
               }}>
               <Image
                 source={{uri: `${ImageBaseUrl}${item?.petImages[0]}`}}
-                style={styles.petImage}
+                style={styles.petImage as ImageStyle}
               />
               <View style={styles.petNameContainer}>
                 <Text style={styles.petName}>{item?.petName}</Text>
@@ -167,13 +169,13 @@ const ServiceDetail = ({navigation, route}: any) => {
 
         {/* Form Section */}
         <View style={styles.formContainer}>
-          <PickerCard
+          {/* <PickerCard
             value={value}
             setValue={setValue}
             items={otherServices}
             placeHolder="Add Extra Services"
             mrgnTop={responsiveHeight(1)}
-          />
+          /> */}
 
           <View style={{marginTop: responsiveHeight(2), width: '100%'}}>
             <Input
@@ -243,15 +245,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: responsiveHeight(2),
   },
-  petCard: (selectedPet: string) => ({
-    width: responsiveWidth(44),
-    height: responsiveHeight(15),
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: selectedPet ? Colors.buttonBg : 'transparent',
-    overflow: 'hidden',
-    // marginBottom: 15,
-  }),
   petImage: {
     width: '100%',
     height: '100%',
@@ -297,25 +290,17 @@ const styles = StyleSheet.create({
   },
 });
 
+const petCardStyle = (selectedPet: string, itemId: string): ViewStyle => ({
+  width: responsiveWidth(44),
+  height: responsiveHeight(15),
+  borderRadius: 12,
+  borderWidth: 3,
+  borderColor: selectedPet === itemId ? Colors.buttonBg : 'transparent',
+  overflow: 'hidden',
+});
+
 export default ServiceDetail;
 
-// /* eslint-disable react-native/no-inline-styles */
-// import {
-//   FlatList,
-//   Image,
-//   ScrollView,
-//   StyleSheet,
-//   Text,
-//   TouchableOpacity,
-//   View,
-// } from 'react-native';
-// import React, {useEffect, useState} from 'react';
-// import {images} from '../../../assets/images';
-// import {
-//   responsiveFontSize,
-//   responsiveHeight,
-//   responsiveWidth,
-// } from '../../../assets/responsive_dimensions';
 // import CalendarCard from '../../../Components/CalendarCard';
 // import {Colors} from '../../../assets/colors';
 // import {Button} from '../../../Components/Button';

@@ -256,15 +256,10 @@ export const bookService = async (
     userId: userId,
     petId: petId,
     managerId: managerId,
-    // "serviceId": [
-    //   "6834d8e1d8e5379b8676ef36",
-    //   "683e1646a26eeee81593c275"
-    // ],
     serviceId: serviceId,
     categoryId: categoryId,
     total: total,
     address: address,
-    // "selectDate": "14-05-2025"
     selectDate: selectedDate,
   });
 
