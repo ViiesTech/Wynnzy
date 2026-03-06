@@ -18,12 +18,13 @@ const DaycareHeader = ({
   bellIcon,
   editProfile,
   navigation,
+  centerText = false,
 }: any) => {
   const {businessProfileData} = useSelector((state: any) => state.user);
   const {profileImage, fullName} = businessProfileData || {};
 
   return (
-    <View style={styles.headerView}>
+    <View style={styles.headerView(centerText)}>
       {home && (
         <View style={styles.profileContainer}>
           <Image
@@ -79,12 +80,19 @@ const DaycareHeader = ({
 export default DaycareHeader;
 
 const styles = StyleSheet.create({
-  headerView: {
+  headerView: centerText => ({
+    height: 60,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: centerText ? 'center' : 'space-between',
     alignItems: 'center',
     paddingVertical: responsiveHeight(1),
-  },
+    // backgroundColor: Colors.white,
+    // shadowColor: '#000',
+    // shadowOffset: {width: 0, height: 1},
+    // shadowOpacity: 0.1,
+    // shadowRadius: 2,
+    // elevation: 5,
+  }),
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',

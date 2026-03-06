@@ -21,11 +21,13 @@ import {NormalText} from '../../../Components/Titles';
 import {getAllBookingsByManagerId} from '../../../GlobalFunctions';
 import BookingCard from '../../../Components/BookingCard';
 import TextHeader from '../../../Components/TextHeader';
+import DaycareHeader from '../../../Components/DaycareHeader';
 
-const Orders = ({navigation}: any) => {
+const Orders = ({navigation, route}: any) => {
   const [currentCategory, setCurrentCategory] = useState('Pending');
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
+  const from = route?.params?.from;
 
   const isFocused = useIsFocused();
   const businessData = useSelector(
@@ -66,7 +68,11 @@ const Orders = ({navigation}: any) => {
 
   const renderHeader = () => (
     <View style={{marginBottom: responsiveHeight(1)}}>
-      <TextHeader title="Orders" />
+      {from ? (
+        <TextHeader title="Orders" />
+      ) : (
+        <DaycareHeader title="Orders" navigation={navigation} centerText />
+      )}
       <FlatList
         data={categories}
         horizontal

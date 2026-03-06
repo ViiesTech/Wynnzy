@@ -6,6 +6,7 @@ import {NormalText} from './Titles';
 import {
   responsiveFontSize,
   responsiveHeight,
+  responsiveWidth,
 } from '../assets/responsive_dimensions';
 import {Colors} from '../assets/colors';
 
@@ -22,13 +23,22 @@ const TextHeader: React.FC<titleProps> = ({title}) => {
         justifyContent: 'space-between',
       }}>
       <BackIcon />
-      <NormalText
-        color={Colors.themeText2}
-        alignSelf="center"
-        fontWeight="900"
-        fontSize={responsiveFontSize(2.7)}
-        title={title}
-      />
+
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          // left: -10,
+          // backgroundColor: 'red',
+        }}>
+        <NormalText
+          color={Colors.themeText2}
+          alignSelf="center"
+          fontWeight="900"
+          fontSize={responsiveFontSize(2.7)}
+          title={title}
+        />
+      </View>
       <Text style={{color: Colors.white}}>a</Text>
     </View>
   );

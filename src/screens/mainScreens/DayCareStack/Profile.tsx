@@ -168,7 +168,8 @@ const Profile = ({navigation}: any) => {
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() =>
-              item.title1 === 'View' && navigation.navigate('Orders')
+              item.title1 === 'View' &&
+              navigation.navigate('Orders', {from: 'profile'})
             }
             style={styles.statsCard}>
             <NormalText

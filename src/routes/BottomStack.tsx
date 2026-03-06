@@ -17,7 +17,6 @@ import {StyleSheet, View, ViewStyle} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import StoreDetails from '../screens/mainScreens/UserStack/StoreDetails';
 import Jobs from '../screens/mainScreens/DayCareStack/Jobs';
-import Chat from '../screens/mainScreens/DayCareStack/Chat';
 import Profile from '../screens/mainScreens/DayCareStack/Profile';
 import Filter from '../screens/commonScreens/Filter';
 import ViewBookings from '../screens/mainScreens/UserStack/ViewBookings';
@@ -27,6 +26,7 @@ import MyCart from '../screens/mainScreens/UserStack/shop/MyCart';
 import Checkout from '../screens/mainScreens/UserStack/shop/Checkout';
 import ChangeDetails from '../screens/mainScreens/UserStack/shop/ChangeDetails';
 import Orders from '../screens/mainScreens/DayCareStack/Orders';
+import Inbox from '../screens/mainScreens/DayCareStack/Inbox';
 // Create Bottom Tab Navigator
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -191,8 +191,8 @@ function DayCareBottomStack() {
       />
 
       <Tab.Screen
-        name="Chat"
-        component={Chat}
+        name="Inbox"
+        component={Inbox}
         options={({route}) => ({
           tabBarIcon: ({focused, size}) => (
             <View style={styles.bottomTabs}>

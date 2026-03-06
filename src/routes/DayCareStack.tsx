@@ -12,6 +12,7 @@ import ReviewDetails from '../screens/commonScreens/ReviewDetails';
 import Orders from '../screens/mainScreens/DayCareStack/Orders';
 import ViewBookedServices from '../screens/commonScreens/ViewBookedServices';
 import {Colors} from '../assets/colors';
+import Chat from '../screens/mainScreens/DayCareStack/Chat';
 // Define types for the navigation parameters
 type DayCareStackParams = {
   BottomStack: undefined;
@@ -19,6 +20,7 @@ type DayCareStackParams = {
   CreateProfile: undefined;
   Filter: undefined;
   Filter2: undefined;
+  Chat: undefined;
 };
 
 const Stack = createNativeStackNavigator<DayCareStackParams>();
@@ -45,6 +47,7 @@ export function DayCareStack() {
       <Stack.Screen name="ReviewDetails" component={ReviewDetails} />
       <Stack.Screen name="CreateProfile" component={CreateProfile} />
       <Stack.Screen name="CreateBussProfile" component={CreateBussProfile} />
+      <Stack.Screen name="Chat" component={Chat} />
     </Stack.Navigator>
   );
 }
