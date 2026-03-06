@@ -15,10 +15,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import {Colors} from '../assets/colors';
 import {StyleSheet, View, ViewStyle} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import StoreDetails from '../screens/mainScreens/UserStack/StoreDetails';
-import Jobs from '../screens/mainScreens/DayCareStack/Jobs';
 import Profile from '../screens/mainScreens/DayCareStack/Profile';
-import Filter from '../screens/commonScreens/Filter';
 import ViewBookings from '../screens/mainScreens/UserStack/ViewBookings';
 import Shop from '../screens/mainScreens/UserStack/shop/Shop';
 import ProductDetails from '../screens/mainScreens/UserStack/shop/ProductDetails';
@@ -27,6 +24,7 @@ import Checkout from '../screens/mainScreens/UserStack/shop/Checkout';
 import ChangeDetails from '../screens/mainScreens/UserStack/shop/ChangeDetails';
 import Orders from '../screens/mainScreens/DayCareStack/Orders';
 import Inbox from '../screens/mainScreens/DayCareStack/Inbox';
+import UserInbox from '../screens/mainScreens/UserStack/UserInbox';
 // Create Bottom Tab Navigator
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -65,173 +63,199 @@ const ShopStack = () => {
   );
 };
 
-function UserBottomStack() {
+const UserBottomStack = () => {
   return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: styles.tabBarStyle,
-      }}>
-      <Tab.Screen
-        name="HomeStack"
-        component={HomeStack}
-        options={({route}) => ({
-          tabBarIcon: ({focused, size}) => (
-            <View style={styles.bottomTabs}>
-              <AntDesign
-                name="home"
-                size={25}
-                color={focused ? '#554292' : '#BFBFBF'}
-              />
-              {focused && <View style={focusedStyle(false)} />}
-            </View>
-          ),
-          tabBarShowLabel: false,
-        })}
-      />
+    <View style={styles.container}>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: styles.tabBarStyle,
+        }}>
+        <Tab.Screen
+          name="HomeStack"
+          component={HomeStack}
+          options={({route}) => ({
+            tabBarIcon: ({focused, size}) => (
+              <View style={styles.bottomTabs}>
+                <AntDesign
+                  name="home"
+                  size={25}
+                  color={focused ? '#554292' : '#BFBFBF'}
+                />
+                {focused && <View style={focusedStyle(false)} />}
+              </View>
+            ),
+            tabBarShowLabel: false,
+          })}
+        />
 
-      <Tab.Screen
-        name="Shop"
-        component={ShopStack}
-        options={({route}) => ({
-          tabBarIcon: ({focused, size}) => (
-            <View style={styles.bottomTabs}>
-              <MaterialIcons
-                name={'storefront'}
-                size={25}
-                color={focused ? '#554292' : '#BFBFBF'}
-              />
-              {focused && <View style={focusedStyle(false)} />}
-            </View>
-          ),
-          tabBarShowLabel: false,
-        })}
-      />
+        <Tab.Screen
+          name="Bookings"
+          component={ViewBookings}
+          options={({route}) => ({
+            tabBarIcon: ({focused, size}) => (
+              <View style={styles.bottomTabs}>
+                <Feather
+                  name={'shopping-cart'}
+                  size={25}
+                  color={focused ? '#554292' : '#BFBFBF'}
+                />
+                {focused && <View style={focusedStyle(true)} />}
+              </View>
+            ),
+            tabBarShowLabel: false,
+          })}
+        />
 
-      <Tab.Screen
-        name="Bookings"
-        component={ViewBookings}
-        options={({route}) => ({
-          tabBarIcon: ({focused, size}) => (
-            <View style={styles.bottomTabs}>
-              <Feather
-                name={'shopping-cart'}
-                size={25}
-                color={focused ? '#554292' : '#BFBFBF'}
-              />
-              {focused && <View style={focusedStyle(true)} />}
-            </View>
-          ),
-          tabBarShowLabel: false,
-        })}
-      />
+        <Tab.Screen
+          name="Shop"
+          component={ShopStack}
+          options={({route}) => ({
+            tabBarIcon: ({focused, size}) => (
+              <View style={styles.bottomTabs}>
+                <MaterialIcons
+                  name={'storefront'}
+                  size={25}
+                  color={focused ? '#554292' : '#BFBFBF'}
+                />
+                {focused && <View style={focusedStyle(false)} />}
+              </View>
+            ),
+            tabBarShowLabel: false,
+          })}
+        />
 
-      <Tab.Screen
-        name="UserProfile"
-        component={UserProfile}
-        options={{
-          tabBarIcon: ({focused}: {focused: boolean}) => (
-            <View style={styles.bottomTabs}>
-              <Feather
-                name="user"
-                size={25}
-                color={focused ? '#554292' : '#BFBFBF'}
-              />
-              {focused && <View style={focusedStyle(false)} />}
-            </View>
-          ),
-          tabBarShowLabel: false,
-        }}
-      />
-    </Tab.Navigator>
+        <Tab.Screen
+          name="UserInbox"
+          component={UserInbox}
+          options={({route}) => ({
+            tabBarIcon: ({focused, size}) => (
+              <View style={styles.bottomTabs}>
+                <Ionicons
+                  name={'chatbox-ellipses-outline'}
+                  size={25}
+                  color={focused ? '#554292' : '#BFBFBF'}
+                />
+                {focused && <View style={focusedStyle(false)} />}
+              </View>
+            ),
+            tabBarShowLabel: false,
+          })}
+        />
+
+        <Tab.Screen
+          name="UserProfile"
+          component={UserProfile}
+          options={{
+            tabBarIcon: ({focused}: {focused: boolean}) => (
+              <View style={styles.bottomTabs}>
+                <Feather
+                  name="user"
+                  size={25}
+                  color={focused ? '#554292' : '#BFBFBF'}
+                />
+                {focused && <View style={focusedStyle(false)} />}
+              </View>
+            ),
+            tabBarShowLabel: false,
+          }}
+        />
+      </Tab.Navigator>
+    </View>
   );
-}
+};
 
-function DayCareBottomStack() {
+const DayCareBottomStack = () => {
   return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: styles.tabBarStyle,
-      }}>
-      <Tab.Screen
-        name="Home"
-        component={DayCareHome}
-        options={({route}) => ({
-          tabBarIcon: ({focused, size}) => (
-            <View style={styles.bottomTabs}>
-              <AntDesign
-                name="home"
-                size={25}
-                color={focused ? '#554292' : '#BFBFBF'}
-              />
-              {focused && <View style={focusedStyle(false)} />}
-            </View>
-          ),
-          tabBarShowLabel: false,
-        })}
-      />
+    <View style={styles.container}>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: styles.tabBarStyle,
+        }}>
+        <Tab.Screen
+          name="Home"
+          component={DayCareHome}
+          options={({route}) => ({
+            tabBarIcon: ({focused, size}) => (
+              <View style={styles.bottomTabs}>
+                <AntDesign
+                  name="home"
+                  size={25}
+                  color={focused ? '#554292' : '#BFBFBF'}
+                />
+                {focused && <View style={focusedStyle(false)} />}
+              </View>
+            ),
+            tabBarShowLabel: false,
+          })}
+        />
 
-      <Tab.Screen
-        name="Orders"
-        component={Orders}
-        options={({route}) => ({
-          tabBarIcon: ({focused, size}) => (
-            <View style={styles.bottomTabs}>
-              <Octicons
-                name={'checklist'}
-                size={25}
-                color={focused ? '#554292' : '#BFBFBF'}
-              />
-              {focused && <View style={focusedStyle(false)} />}
-            </View>
-          ),
-          tabBarShowLabel: false,
-        })}
-      />
+        <Tab.Screen
+          name="Orders"
+          component={Orders}
+          options={({route}) => ({
+            tabBarIcon: ({focused, size}) => (
+              <View style={styles.bottomTabs}>
+                <Octicons
+                  name={'checklist'}
+                  size={25}
+                  color={focused ? '#554292' : '#BFBFBF'}
+                />
+                {focused && <View style={focusedStyle(false)} />}
+              </View>
+            ),
+            tabBarShowLabel: false,
+          })}
+        />
 
-      <Tab.Screen
-        name="Inbox"
-        component={Inbox}
-        options={({route}) => ({
-          tabBarIcon: ({focused, size}) => (
-            <View style={styles.bottomTabs}>
-              <Ionicons
-                name={'chatbox-ellipses-outline'}
-                size={25}
-                color={focused ? '#554292' : '#BFBFBF'}
-              />
-              {focused && <View style={focusedStyle(false)} />}
-            </View>
-          ),
-          tabBarShowLabel: false,
-        })}
-      />
+        <Tab.Screen
+          name="Inbox"
+          component={Inbox}
+          options={({route}) => ({
+            tabBarIcon: ({focused, size}) => (
+              <View style={styles.bottomTabs}>
+                <Ionicons
+                  name={'chatbox-ellipses-outline'}
+                  size={25}
+                  color={focused ? '#554292' : '#BFBFBF'}
+                />
+                {focused && <View style={focusedStyle(false)} />}
+              </View>
+            ),
+            tabBarShowLabel: false,
+          })}
+        />
 
-      <Tab.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          tabBarIcon: ({focused}: {focused: boolean}) => (
-            <View style={styles.bottomTabs}>
-              <Feather
-                name="user"
-                size={25}
-                color={focused ? '#554292' : '#BFBFBF'}
-              />
-              {focused && <View style={focusedStyle(false)} />}
-            </View>
-          ),
-          tabBarShowLabel: false,
-        }}
-      />
-    </Tab.Navigator>
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            tabBarIcon: ({focused}: {focused: boolean}) => (
+              <View style={styles.bottomTabs}>
+                <Feather
+                  name="user"
+                  size={25}
+                  color={focused ? '#554292' : '#BFBFBF'}
+                />
+                {focused && <View style={focusedStyle(false)} />}
+              </View>
+            ),
+            tabBarShowLabel: false,
+          }}
+        />
+      </Tab.Navigator>
+    </View>
   );
-}
+};
 
 export {UserBottomStack, DayCareBottomStack};
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
   bottomTabs: {
     alignItems: 'center',
     position: 'relative',

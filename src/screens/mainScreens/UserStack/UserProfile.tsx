@@ -164,7 +164,11 @@ const UserProfile: React.FC = ({navigation, route}: any) => {
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {flexGrow: 1, paddingBottom: responsiveHeight(2)},
+  scrollContainer: {
+    flexGrow: 1,
+    backgroundColor: Colors.white,
+    paddingBottom: responsiveHeight(2),
+  },
   backButton: {
     backgroundColor: Colors.buttonBg,
     height: responsiveHeight(5),

@@ -21,6 +21,7 @@ import AllHotels from '../screens/mainScreens/UserStack/AllHotels';
 import AllServices from '../screens/mainScreens/UserStack/AllServices';
 import ViewBookedServices from '../screens/commonScreens/ViewBookedServices';
 import ReviewDetails from '../screens/commonScreens/ReviewDetails';
+import UserChat from '../screens/mainScreens/UserStack/UserChat';
 
 type UserStackParams = {
   BottomStack: undefined;
@@ -72,6 +73,7 @@ export function UserStack() {
         name="TransferSuccessfully"
         component={Transfer_Successfully}
       />
+      <Stack.Screen name="UserChat" component={UserChat} />
     </Stack.Navigator>
   );
 }
