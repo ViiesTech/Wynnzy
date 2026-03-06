@@ -1,6 +1,6 @@
-import { ImageSourcePropType } from 'react-native';
+import {ImageSourcePropType} from 'react-native';
 
-export const images: { [key: string]: ImageSourcePropType } = {
+export const images: {[key: string]: ImageSourcePropType} = {
   user: require('./user.png'),
   dayCare: require('./dayCare.png'),
   slide: require('./slide.png'),
@@ -50,4 +50,5 @@ export const images: { [key: string]: ImageSourcePropType } = {
   userDummy: require('./userDummy.png'),
   product: require('./product.png'),
   product2: require('./product2.png'),
+  circleProgress: require('./circleProgress.png'),
 };

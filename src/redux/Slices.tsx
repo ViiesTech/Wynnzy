@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import axios, {AxiosRequestConfig} from 'axios';
 import {ShowToast} from '../GlobalFunctions/Auth';
+import {getManagerStats} from '../GlobalFunctions';
 
 // Define types for initial state
 interface UserState {
@@ -28,6 +29,9 @@ interface LoginResponse {
   status: string;
   token: string;
   userData: object;
+  success: boolean;
+  message: string;
+  data: any;
 }
 
 // Async Thunk with TypeScript
@@ -50,6 +54,28 @@ export const UserLogin = createAsyncThunk<LoginResponse, AxiosRequestConfig>(
       console.log('errpr', error.response.data.message);
       ShowToast('error', error.response.data.message);
       return rejectWithValue('Something went wrong');
+    }
+  },
+);
+
+export const GetManagerStats = createAsyncThunk(
+  'auth/GetManagerStats',
+  async (
+    {managerId, month, year}: {managerId: any; month: any; year: any},
+    {rejectWithValue},
+  ) => {
+    try {
+      const response = await getManagerStats(managerId, month, year);
+      if (response && response.success) {
+        return response;
+      } else {
+        return rejectWithValue(response?.message || 'Failed to fetch stats');
+      }
+    } catch (error: any) {
+      console.log('GetManagerStats error:', error);
+      return rejectWithValue(
+        error?.response?.data?.message || 'Something went wrong',
+      );
     }
   },
 );

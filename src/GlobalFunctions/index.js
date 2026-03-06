@@ -397,3 +397,20 @@ export const getAllShippingAddresses = async token => {
     throw error;
   }
 };
+
+export const getManagerStats = async (managerId, month, year) => {
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: `${BaseUrl}bookingStats?managerId=${managerId}&year=${year}&month=${month}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+  try {
+    const resp = await axios.request(config);
+    return resp.data;
+  } catch (error) {
+    throw error;
+  }
+};

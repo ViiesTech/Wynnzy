@@ -32,6 +32,7 @@ import {Button} from '../../../Components/Button';
 import {clearToken, setBusinessProfileData} from '../../../redux/Slices';
 import {getAllReviews, getBusinessProfileById} from '../../../GlobalFunctions';
 import {ImageBaseUrl} from '../../../BaseUrl';
+import DaycareHeader from '../../../Components/DaycareHeader';
 
 const Profile = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -109,14 +110,7 @@ const Profile = ({navigation}: any) => {
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.scrollContainer}>
-      <Header3
-        textContainer={false}
-        firstRightIcon={false}
-        rightIcon={edit}
-        onEditPress={() =>
-          navigation.navigate('CreateBussProfile', {type: 'edit'})
-        }
-      />
+      <DaycareHeader title="Profile" navigation={navigation} editProfile />
 
       {/* Profile Image Section */}
       <View style={styles.imageContainer}>
@@ -124,13 +118,6 @@ const Profile = ({navigation}: any) => {
           source={{uri: `${ImageBaseUrl}${profileImage}`}}
           style={styles.profileImage}
         />
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate('CreateBussProfile', {type: 'edit'})
-          }
-          style={styles.uploadBadge}>
-          <SvgIcons xml={upload} height={20} width={20} />
-        </TouchableOpacity>
       </View>
 
       {/* Identity Section */}
@@ -245,6 +232,7 @@ const Profile = ({navigation}: any) => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{
           gap: responsiveHeight(2),
+          flexGrow: 1,
           marginTop: responsiveHeight(2),
         }}
         renderItem={({item}) => {
