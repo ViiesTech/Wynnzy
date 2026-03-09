@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   },
   categoryBtn: {
     height: responsiveHeight(6),
-    width: responsiveWidth(20),
+    width: responsiveWidth(20.5),
     paddingVertical: 10,
     borderRadius: 8,
     justifyContent: 'center',
