@@ -197,8 +197,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
   petImage: {
-    width: '100%',
     height: responsiveHeight(18),
+    width: '100%',
+    backgroundColor: Colors.lightGray,
   },
   editIconContainer: {
     position: 'absolute',
