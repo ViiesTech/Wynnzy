@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {
   FlatList,
@@ -17,17 +16,15 @@ import {
 import {Colors} from '../../../assets/colors';
 import {NormalText} from '../../../Components/Titles';
 import {getAllBookingsByUserId} from '../../../GlobalFunctions';
-import FilterCard from '../../../Components/FilterCard';
-import moment from 'moment';
-import TextHeader from '../../../Components/TextHeader';
 import {useIsFocused} from '@react-navigation/native';
 import BookingCard from '../../../Components/BookingCard';
 import UserHeader from '../../../Components/UserHeader';
 
 const CATEGORIES = [
-  {id: '1', title: 'Pending'},
-  {id: '2', title: 'Accept'}, // Matches your backend query param
-  {id: '3', title: 'Reject'},
+  {id: 1, title: 'Pending'},
+  {id: 2, title: 'Accepted'},
+  {id: 3, title: 'Rejected'},
+  {id: 4, title: 'Completed'},
 ];
 
 const ViewBookings = ({navigation}: any) => {
@@ -53,29 +50,35 @@ const ViewBookings = ({navigation}: any) => {
     }
   };
 
-  const renderCategoryItem = ({item}: any) => (
-    <TouchableOpacity
-      onPress={() => setCurrentCategory(item.title)}
-      style={[
-        styles.categoryTab,
-        {
-          backgroundColor:
-            currentCategory === item.title ? Colors.buttonBg : '#f3f3f3',
-        },
-      ]}>
-      <NormalText
-        alignSelf="center"
-        color={currentCategory === item.title ? 'white' : '#C3C8D5'}
-        title={
-          item.title === 'Accept'
-            ? 'Accepted'
-            : item.title === 'Reject'
-            ? 'Rejected'
-            : item.title
+  const renderCategoryItem = ({item}: any) => {
+    const isSelected =
+      currentCategory === item.title ||
+      (item.title === 'Accepted' && currentCategory === 'Accept') ||
+      (item.title === 'Rejected' && currentCategory === 'Reject');
+    return (
+      <TouchableOpacity
+        onPress={() =>
+          setCurrentCategory(
+            item.title === 'Accepted'
+              ? 'Accept'
+              : item.title === 'Rejected'
+              ? 'Reject'
+              : item.title,
+          )
         }
-      />
-    </TouchableOpacity>
-  );
+        style={[
+          styles.categoryTab,
+          {backgroundColor: isSelected ? Colors.buttonBg : '#f3f3f3'},
+        ]}>
+        <NormalText
+          color={isSelected ? 'white' : '#C3C8D5'}
+          title={item.title}
+          alignSelf="center"
+          fontSize={responsiveFontSize(1.6)}
+        />
+      </TouchableOpacity>
+    );
+  };
 
   const renderHeader = () => (
     <View style={{backgroundColor: Colors.white}}>
@@ -177,12 +180,17 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   categoryTab: {
-    width: responsiveWidth(28),
-    paddingVertical: 10,
     height: responsiveHeight(6),
-    borderRadius: 5,
+    width: responsiveWidth(20.6),
+    paddingVertical: 10,
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   bookingList: {
     gap: responsiveHeight(1.5),

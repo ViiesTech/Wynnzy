@@ -1,5 +1,4 @@
-/* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -22,7 +21,7 @@ import {ImageBaseUrl} from '../../../BaseUrl';
 import moment from 'moment';
 import UserHeader from '../../../Components/UserHeader';
 
-const PetProfile: React.FC = ({navigation, route}: any) => {
+const PetProfile = ({navigation, route}: any) => {
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const {_id} = route?.params || {};
@@ -70,7 +69,7 @@ const PetProfile: React.FC = ({navigation, route}: any) => {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.scrollContainer}>
       {/* Header Image & Floating Info Card */}
-      <View>
+      <Fragment>
         <View style={styles.headerAbsoluteContainer}>
           <UserHeader
             navigation={navigation}
@@ -101,7 +100,7 @@ const PetProfile: React.FC = ({navigation, route}: any) => {
             <Image source={images.female} style={styles.genderIcon} />
           </View>
         </View>
-      </View>
+      </Fragment>
 
       {/* About Section */}
       <View style={styles.aboutSectionHeader}>
