@@ -1,4 +1,4 @@
-import {BaseUrl} from '../BaseUrl';
+import {BaseUrl, ImageBaseUrl} from '../BaseUrl';
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import {setBusinessProfileData, setUserData, UserLogin} from '../redux/Slices';
@@ -145,7 +145,7 @@ export const forgetPasswordApi = async (email: string) => {
     const response = await axios.request(config);
     console.log('ress', response.data);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.log('error', error.response.data.message);
     throw error.response.data.message;
   }
@@ -168,7 +168,7 @@ export const resetPassword = async (email: string, password: any) => {
   try {
     const response = await axios.request(config);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     throw error;
   }
 };
@@ -193,7 +193,7 @@ export const verifyOtp = async (email: string, otp: number, token: string) => {
   try {
     const response = await axios.request(config);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     throw error.response.data.message;
   }
 };
@@ -217,7 +217,7 @@ export const verifyOtpPassword = async (email: string, otp: number) => {
   try {
     const response = await axios.request(config);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     throw error.response.data.message;
   }
 };
@@ -238,7 +238,7 @@ export const resendOtp = async (email: string) => {
   try {
     const response = await axios.request(config);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     throw error;
   }
 };
@@ -338,7 +338,7 @@ export const createBusinessProfile = async ({
       ShowToast('error', response.data.message);
     }
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(
       'Error creating post:',
       error?.response?.data || error.message,
@@ -461,7 +461,7 @@ export const editBusinessProfile = async ({
       ShowToast('error', response.data.message);
     }
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(
       'Error Updating Post:',
       error?.response?.data || error.message,
@@ -530,7 +530,7 @@ export const createPetProfile = async (
       ShowToast('error', response.data.message);
     }
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(
       'Error creating post:',
       error?.response?.data || error.message,
@@ -573,11 +573,17 @@ export const editPetProfile = async (
   }
   if (petImages) {
     petImages.forEach((uri, index) => {
-      data.append('petImages', {
-        uri,
-        name: `petImage${index}.jpg`,
-        type: 'image/jpeg',
-      });
+      if (uri.startsWith('http')) {
+        // If it's a remote URL, send the relative path back to the server
+        const relativePath = uri.replace(ImageBaseUrl, '');
+        data.append('petImages', relativePath);
+      } else {
+        data.append('petImages', {
+          uri,
+          name: `petImage${index}.jpg`,
+          type: 'image/jpeg',
+        });
+      }
     });
   }
   if (weight) {
@@ -590,11 +596,16 @@ export const editPetProfile = async (
     data.append('color', color);
   }
   if (profileImage) {
-    data.append('profileImage', {
-      uri: profileImage,
-      name: 'image.jpg',
-      type: 'image/jpeg',
-    });
+    if (profileImage.startsWith('http')) {
+      const relativePath = profileImage.replace(ImageBaseUrl, '');
+      data.append('profileImage', relativePath);
+    } else {
+      data.append('profileImage', {
+        uri: profileImage,
+        name: 'image.jpg',
+        type: 'image/jpeg',
+      });
+    }
   }
   if (behaviour) {
     data.append('behaviour', behaviour);
@@ -670,7 +681,7 @@ export const getBusinessProfile = async (businessId: string) => {
   try {
     const response = await axios.request(config);
     return response.data;
-  } catch (err) {
+  } catch (err: any) {
     throw err;
   }
 };
@@ -716,7 +727,7 @@ export const updateUser = async (
       ShowToast('error', response.data.message);
     }
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     ShowToast('error', error.response.data.message);
 
     console.error(
@@ -764,7 +775,7 @@ export const updateBookingStatus = async (
   try {
     const response = await axios.request(config);
     return response.data;
-  } catch (err) {
+  } catch (err: any) {
     ShowToast('error', err.response.data.message);
     throw err;
   }
@@ -786,7 +797,7 @@ export const deleteBooking = async (bookingId: string) => {
   try {
     const response = await axios.request(config);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     ShowToast('error', error?.response?.data?.message);
     throw error;
   }

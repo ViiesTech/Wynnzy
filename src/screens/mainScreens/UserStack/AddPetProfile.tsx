@@ -1,4 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,46 +7,43 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
-  ActivityIndicator,
   Platform,
+  TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
-import {TouchableOpacity} from 'react-native';
 import Octicons from 'react-native-vector-icons/Octicons';
+import Entypo from 'react-native-vector-icons/Entypo';
+import {launchImageLibrary} from 'react-native-image-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
+import {useSelector} from 'react-redux';
+
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from '../../../assets/responsive_dimensions';
 import {images} from '../../../assets/images';
-import BackIcon from '../../../Components/BackIcon';
-import {BoldText} from '../../../Components/Titles';
 import {Colors} from '../../../assets/colors';
 import {Button} from '../../../Components/Button';
-import {launchImageLibrary} from 'react-native-image-picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import moment from 'moment';
 import {
   createPetProfile,
   editPetProfile,
+  getPetProfile,
   ShowToast,
 } from '../../../GlobalFunctions/Auth';
-import {useDispatch, useSelector} from 'react-redux';
+import {ImageBaseUrl} from '../../../BaseUrl';
+import UserHeader from '../../../Components/UserHeader';
 
-const AddPetProfile = ({navigation, route}) => {
-  const [imagePath, setImagePath] = useState();
-  const [petImages, setPetImages] = useState([]);
-  const [date, setDate] = useState(new Date());
+const AddPetProfile = ({navigation, route}: any) => {
+  const petId = route?.params?.petId;
+  const {_id: userId} = useSelector((state: any) => state.user.userData);
+
   const [isLoading, setIsLoading] = useState(false);
-  const [show, setShow] = useState(false);
-  const {type} = route?.params;
-  const {_id} = useSelector(state => state.user.userData);
-  const onChange = (event, selectedDate) => {
-    setShow(false); // Hide the picker after selecting
-    if (selectedDate) {
-      setDate(selectedDate);
-    }
-  };
+  const [imagePath, setImagePath] = useState<string | null>(null);
+  const [petImages, setPetImages] = useState<string[]>([]);
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
   const [form, setForm] = useState({
     petName: '',
     breed: '',
@@ -57,406 +55,391 @@ const AddPetProfile = ({navigation, route}) => {
     description: '',
     behaviour: '',
   });
-  console.log('route?.params?._id:-', route?.params?._id);
-  const dispatch = useDispatch();
-  const handleInputChange = (field: string, value: string) => {
-    setForm(prev => ({...prev, [field]: value}));
-  };
-  const selectImage = async () => {
-    try {
-      const options = {
-        mediaType: 'photo', // Allows only photos (Change to 'mixed' for both video & photo)
-        quality: 1, // Best quality (1 = 100%)
-      };
 
-      const result = await launchImageLibrary(options);
-
-      if (result.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (result.errorMessage) {
-        console.log('ImagePicker Error: ', result.errorMessage);
-      } else {
-        setImagePath(result.assets[0].uri);
-        console.log('Image Selected: ', result.assets[0].uri); // Access the selected image URI
-      }
-    } catch (error) {
-      console.log('Error selecting image:', error);
+  useEffect(() => {
+    if (petId) {
+      getPetData();
     }
-  };
-  const selectPetImages = async () => {
-    try {
-      const options = {
-        mediaType: 'photo',
-        quality: 1,
-        selectionLimit: 0, // 0 = unlimited multiple selection
-      };
+  }, []);
 
-      const result = await launchImageLibrary(options);
-
-      if (result.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (result.errorMessage) {
-        console.log('ImagePicker Error: ', result.errorMessage);
-      } else {
-        const selectedUris = result.assets?.map(asset => asset.uri) || [];
-
-        setPetImages(prevImages => [...prevImages, ...selectedUris]);
-
-        console.log('Images Selected: ', selectedUris);
-      }
-    } catch (error) {
-      console.log('Error selecting images:', error);
-    }
-  };
-  const {
-    petName,
-    breed,
-    size,
-    specialCare,
-    height,
-    weight,
-    color,
-    description,
-    behaviour,
-  } = form;
-
-  const createPetProfileHandler = async () => {
-    const formattedDate = moment(date).toISOString();
+  const getPetData = async () => {
     setIsLoading(true);
-    const response = await createPetProfile(
-      _id,
-      petName,
-      formattedDate,
-      breed,
-      size,
-      specialCare,
-      petImages,
-      weight,
-      height,
-      color,
-      imagePath,
-      behaviour,
-      description,
-    );
-    if (response.success) {
-      navigation.goBack();
+    const response = await getPetProfile(petId);
+    if (response?.success) {
+      const res = response.data;
+
+      setForm({
+        petName: res.petName || '',
+        breed: res.breed || '',
+        size: res.size || '',
+        specialCare: res.specialCareNeed || '',
+        height: String(res.height || ''),
+        weight: String(res.weight || ''),
+        color: res.color || '',
+        description: res.description || '',
+        behaviour: res.behaviour?.[0] || '',
+      });
+      setDate(res.dob ? new Date(res.dob) : new Date());
+      setImagePath(
+        res.profileImage ? `${ImageBaseUrl}${res.profileImage}` : null,
+      );
+      setPetImages(
+        res.petImages?.map((img: string) => `${ImageBaseUrl}${img}`) || [],
+      );
     }
     setIsLoading(false);
   };
 
-  const editPetProfileHandler = async () => {
-    const formattedDate = moment(date).toISOString();
+  const handleInputChange = (field: string, value: string) => {
+    setForm(prev => ({...prev, [field]: value}));
+  };
+
+  const selectMainImage = async () => {
+    const result = await launchImageLibrary({mediaType: 'photo', quality: 0.7});
+    if (result.assets?.[0]?.uri) {
+      setImagePath(result.assets[0].uri);
+    }
+  };
+
+  const selectMultipleImages = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+      quality: 0.7,
+      selectionLimit: 0,
+    });
+    if (result.assets) {
+      const selectedUris = result.assets.map(asset => asset.uri!);
+      setPetImages(prev => [...prev, ...selectedUris]);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setPetImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const submitHandler = async () => {
+    // Basic Validation
+    if (!form.petName || !imagePath) {
+      return ShowToast('error', 'Pet name and profile image are required');
+    }
+
     setIsLoading(true);
-    const response = await editPetProfile(
-      route?.params?._id,
-      petName,
-      formattedDate,
-      breed,
-      size,
-      specialCare,
-      petImages,
-      weight,
-      height,
-      color,
-      imagePath,
-      behaviour,
-      description,
-    );
-    console.log('response', response);
+    const formattedDate = moment(date).toISOString();
+
+    const apiCall = petId
+      ? () =>
+          editPetProfile(
+            petId,
+            form.petName,
+            formattedDate,
+            form.breed,
+            form.size,
+            form.specialCare,
+            petImages,
+            form.weight,
+            form.height,
+            form.color,
+            imagePath,
+            form.behaviour,
+            form.description,
+          )
+      : () =>
+          createPetProfile(
+            userId,
+            form.petName,
+            formattedDate,
+            form.breed,
+            form.size,
+            form.specialCare,
+            petImages,
+            form.weight,
+            form.height,
+            form.color,
+            imagePath,
+            form.behaviour,
+            form.description,
+          );
+
+    const response = await apiCall();
+    setIsLoading(false);
+
     if (response.success) {
+      ShowToast(
+        'success',
+        `Profile ${petId ? 'updated' : 'created'} successfully`,
+      );
       navigation.goBack();
     } else {
       ShowToast('error', response.message);
     }
-    setIsLoading(false);
   };
-  const shadowStyle = Platform.select({
-    ios: {
-      shadowColor: '#000',
-      shadowOffset: {width: 0, height: 2},
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-    },
-    android: {
-      elevation: 10,
-    },
-  });
-  // https://predemo.site/Pawcation/api/pet/updatePet
+
+  const renderInputField = (
+    label: string,
+    field: keyof typeof form,
+    placeholder: string,
+    multiline = false,
+  ) => {
+    return (
+      <View style={[styles.inputContainer, styles.shadow]}>
+        <Text style={styles.inputLabel}>{label}</Text>
+        <TextInput
+          value={form[field]}
+          onChangeText={text => handleInputChange(field, text)}
+          placeholder={placeholder}
+          placeholderTextColor={'#A6A6A6'}
+          multiline={multiline}
+          textAlignVertical={multiline ? 'top' : 'center'}
+          style={[
+            styles.inputStyle,
+            multiline && {height: responsiveHeight(12)},
+          ]}
+        />
+      </View>
+    );
+  };
+
   return (
     <ScrollView
-      contentContainerStyle={{flexGrow: 1, backgroundColor: Colors.white}}
+      contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}>
       <View style={{padding: responsiveHeight(2.5)}}>
-        <BackIcon />
-        <BoldText
-          fontWeight="800"
-          fontSize={responsiveFontSize(2.3)}
-          mrgnTop={responsiveHeight(3)}
-          title={`${type === 'edit' ? 'Edit' : 'Create'} Profile`}
+        <UserHeader
+          title={petId ? 'Edit Pet Profile' : 'Create Pet Profile'}
+          navigation={navigation}
+          backIcon={true}
         />
-        <View
-          style={{
-            // height: responsiveHeight(12),
-            // width: responsiveHeight(12),
-            alignSelf: 'center',
-            marginTop: responsiveHeight(1.5),
-          }}>
+
+        {/* Profile Image Picker */}
+        <View style={styles.imagePickerWrapper}>
           <Image
-            source={imagePath ? {uri: imagePath} : images.userDummy}
-            style={{
-              height: responsiveHeight(15),
-              width: responsiveWidth(25),
-              aspectRatio: 1,
-              resizeMode: 'cover', // Keeps the aspect ratio intact
-              borderRadius: responsiveHeight(7.5), // For rounded corners (half of height)
-            }}
+            source={imagePath ? {uri: imagePath} : images.petPH}
+            style={styles.mainProfileImage}
           />
-          <TouchableOpacity
-            onPress={selectImage}
-            style={{
-              backgroundColor: Colors.buttonBg,
-              height: responsiveHeight(4),
-              width: responsiveHeight(4),
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 100,
-              position: 'absolute',
-              zIndex: 11,
-              bottom: 0,
-              right: 0,
-            }}>
+          <TouchableOpacity onPress={selectMainImage} style={styles.plusButton}>
             <Octicons
-              name={'plus'}
+              name="plus"
               size={responsiveFontSize(2)}
               color={'#FFFFFF'}
             />
           </TouchableOpacity>
         </View>
       </View>
-      <View style={{marginHorizontal: responsiveHeight(2.5)}}>
-        <View style={[styles.container, shadowStyle]}>
-          <Text style={styles.heading}>Pet Name</Text>
-          <TextInput
-            onChangeText={text => handleInputChange('petName', text)}
-            placeholder="Enter Name"
-            placeholderTextColor={'#A6A6A6'}
-            style={styles.InputStyles}
-          />
-        </View>
 
+      <View style={{marginHorizontal: responsiveHeight(2.5)}}>
+        {renderInputField('Pet Name', 'petName', 'Buddy')}
+
+        {/* Date Picker */}
         <TouchableOpacity
-          onPress={() => setShow(true)}
-          style={[styles.container, shadowStyle]}>
-          <Text style={styles.heading}>Date Of Birth</Text>
-          <Text style={{color: '#2A1F51', marginVertical: responsiveHeight(1)}}>
-            {date ? moment(date).format('MMM Do YY') : 'DD/MM/YYYY'}
+          onPress={() => setShowDatePicker(true)}
+          style={[styles.inputContainer, styles.shadow]}>
+          <Text style={styles.inputLabel}>Date Of Birth</Text>
+          <Text style={styles.dateText}>
+            {moment(date).format('MMM Do YYYY')}
           </Text>
         </TouchableOpacity>
-        {show && (
+
+        {showDatePicker && (
           <DateTimePicker
             value={date}
-            mode="date" // 'date' or 'time'
-            display="default" // 'default', 'spinner', 'calendar', 'clock'
-            onChange={onChange}
+            mode="date"
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            onChange={(event, selectedDate) => {
+              setShowDatePicker(false);
+              if (selectedDate) {
+                setDate(selectedDate);
+              }
+            }}
           />
         )}
 
-        <View style={[styles.container, shadowStyle]}>
-          <Text style={styles.heading}>Breed</Text>
-          <TextInput
-            onChangeText={text => handleInputChange('breed', text)}
-            placeholder="Enter Breed"
-            placeholderTextColor={'#A6A6A6'}
-            style={styles.InputStyles}
-          />
+        {renderInputField('Breed', 'breed', 'Golden Retriever')}
+        {renderInputField('Size', 'size', 'Medium')}
+        {renderInputField('Special Care Need', 'specialCare', 'None')}
+
+        <View style={styles.row}>
+          <View style={{flex: 1}}>
+            {renderInputField('Weight (kg)', 'weight', '15')}
+          </View>
+          <View style={{width: 15}} />
+          <View style={{flex: 1}}>
+            {renderInputField('Height (cm)', 'height', '50')}
+          </View>
         </View>
 
-        <View style={[styles.container, shadowStyle]}>
-          <Text style={styles.heading}>Size</Text>
-          <TextInput
-            onChangeText={text => handleInputChange('size', text)}
-            placeholder="2 feet"
-            placeholderTextColor={'#A6A6A6'}
-            style={styles.InputStyles}
-          />
-        </View>
-
-        <View style={[styles.container, shadowStyle]}>
-          <Text style={styles.heading}>Special Care Need</Text>
-          <TextInput
-            onChangeText={text => handleInputChange('specialCare', text)}
-            placeholder="Enter"
-            placeholderTextColor={'#A6A6A6'}
-            style={styles.InputStyles}
-          />
-        </View>
-        <View style={[styles.container, shadowStyle]}>
-          <Text style={styles.heading}>Weight (In Kgs)</Text>
-          <TextInput
-            onChangeText={text => handleInputChange('weight', text)}
-            placeholder="Enter Weight"
-            placeholderTextColor={'#A6A6A6'}
-            style={styles.InputStyles}
-          />
-        </View>
-        <View style={[styles.container, shadowStyle]}>
-          <Text style={styles.heading}>Height (In cms)</Text>
-          <TextInput
-            onChangeText={text => handleInputChange('height', text)}
-            placeholder="Enter Height"
-            placeholderTextColor={'#A6A6A6'}
-            style={styles.InputStyles}
-          />
-        </View>
-        <View style={[styles.container, shadowStyle]}>
-          <Text style={styles.heading}>Color</Text>
-          <TextInput
-            onChangeText={text => handleInputChange('color', text)}
-            placeholder="Enter Color"
-            placeholderTextColor={'#A6A6A6'}
-            style={styles.InputStyles}
-          />
-        </View>
-        <View style={[styles.container, shadowStyle]}>
-          <Text style={styles.heading}>Behaviour</Text>
-          <TextInput
-            onChangeText={text => handleInputChange('behaviour', text)}
-            placeholder="Friendly"
-            placeholderTextColor={'#A6A6A6'}
-            style={styles.InputStyles}
-          />
-        </View>
-        <View style={[styles.container, shadowStyle]}>
-          <Text style={styles.heading}>Description</Text>
-          <TextInput
-            textAlignVertical="top"
-            multiline
-            onChangeText={text => handleInputChange('description', text)}
-            placeholder="Enter Description"
-            placeholderTextColor={'#A6A6A6'}
-            style={{height: responsiveHeight(15), color: '#2A1F51'}}
-          />
-        </View>
+        {renderInputField('Color', 'color', 'Golden')}
+        {renderInputField('Behaviour', 'behaviour', 'Friendly, Active')}
+        {renderInputField(
+          'Description',
+          'description',
+          'A very loyal dog...',
+          true,
+        )}
       </View>
-      <View style={{padding: responsiveHeight(2.5)}}>
-        <TouchableOpacity onPress={selectPetImages}>
-          <Image
-            source={images.upload}
-            style={{
-              width: responsiveWidth(90),
-              alignSelf: 'center',
-              height: responsiveHeight(15),
-              marginTop: 20,
-              resizeMode: 'stretch',
-            }}
-          />
-        </TouchableOpacity>
-        {/* <View style={{ flexDirection: 'row', alignSelf: 'center', width: responsiveWidth(90), marginTop: 20, justifyContent: 'space-between' }}>
-          <Image source={images.dog1} style={{ width: responsiveWidth(44), height: responsiveHeight(15), borderRadius: 10, overflow: 'hidden' }} />
-          <Image source={images.dog2} style={{ width: responsiveWidth(44), height: responsiveHeight(15), borderRadius: 10, overflow: 'hidden' }} />
-        </View>
-        <Image source={images.dog3} style={{ width: responsiveWidth(90), height: responsiveHeight(15), marginBottom: responsiveHeight(2), borderRadius: 10, overflow: 'hidden', alignSelf: 'center', marginTop: 10 }} /> */}
-        <View style={{marginTop: 20}}>
-          {petImages.map((_, index) => {
-            if (index % 2 === 0) {
-              const secondImage = petImages[index + 1];
 
-              if (secondImage) {
-                // render two in a row
+      <View style={{padding: responsiveHeight(2.5)}}>
+        <Text style={[styles.inputLabel, {marginBottom: 10}]}>
+          Gallery Images
+        </Text>
+        {petImages?.length === 0 ? (
+          <TouchableOpacity onPress={selectMultipleImages}>
+            <Image source={images.upload} style={styles.uploadPlaceholder} />
+          </TouchableOpacity>
+        ) : (
+          <View style={{marginTop: 0}}>
+            {petImages.map((img, index) => {
+              if (index % 2 === 0) {
+                const nextImg = petImages[index + 1];
                 return (
-                  <View
-                    key={index}
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      width: responsiveWidth(90),
-                      alignSelf: 'center',
-                      marginBottom: 10,
-                    }}>
-                    <Image
-                      source={{uri: petImages[index]}}
-                      style={{
-                        width: responsiveWidth(44),
-                        height: responsiveHeight(15),
-                        borderRadius: 10,
-                      }}
-                    />
-                    <Image
-                      source={{uri: secondImage}}
-                      style={{
-                        width: responsiveWidth(44),
-                        height: responsiveHeight(15),
-                        borderRadius: 10,
-                      }}
-                    />
+                  <View key={index} style={styles.imageRow}>
+                    <View style={styles.imageWrapper}>
+                      <Image
+                        source={{uri: img}}
+                        style={styles.galleryImageHalf}
+                      />
+                      <TouchableOpacity
+                        onPress={() => removeImage(index)}
+                        style={styles.removeIconContainer}>
+                        <Entypo
+                          name="cross"
+                          size={responsiveFontSize(2)}
+                          color={Colors.white}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    {nextImg ? (
+                      <View style={styles.imageWrapper}>
+                        <Image
+                          source={{uri: nextImg}}
+                          style={styles.galleryImageHalf}
+                        />
+                        <TouchableOpacity
+                          onPress={() => removeImage(index + 1)}
+                          style={styles.removeIconContainer}>
+                          <Entypo
+                            name="cross"
+                            size={responsiveFontSize(2)}
+                            color={Colors.white}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    ) : (
+                      <View style={{width: responsiveWidth(44)}} />
+                    )}
                   </View>
                 );
-              } else {
-                // if last image and it's odd
-                return (
-                  <Image
-                    key={index}
-                    source={{uri: petImages[index]}}
-                    style={{
-                      width: responsiveWidth(90),
-                      height: responsiveHeight(15),
-                      borderRadius: 10,
-                      alignSelf: 'center',
-                      marginBottom: 10,
-                    }}
-                  />
-                );
               }
-            }
-          })}
-        </View>
+              return null;
+            })}
+          </View>
+        )}
 
-        <Button
-          handlePress={
-            type === 'edit' ? editPetProfileHandler : createPetProfileHandler
-          }
-          textColor="white"
-          title={
-            isLoading ? (
-              <ActivityIndicator size={'large'} color={Colors.white} />
-            ) : type === 'edit' ? (
-              'Edit Now'
-            ) : (
-              'Create Now'
-            )
-          }
-          bgColor={Colors.buttonBg}
-          borderColor={''}
-          borderRadius={0}
-          xml={''}
-          width={0}
-          height={0}
-          textFont={0}
-        />
+        <View style={{marginTop: 20}}>
+          <Button
+            title={petId ? 'Update Profile' : 'Create Profile'}
+            isLoading={isLoading}
+            handlePress={submitHandler}
+          />
+        </View>
       </View>
     </ScrollView>
   );
 };
 
-export default AddPetProfile;
-
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 10,
-    paddingTop: responsiveHeight(1),
-    backgroundColor: '#FFFF',
-    borderRadius: 10,
-    marginTop: 20,
+  scrollContent: {
+    flexGrow: 1,
+    backgroundColor: Colors.white,
+    paddingBottom: 30,
+  },
+  imagePickerWrapper: {alignSelf: 'center', marginTop: responsiveHeight(1.5)},
+  mainProfileImage: {
+    height: responsiveHeight(14),
+    width: responsiveHeight(14),
+    borderRadius: responsiveHeight(7),
+    backgroundColor: '#f0f0f0',
+  },
+  plusButton: {
+    backgroundColor: Colors.buttonBg,
+    height: 35,
+    width: 35,
+    alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 20,
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    borderWidth: 2,
+    borderColor: '#FFF',
   },
-  InputStyles: {
-    height: responsiveHeight(5),
-    color: '#2A1F51',
+  inputContainer: {
+    padding: 12,
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    marginTop: 15,
   },
-
-  heading: {
-    fontSize: responsiveFontSize(2),
+  shadow: {
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {elevation: 3},
+    }),
+  },
+  inputLabel: {
+    fontSize: responsiveFontSize(1.8),
     color: '#2A1F51',
-    fontWeight: '600',
+    fontWeight: '700',
+  },
+  inputStyle: {
+    color: '#2A1F51',
+    fontSize: responsiveFontSize(1.8),
+    marginTop: 5,
+    padding: 0,
+    textTransform: 'capitalize',
+  },
+  dateText: {color: '#2A1F51', marginTop: 8, fontSize: responsiveFontSize(1.8)},
+  row: {flexDirection: 'row', justifyContent: 'space-between'},
+  uploadPlaceholder: {
+    height: responsiveHeight(16),
+    width: '100%',
+    resizeMode: 'contain',
+  },
+  imageRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  galleryImageHalf: {
+    width: responsiveWidth(43),
+    height: responsiveHeight(15),
+    borderRadius: 10,
+    backgroundColor: Colors.lightGray,
+  },
+  imageWrapper: {
+    position: 'relative',
+    width: responsiveWidth(43),
+    height: responsiveHeight(15),
+  },
+  removeIconContainer: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    backgroundColor: Colors.buttonBg,
+    borderRadius: 15,
+    width: 25,
+    height: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
 });
+
+export default AddPetProfile;

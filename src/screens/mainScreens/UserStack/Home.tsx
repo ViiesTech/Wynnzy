@@ -222,9 +222,7 @@ const Home = ({navigation}: any) => {
       {/* Floating Action Button */}
       <View style={styles.fab}>
         <Button
-          handlePress={() =>
-            navigation.navigate('AddPetProfile', {type: 'create'})
-          }
+          handlePress={() => navigation.navigate('AddPetProfile')}
           width={responsiveWidth(35)}
           height={responsiveHeight(6.5)}
           title="Add Pet"

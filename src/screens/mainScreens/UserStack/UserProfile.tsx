@@ -75,13 +75,45 @@ const UserProfile: React.FC = ({navigation}: any) => {
       <View style={styles.myPetsContainer}>
         <Text style={[styles.myPetsText]}>My Pets</Text>
         <TouchableOpacity
-          onPress={() => navigation.navigate('AddPetProfile', {type: 'create'})}
+          onPress={() => navigation.navigate('AddPetProfile')}
           style={styles.addPet}>
           <Text style={styles.addPetText}>+ Add Pet</Text>
         </TouchableOpacity>
       </View>
     </Fragment>
   );
+
+  const renderItem = ({item}: any) => {
+    return (
+      <TouchableOpacity
+        style={styles.petItem}
+        activeOpacity={0.8}
+        onPress={() => navigation.navigate('PetProfile', {_id: item?._id})}>
+        <Image
+          source={{uri: `${ImageBaseUrl}${item?.profileImage}`}}
+          style={styles.petImage}
+        />
+        <View style={styles.editIconContainer}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('AddPetProfile', {
+                petId: item?._id,
+              })
+            }
+            style={styles.editIcon}>
+            <MaterialIcons
+              name={'edit'}
+              size={responsiveFontSize(1.8)}
+              color={'#FFFFFF'}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.petNameContainer}>
+          <Text style={styles.petName}>{item?.petName}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -93,36 +125,7 @@ const UserProfile: React.FC = ({navigation}: any) => {
         columnWrapperStyle={styles.columnWrapper}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
-        renderItem={({item}) => (
-          <TouchableOpacity
-            style={styles.petItem}
-            activeOpacity={0.8}
-            onPress={() => navigation.navigate('PetProfile', {_id: item?._id})}>
-            <Image
-              source={{uri: `${ImageBaseUrl}${item?.profileImage}`}}
-              style={styles.petImage}
-            />
-            <View style={styles.editIconContainer}>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('CreateProfile', {
-                    type: 'edit',
-                    _id: item?._id,
-                  })
-                }
-                style={styles.editIcon}>
-                <MaterialIcons
-                  name={'edit'}
-                  size={responsiveFontSize(1.8)}
-                  color={'#FFFFFF'}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.petNameContainer}>
-              <Text style={styles.petName}>{item?.petName}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
+        renderItem={renderItem}
       />
       <View style={styles.footerContainer}>
         <Button

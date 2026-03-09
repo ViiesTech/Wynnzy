@@ -51,4 +51,5 @@ export const images: {[key: string]: ImageSourcePropType} = {
   product: require('./product.png'),
   product2: require('./product2.png'),
   circleProgress: require('./circleProgress.png'),
+  petPH: require('./petPH.png'),
 };
