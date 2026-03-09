@@ -19,6 +19,7 @@ import {
   updateBookingStatus,
 } from '../../GlobalFunctions/Auth';
 import ServiceCard from '../../Components/ServiceCard';
+import UserHeader from '../../Components/UserHeader';
 
 const ViewBookedServices = ({navigation, route}: any) => {
   const {
@@ -162,7 +163,12 @@ const ViewBookedServices = ({navigation, route}: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <TextHeader title="Booking Details" />
+        <UserHeader
+          backIcon={true}
+          title="Booking Details"
+          navigation={navigation}
+          centerText={true}
+        />
       </View>
 
       <View style={styles.contentWrapper}>

@@ -7,8 +7,6 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-import Header from '../../../../Components/Header';
-import SearchInput from '../../../../Components/SearchInput';
 import {Colors} from '../../../../assets/colors';
 import {BoldText, NormalText} from '../../../../Components/Titles';
 import {images} from '../../../../assets/images';
@@ -24,6 +22,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {addToCart} from '../../../../redux/cartSlice';
 import {RootState} from '../../../../redux/Store';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import UserHeader from '../../../../Components/UserHeader';
 
 const PRODUCT_DATA = [1, 2, 3, 4, 5, 6, 7, 8]; // Replace with real data later
 
@@ -117,38 +116,6 @@ const Shop = ({navigation}: {navigation: any}) => {
     handleAddToCart(item);
   };
 
-  // Move everything above the list here to maintain scrolling
-  const ListHeader = () => {
-    return (
-      <View style={styles.header}>
-        {/* <Header
-          handleFilterPress={() => navigation.navigate('Filter2')}
-          iconName={notification}
-          handleNotificationPress={() => navigation.navigate('Notification')}
-          handlePress={() => navigation.navigate('Location')}
-          bgColor={''}
-          whiteNotification={false}
-        />
-
-        <SearchInput
-          txtColor={Colors.black}
-          xml={search}
-          placeHolder="Find best Hotels and Pet Care"
-          placeHolderColor="#CACACA"
-          bgColor="#F6F6F6"
-        /> */}
-
-        <BoldText
-          color={Colors.labelText}
-          title="Products"
-          mrgnTop={responsiveHeight(3)}
-          fontSize={responsiveFontSize(2.3)}
-          alignSelf="left"
-        />
-      </View>
-    );
-  };
-
   if (loader) {
     return (
       <View style={styles.loaderContainer}>
@@ -159,13 +126,13 @@ const Shop = ({navigation}: {navigation: any}) => {
 
   return (
     <View style={styles.mainContainer}>
+      <UserHeader title="Products" navigation={navigation} centerText={true} />
       <FlatList
         data={products}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
-        ListHeaderComponent={ListHeader}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       />

@@ -20,8 +20,9 @@ import {Colors} from '../../../assets/colors';
 import {getPetProfile} from '../../../GlobalFunctions/Auth';
 import {ImageBaseUrl} from '../../../BaseUrl';
 import moment from 'moment';
+import UserHeader from '../../../Components/UserHeader';
 
-const PetProfile: React.FC = ({route}: any) => {
+const PetProfile: React.FC = ({navigation, route}: any) => {
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const {_id} = route?.params || {};
@@ -70,6 +71,14 @@ const PetProfile: React.FC = ({route}: any) => {
       contentContainerStyle={styles.scrollContainer}>
       {/* Header Image & Floating Info Card */}
       <View>
+        <View style={styles.headerAbsoluteContainer}>
+          <UserHeader
+            navigation={navigation}
+            backIcon={true}
+            centerText={true}
+            // title="Pet Profile"
+          />
+        </View>
         <Image
           source={{uri: `${ImageBaseUrl}${data?.profileImage}`}}
           style={styles.mainImage}
@@ -184,6 +193,13 @@ const styles = StyleSheet.create({
     height: responsiveHeight(40),
     width: responsiveWidth(100),
   },
+  headerAbsoluteContainer: {
+    position: 'absolute',
+    top: responsiveHeight(2),
+    left: 0,
+    right: 0,
+    zIndex: 100,
+  },
   blurCardContainer: {
     padding: 20,
     width: responsiveWidth(90),
@@ -260,6 +276,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2.2),
     fontWeight: 'bold',
     marginTop: 5,
+    textTransform: 'capitalize',
   },
   descriptionText: {
     width: responsiveWidth(90),

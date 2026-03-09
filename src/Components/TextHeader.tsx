@@ -12,8 +12,9 @@ import {Colors} from '../assets/colors';
 
 interface titleProps {
   title: string;
+  goBack: boolean;
 }
-const TextHeader: React.FC<titleProps> = ({title}) => {
+const TextHeader: React.FC<titleProps> = ({goBack, title}) => {
   return (
     <View
       style={{
@@ -22,7 +23,7 @@ const TextHeader: React.FC<titleProps> = ({title}) => {
         alignItems: 'center',
         justifyContent: 'space-between',
       }}>
-      <BackIcon />
+      {goBack && <BackIcon />}
 
       <View
         style={{

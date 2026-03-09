@@ -27,6 +27,7 @@ import {
   responsiveWidth,
 } from '../../../../assets/responsive_dimensions';
 import BackIcon from '../../../../Components/BackIcon';
+import UserHeader from '../../../../Components/UserHeader';
 
 const ProductDetails = ({navigation, route}: {navigation: any; route: any}) => {
   const item = route.params || {};
@@ -80,9 +81,13 @@ const ProductDetails = ({navigation, route}: {navigation: any; route: any}) => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.mainScroll}>
+        <UserHeader
+          backIcon={true}
+          title={item?.productName}
+          navigation={navigation}
+          centerText={true}
+        />
         <View style={{paddingHorizontal: responsiveHeight(2)}}>
-          <BackIcon title={item?.productName} />
-
           {/* Swiper Section */}
           <View style={styles.swiperContainer}>
             <Swiper

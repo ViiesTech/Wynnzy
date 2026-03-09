@@ -80,18 +80,12 @@ const DaycareHeader = ({
 export default DaycareHeader;
 
 const styles = StyleSheet.create({
-  headerView: centerText => ({
+  headerView: (centerText: boolean) => ({
     height: 60,
     flexDirection: 'row',
     justifyContent: centerText ? 'center' : 'space-between',
     alignItems: 'center',
     paddingVertical: responsiveHeight(1),
-    // backgroundColor: Colors.white,
-    // shadowColor: '#000',
-    // shadowOffset: {width: 0, height: 1},
-    // shadowOpacity: 0.1,
-    // shadowRadius: 2,
-    // elevation: 5,
   }),
   profileContainer: {
     flexDirection: 'row',

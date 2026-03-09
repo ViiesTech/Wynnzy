@@ -1,7 +1,6 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Location from '../screens/mainScreens/UserStack/Location';
 import Filter from '../screens/commonScreens/Filter';
-import Create_Pet_Profile from '../screens/mainScreens/UserStack/Create_Pet_Profile';
 import Hotel from '../screens/mainScreens/UserStack/Hotel';
 import ServiceDetail from '../screens/mainScreens/UserStack/ServiceDetail';
 import PaymentMethod from '../screens/mainScreens/UserStack/PaymentMethod';
@@ -22,6 +21,7 @@ import AllServices from '../screens/mainScreens/UserStack/AllServices';
 import ViewBookedServices from '../screens/commonScreens/ViewBookedServices';
 import ReviewDetails from '../screens/commonScreens/ReviewDetails';
 import UserChat from '../screens/mainScreens/UserStack/UserChat';
+import AddPetProfile from '../screens/mainScreens/UserStack/AddPetProfile';
 
 type UserStackParams = {
   BottomStack: undefined;
@@ -53,7 +53,7 @@ export function UserStack() {
       <Stack.Screen name="Filter" component={Filter} />
       <Stack.Screen name="Filter2" component={Filter2} />
       <Stack.Screen name="StoreDetails" component={StoreDetails} />
-      <Stack.Screen name="CreateProfile" component={Create_Pet_Profile} />
+      <Stack.Screen name="AddPetProfile" component={AddPetProfile} />
       <Stack.Screen name="ZipCode" component={ZipCode} />
       <Stack.Screen name="Reviews" component={Reviews} />
       <Stack.Screen name="ReviewDetails" component={ReviewDetails} />

@@ -21,7 +21,7 @@ import {
 import SvgIcons from '../../../Components/SvgIcons';
 import {forward} from '../../../assets/icons';
 import {ImageBaseUrl} from '../../../BaseUrl';
-import TextHeader from '../../../Components/TextHeader';
+import UserHeader from '../../../Components/UserHeader';
 
 const UserChat = ({navigation, route}: any) => {
   const {userData} = useSelector((state: any) => state.user);
@@ -129,9 +129,12 @@ const UserChat = ({navigation, route}: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{paddingHorizontal: 15, backgroundColor: Colors.white}}>
-        <TextHeader title={chatData?.name} />
-      </View>
+      <UserHeader
+        title={chatData?.name}
+        navigation={navigation}
+        backIcon={true}
+        centerText={true}
+      />
 
       <FlatList
         data={messages}

@@ -16,6 +16,7 @@ import {responsiveFontSize} from '../../../assets/responsive_dimensions';
 import SvgIcons from '../../../Components/SvgIcons';
 import * as Icons from '../../../assets/icons';
 import {ImageBaseUrl} from '../../../BaseUrl';
+import UserHeader from '../../../Components/UserHeader';
 
 const UserInbox = ({navigation}: any) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -88,7 +89,7 @@ const UserInbox = ({navigation}: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <DaycareHeader title="Inbox" navigation={navigation} centerText />
+        <UserHeader title="Inbox" navigation={navigation} centerText={true} />
         <View style={styles.searchContainer}>
           <View style={styles.searchInner}>
             <View style={styles.searchIconContainer}>

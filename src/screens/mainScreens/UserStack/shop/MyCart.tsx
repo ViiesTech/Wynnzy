@@ -186,26 +186,27 @@ const MyCart = ({navigation}: any) => {
         />
       </View>
 
-      {/* Bottom Sticky Checkout Bar */}
-      <View style={styles.checkoutBar}>
-        <View>
-          <NormalText
-            fontSize={responsiveFontSize(1.8)}
-            color="#7B7F8F"
-            title="Total Amount"
-          />
-          <BoldText
-            color={Colors.black}
-            fontSize={responsiveFontSize(2.4)}
-            title={`USD ${calculateTotal()}`}
-          />
+      {cartItems?.length > 0 && (
+        <View style={styles.checkoutBar}>
+          <View>
+            <NormalText
+              fontSize={responsiveFontSize(1.8)}
+              color="#7B7F8F"
+              title="Total Amount"
+            />
+            <BoldText
+              color={Colors.black}
+              fontSize={responsiveFontSize(2.4)}
+              title={`USD ${calculateTotal()}`}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Checkout')}
+            style={styles.checkoutBtn}>
+            <Ionicons name="arrow-forward" color={Colors.white} size={28} />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Checkout')}
-          style={styles.checkoutBtn}>
-          <Ionicons name="arrow-forward" color={Colors.white} size={28} />
-        </TouchableOpacity>
-      </View>
+      )}
     </View>
   );
 };

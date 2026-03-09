@@ -1,272 +1,263 @@
-/* eslint-disable react-native/no-inline-styles */
+import React, {Fragment, useEffect, useState} from 'react';
 import {
   View,
   Text,
   Image,
-  ScrollView,
   TouchableOpacity,
   StyleSheet,
   FlatList,
+  SafeAreaView,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from '../../../assets/responsive_dimensions';
 import {images} from '../../../assets/images';
-import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import BackIcon from '../../../Components/BackIcon';
 import {Colors} from '../../../assets/colors';
 import {Button} from '../../../Components/Button';
 import {clearToken} from '../../../redux/Slices';
 import {useDispatch, useSelector} from 'react-redux';
-import {getAllPets, getPetProfile} from '../../../GlobalFunctions/Auth';
+import {getAllPets} from '../../../GlobalFunctions/Auth';
 import {ImageBaseUrl} from '../../../BaseUrl';
 import {useIsFocused} from '@react-navigation/native';
+import UserHeader from '../../../Components/UserHeader';
 
-const UserProfile: React.FC = ({navigation, route}: any) => {
+const UserProfile: React.FC = ({navigation}: any) => {
   const dispatch = useDispatch();
-  const {profileImage, fullName, _id} = useSelector(
-    state => state?.user?.userData,
-  );
+  const userData = useSelector((state: any) => state?.user?.userData);
+  const {profileImage, fullName, _id} = userData || {};
+
   const [data, setData] = useState([]);
   const isFocused = useIsFocused();
 
   const getAllPetsHandler = async () => {
-    const response = await getAllPets(_id);
-    setData(response.data);
+    try {
+      const response = await getAllPets(_id);
+      setData(response?.data || []);
+    } catch (error) {
+      console.log('Error fetching pets:', error);
+    }
   };
 
   useEffect(() => {
-    getAllPetsHandler();
-  }, [isFocused]);
+    if (isFocused && _id) {
+      getAllPetsHandler();
+    }
+  }, [isFocused, _id]);
 
-  console.log('data in userProfile:-', JSON.stringify(data, null, 2));
-  return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.scrollContainer}>
-      {/* Header Section */}
-      <View>
-        <View style={styles.backIconContainer}>
-          <BackIcon />
-        </View>
-        <Image source={images.cover} style={styles.coverImage} />
-        <View style={styles.profileContainer}>
-          <Image
-            source={
-              profileImage
-                ? {uri: `${ImageBaseUrl}${profileImage}`}
-                : images.userDummy
-            }
-            style={styles.profileImage}
-          />
-        </View>
-      </View>
-
-      <View style={styles.spacer} />
-      <Text style={styles.userName}>{fullName}</Text>
-      {/* <Text style={styles.userExperience}>3 Years</Text> */}
-
-      <TouchableOpacity
-        onPress={() => navigation.navigate('EditUserProfile')}
-        style={styles.editProfileContainer}>
-        <Text>Edit Profile</Text>
-      </TouchableOpacity>
-
-      {/* Pet Images */}
-      <View style={styles.petContainer}>
-        <FlatList
-          numColumns={2}
-          data={data}
-          columnWrapperStyle={{
-            justifyContent: 'space-between', // <-- THIS is key for row-level spacing
-          }}
-          contentContainerStyle={{
-            justifyContent: 'space-between',
-            gap: responsiveHeight(2),
-          }}
-          renderItem={({item, index}) => {
-            return (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('PetProfile', {_id: item?._id})
-                }
-                key={index}>
-                <Image
-                  source={{uri: `${ImageBaseUrl}${item?.profileImage}`}}
-                  style={styles.petImage}
-                />
-                <View style={styles.editIconContainer}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate('CreateProfile', {
-                        type: 'edit',
-                        _id: item?._id,
-                      })
-                    }
-                    style={styles.editIcon}>
-                    <MaterialIcons
-                      name={'edit'}
-                      size={responsiveFontSize(2)}
-                      color={'#FFFFFF'}
-                    />
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.petNameContainer}>
-                  <Text style={styles.petName}>{item?.petName}</Text>
-                </View>
-              </TouchableOpacity>
-            );
-          }}
+  const renderHeader = () => (
+    <Fragment>
+      <View style={styles.backIconContainer}>
+        <UserHeader
+          title="Profile"
+          navigation={navigation}
+          centerText={true}
+          editProfile={true}
+          whiteTitle={true}
         />
       </View>
-      {/* <TouchableOpacity onPress={() => navigation.navigate('CreateProfile')} >
-        <Image source={images.dog6} style={styles.largePetImage} />
-        <View style={[styles.editIconContainer, { right: responsiveHeight(4), top: responsiveHeight(2.5) }]}>
-          <TouchableOpacity onPress={() => navigation.navigate('CreateProfile')} style={styles.editIcon}>
-            <MaterialIcons name={'edit'} size={responsiveFontSize(2)} color={'#FFFFFF'} />
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.petNameContainer, { left: responsiveHeight(4) }]}>
-          <Text style={styles.petName}>Bella</Text>
-        </View>
-      </TouchableOpacity>
+      <Image source={images.cover} style={styles.coverImage} />
+      <View style={styles.profileContainer}>
+        <Image
+          source={
+            profileImage
+              ? {uri: `${ImageBaseUrl}${profileImage}`}
+              : images.userDummy
+          }
+          style={styles.profileImage}
+        />
+      </View>
+      <View style={styles.spacer} />
+      <Text style={styles.userName}>{fullName}</Text>
 
-      <View style={styles.petContainer}>
-        {[images.dog7, images.dog7].map((dog, index) => (
-          <TouchableOpacity onPress={() => navigation.navigate('CreateProfile')} key={index}>
-            <Image source={dog} style={styles.petImage} />
+      <View style={styles.myPetsContainer}>
+        <Text style={[styles.myPetsText]}>My Pets</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('AddPetProfile', {type: 'create'})}
+          style={styles.addPet}>
+          <Text style={styles.addPetText}>+ Add Pet</Text>
+        </TouchableOpacity>
+      </View>
+    </Fragment>
+  );
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <FlatList
+        data={data}
+        keyExtractor={(item, index) => item?._id || index.toString()}
+        numColumns={2}
+        ListHeaderComponent={renderHeader}
+        columnWrapperStyle={styles.columnWrapper}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+        renderItem={({item}) => (
+          <TouchableOpacity
+            style={styles.petItem}
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate('PetProfile', {_id: item?._id})}>
+            <Image
+              source={{uri: `${ImageBaseUrl}${item?.profileImage}`}}
+              style={styles.petImage}
+            />
             <View style={styles.editIconContainer}>
-              <TouchableOpacity onPress={() => navigation.navigate('CreateProfile')} style={styles.editIcon}>
-                <MaterialIcons name={'edit'} size={responsiveFontSize(2)} color={'#FFFFFF'} />
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('CreateProfile', {
+                    type: 'edit',
+                    _id: item?._id,
+                  })
+                }
+                style={styles.editIcon}>
+                <MaterialIcons
+                  name={'edit'}
+                  size={responsiveFontSize(1.8)}
+                  color={'#FFFFFF'}
+                />
               </TouchableOpacity>
             </View>
             <View style={styles.petNameContainer}>
-              <Text style={styles.petName}>Bella</Text>
+              <Text style={styles.petName}>{item?.petName}</Text>
             </View>
           </TouchableOpacity>
-        ))}
-      </View> */}
-
-      <Button
-        handlePress={() => dispatch(clearToken())}
-        title="Logout"
-        bgColor={Colors.buttonBg}
-        textColor={Colors.white}
-        width={responsiveWidth(90)}
-        mrgnTop={responsiveHeight(2)}
+        )}
       />
-    </ScrollView>
+      <View style={styles.footerContainer}>
+        <Button
+          handlePress={() => dispatch(clearToken())}
+          title="Logout"
+          bgColor={Colors.buttonBg}
+          textColor={Colors.white}
+          width={responsiveWidth(90)}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1,
+  safeArea: {
+    flex: 1,
     backgroundColor: Colors.white,
-    paddingBottom: responsiveHeight(2),
   },
-  backButton: {
-    backgroundColor: Colors.buttonBg,
-    height: responsiveHeight(5),
-    width: responsiveHeight(5),
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
+  listContent: {
+    flexGrow: 1,
   },
-  coverImage: {height: responsiveHeight(30), width: responsiveWidth(100)},
-  profileContainer: {
-    height: responsiveHeight(15),
-    width: responsiveHeight(15),
-    alignSelf: 'center',
-    position: 'absolute',
-    zIndex: 10,
-    bottom: -50,
-  },
-  profileImage: {
-    height: responsiveHeight(15),
-    width: responsiveHeight(15),
-    borderRadius: responsiveHeight(15),
-  },
-  editProfileButton: {
-    backgroundColor: Colors.buttonBg,
-    height: responsiveHeight(5),
-    width: responsiveHeight(5),
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 100,
-    position: 'absolute',
-    zIndex: 11,
-    bottom: 0,
-    right: 0,
-  },
-  spacer: {height: responsiveHeight(7)},
-  userName: {
-    alignSelf: 'center',
-    fontSize: responsiveFontSize(2),
-    fontWeight: '900',
-    color: Colors.labelText,
-  },
-  userExperience: {
-    alignSelf: 'center',
-    fontSize: responsiveFontSize(1.5),
-    fontWeight: '500',
-    color: '#2A1E51',
-  },
-  editProfileContainer: {
-    padding: 10,
-    width: responsiveWidth(90),
-    alignSelf: 'center',
-    borderWidth: 1,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
+  columnWrapper: {
+    justifyContent: 'space-between',
+    paddingHorizontal: responsiveWidth(5),
+    marginTop: responsiveHeight(2),
   },
   backIconContainer: {
     position: 'absolute',
     zIndex: 10,
     top: 10,
-    left: 10,
+    width: '100%',
   },
-  petContainer: {
-    flexDirection: 'row',
+  coverImage: {
+    height: responsiveHeight(25),
+    width: responsiveWidth(100),
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+  },
+  profileContainer: {
+    height: responsiveHeight(14),
+    width: responsiveHeight(14),
     alignSelf: 'center',
-    width: responsiveWidth(90),
-    marginTop: 20,
-    justifyContent: 'space-between',
+    marginTop: responsiveHeight(-7),
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  profileImage: {
+    height: responsiveHeight(14),
+    width: responsiveHeight(14),
+    borderRadius: responsiveHeight(7),
+    borderWidth: 4,
+    borderColor: Colors.white,
+  },
+  spacer: {height: responsiveHeight(2)},
+  userName: {
+    alignSelf: 'center',
+    fontSize: responsiveFontSize(2.2),
+    fontWeight: '900',
+    color: Colors.labelText,
+  },
+  petItem: {
+    width: responsiveWidth(43),
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: '#f9f9f9',
   },
   petImage: {
-    width: responsiveWidth(44),
-    height: responsiveHeight(15),
-    borderRadius: 10,
-    overflow: 'hidden',
+    width: '100%',
+    height: responsiveHeight(18),
   },
-  largePetImage: {
-    width: responsiveWidth(90),
-    height: responsiveHeight(15),
-    borderRadius: 10,
-    overflow: 'hidden',
-    alignSelf: 'center',
-    marginTop: 10,
+  editIconContainer: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
   },
-  editIconContainer: {position: 'absolute', top: 10, right: 10},
   editIcon: {
     backgroundColor: Colors.buttonBg,
-    height: responsiveHeight(4),
-    width: responsiveHeight(4),
+    height: 30,
+    width: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 10,
+    borderRadius: 8,
   },
-  petNameContainer: {position: 'absolute', bottom: 10, left: 10},
+  petNameContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    padding: 8,
+  },
   petName: {
     color: '#FFFFFF',
     fontWeight: 'bold',
-    fontSize: responsiveFontSize(2),
+    fontSize: responsiveFontSize(1.8),
+    textAlign: 'center',
+  },
+  myPetsContainer: {
+    height: 45,
+    paddingHorizontal: responsiveWidth(5),
+    marginTop: responsiveHeight(2),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    paddingBottom: responsiveHeight(1),
+    // backgroundColor: 'red',
+  },
+  myPetsText: {
+    fontSize: responsiveFontSize(2.2),
+    fontWeight: '600',
+    color: Colors.labelText,
+  },
+  footerContainer: {
+    paddingVertical: responsiveHeight(2),
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+  },
+  addPet: {
+    height: 30,
+    width: 75,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.buttonBg,
+  },
+  addPetText: {
+    fontSize: responsiveFontSize(1.5),
+    color: Colors.white,
   },
 });
 
