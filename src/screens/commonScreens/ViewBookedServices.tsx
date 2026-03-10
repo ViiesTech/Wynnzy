@@ -19,6 +19,7 @@ import {
 } from '../../GlobalFunctions/Auth';
 import ServiceCard from '../../Components/ServiceCard';
 import UserHeader from '../../Components/UserHeader';
+import BookingReviewModal from '../../Components/BookingReviewModal';
 
 const ViewBookedServices = ({navigation, route}: any) => {
   const {
@@ -27,11 +28,14 @@ const ViewBookedServices = ({navigation, route}: any) => {
     bookingId,
     bookingStatus,
     paymentStatus,
+    userId,
+    managerId,
   } = route?.params || {};
 
   const [isLoading, setIsLoading] = useState(false); // Global list loader
   const [loader, setLoader] = useState(false); // Accept/Complete loader
   const [secondLoader, setSecondLoader] = useState(false); // Reject loader
+  const [isReviewModalVisible, setIsReviewModalVisible] = useState(false);
 
   const isPaid = paymentStatus === 'Succeeded';
 
@@ -147,18 +151,33 @@ const ViewBookedServices = ({navigation, route}: any) => {
         <View style={styles.bottomButtonContainer}>
           <Button
             title="Cancel Booking"
-            bgColor="#9DA5B3"
+            bgColor={Colors.buttonBg}
             textColor={Colors.white}
             handlePress={deleteBookingHandler}
             isLoading={isLoading}
           />
         </View>
       );
+    } else {
+      if (type === 'User' && bookingStatus === 'Completed') {
+        return (
+          <View style={styles.bottomButtonContainer}>
+            <Button
+              title="Add Review"
+              bgColor={Colors.buttonBg}
+              textColor={Colors.white}
+              handlePress={() => setIsReviewModalVisible(true)}
+              isLoading={isLoading}
+            />
+          </View>
+        );
+      }
     }
 
     return null;
   };
 
+  // console.log('bookingStatus:-', bookingStatus);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -192,6 +211,14 @@ const ViewBookedServices = ({navigation, route}: any) => {
 
       {/* Fixed buttons at the bottom for better accessibility */}
       {!isLoading && renderFooter()}
+
+      <BookingReviewModal
+        isVisible={isReviewModalVisible}
+        onClose={() => setIsReviewModalVisible(false)}
+        userId={userId}
+        managerId={managerId}
+        navigation={navigation}
+      />
     </SafeAreaView>
   );
 };

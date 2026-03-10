@@ -25,7 +25,7 @@ import DaycareHeader from '../../../Components/DaycareHeader';
 
 const Orders = ({navigation, route}: any) => {
   const [currentCategory, setCurrentCategory] = useState('Pending');
-  const [bookings, setBookings] = useState([]);
+  const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const from = route?.params?.from;
 
@@ -69,7 +69,7 @@ const Orders = ({navigation, route}: any) => {
   const renderHeader = () => (
     <View style={{marginBottom: responsiveHeight(1)}}>
       {from ? (
-        <TextHeader title="Orders" />
+        <TextHeader title="Orders" navigation={navigation} />
       ) : (
         <DaycareHeader title="Orders" navigation={navigation} centerText />
       )}
@@ -146,6 +146,8 @@ const Orders = ({navigation, route}: any) => {
                     bookingId: item?._id,
                     bookingStatus: item?.status,
                     paymentStatus: item?.paymentStatus,
+                    userId: item?.userId?._id || item?.userId,
+                    managerId: managerId,
                   })
                 }
               />

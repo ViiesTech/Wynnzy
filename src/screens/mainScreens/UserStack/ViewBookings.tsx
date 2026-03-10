@@ -137,6 +137,8 @@ const ViewBookings = ({navigation}: any) => {
             bookingId: item?._id,
             bookingStatus: item?.status,
             paymentStatus: item?.paymentStatus,
+            userId: _id,
+            managerId: item.managerId?._id || item.managerId,
           })
         }
       />

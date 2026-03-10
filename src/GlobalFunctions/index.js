@@ -85,25 +85,7 @@ export const getServicesByCategory = async (managerId, status) => {
   }
 };
 
-export const addReview = async (
-  userId,
-  managerId,
-  stars,
-  satisfaction,
-  responsiveness,
-  amenities,
-  comment,
-) => {
-  let data = JSON.stringify({
-    userId: userId,
-    managerId: managerId,
-    stars: stars,
-    satisfaction: satisfaction,
-    responsiveness: responsiveness,
-    amenities: amenities,
-    comment: comment,
-  });
-
+export const addReview = async data => {
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
