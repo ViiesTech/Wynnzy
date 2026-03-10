@@ -21,6 +21,8 @@ const UserHeader = ({
   navigation,
   centerText = false,
   backIcon = false,
+  mT = 0,
+  mB = 0,
 }: any) => {
   const {userData} = useSelector((state: any) => state.user);
   const {profileImage, fullName} = userData || {};
@@ -29,7 +31,11 @@ const UserHeader = ({
     <View
       style={[
         styles.headerView,
-        {justifyContent: centerText ? 'center' : 'space-between'},
+        {
+          justifyContent: centerText ? 'center' : 'space-between',
+          marginTop: mT,
+          marginBottom: mB,
+        },
       ]}>
       <View style={centerText ? styles.absoluteLeft : null}>
         {home && (
@@ -56,6 +62,7 @@ const UserHeader = ({
             </View>
           </View>
         )}
+
         {backIcon && (
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -108,6 +115,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: responsiveHeight(1),
+    width: '90%',
+    alignSelf: 'center',
+    // backgroundColor: 'red',
   },
   profileContainer: {
     flexDirection: 'row',
@@ -164,7 +174,7 @@ const styles = StyleSheet.create({
   },
   absoluteLeft: {
     position: 'absolute',
-    left: responsiveWidth(4),
+    left: responsiveWidth(0),
     zIndex: 10,
   },
   absoluteRight: {

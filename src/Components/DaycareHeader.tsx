@@ -24,7 +24,11 @@ const DaycareHeader = ({
   const {profileImage, fullName} = businessProfileData || {};
 
   return (
-    <View style={styles.headerView(centerText)}>
+    <View
+      style={[
+        styles.headerView,
+        {justifyContent: centerText ? 'center' : 'space-between'},
+      ]}>
       {home && (
         <View style={styles.profileContainer}>
           <Image
@@ -80,13 +84,13 @@ const DaycareHeader = ({
 export default DaycareHeader;
 
 const styles = StyleSheet.create({
-  headerView: (centerText: boolean) => ({
+  headerView: {
     height: 60,
     flexDirection: 'row',
-    justifyContent: centerText ? 'center' : 'space-between',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: responsiveHeight(1),
-  }),
+  },
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',

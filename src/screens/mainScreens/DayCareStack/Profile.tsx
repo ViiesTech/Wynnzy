@@ -65,7 +65,7 @@ const Profile = ({navigation}: any) => {
 
   const statsData = [
     {id: 1, title1: 'View', title2: 'Orders'},
-    {id: 2, title1: 'Rating', title2: ratingInfo.avgRating || '0.0'},
+    {id: 2, title1: 'Average Rating', title2: ratingInfo.avgRating || '0.0'},
   ];
 
   useEffect(() => {
@@ -158,7 +158,7 @@ const Profile = ({navigation}: any) => {
       />
 
       {/* Stats Cards */}
-      <FlatList
+      {/* <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.statsList}
@@ -186,7 +186,7 @@ const Profile = ({navigation}: any) => {
             />
           </TouchableOpacity>
         )}
-      />
+      /> */}
 
       {/* Reviews Section */}
       <ListHeading
@@ -208,10 +208,11 @@ const Profile = ({navigation}: any) => {
         keyExtractor={(_, index) => index.toString()}
         renderItem={({item}) => (
           <ReviewsCard
+            reviewData={item}
+            cardWidth={70}
             handlePress={() =>
               navigation.navigate('ReviewDetails', {reviewId: item?._id})
             }
-            reviewData={item}
           />
         )}
       />
