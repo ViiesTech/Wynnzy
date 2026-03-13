@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback, Fragment} from 'react';
 import {
   View,
   Image,
@@ -149,47 +149,49 @@ const Home = ({navigation}: any) => {
   );
 
   const renderHeader = () => (
-    <View style={{paddingHorizontal: responsiveHeight(2)}}>
+    <Fragment>
       <UserHeader home={true} bellIcon={true} navigation={navigation} />
-      <SearchInput
-        onChangeText={searchStoreHandler}
-        txtColor={Colors.black}
-        xml={search}
-        placeHolder="Find best Hotels and Pet Care"
-        placeHolderColor="#CACACA"
-        bgColor="#F6F6F6"
-      />
-      <View style={styles.bannerContainer}>
-        <Image
-          style={styles.bannerImage}
-          resizeMode="cover"
-          source={images.slide}
+      <View style={{paddingHorizontal: responsiveHeight(2)}}>
+        <SearchInput
+          onChangeText={searchStoreHandler}
+          txtColor={Colors.black}
+          xml={search}
+          placeHolder="Find best Hotels and Pet Care"
+          placeHolderColor="#CACACA"
+          bgColor="#F6F6F6"
         />
-        <View style={styles.bannerOverlay}>
-          <BoldText
-            fontSize={responsiveFontSize(2)}
-            color={Colors.white}
-            title="Flash Sale"
+        <View style={styles.bannerContainer}>
+          <Image
+            style={styles.bannerImage}
+            resizeMode="cover"
+            source={images.slide}
           />
-          <NormalText
-            color={Colors.white}
-            title="Get the best deals for your pet."
-          />
-          <Button
-            height={responsiveHeight(4.5)}
-            width={responsiveHeight(10)}
-            textColor="white"
-            bgColor="#69DBD9"
-            title="See All"
-            handlePress={() => console.log('Flash Sale Press')}
-          />
+          <View style={styles.bannerOverlay}>
+            <BoldText
+              fontSize={responsiveFontSize(2)}
+              color={Colors.white}
+              title="Flash Sale"
+            />
+            <NormalText
+              color={Colors.white}
+              title="Get the best deals for your pet."
+            />
+            <Button
+              height={responsiveHeight(4.5)}
+              width={responsiveHeight(10)}
+              textColor="white"
+              bgColor="#69DBD9"
+              title="See All"
+              handlePress={() => console.log('Flash Sale Press')}
+            />
+          </View>
         </View>
+        <ListHeading
+          onSeeAllPress={() => navigation.navigate('AllHotels')}
+          title="Nearby Pet Hotel / Daycares"
+        />
       </View>
-      <ListHeading
-        onSeeAllPress={() => navigation.navigate('AllHotels')}
-        title="Nearby Pet Hotel / Daycares"
-      />
-    </View>
+    </Fragment>
   );
 
   const listEmptyComponent = () => {

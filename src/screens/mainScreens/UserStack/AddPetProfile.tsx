@@ -203,13 +203,13 @@ const AddPetProfile = ({navigation, route}: any) => {
     <ScrollView
       contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}>
+      <UserHeader
+        title={petId ? 'Edit Pet Profile' : 'Create Pet Profile'}
+        navigation={navigation}
+        backIcon={true}
+        centerText={true}
+      />
       <View style={{padding: responsiveHeight(2.5)}}>
-        <UserHeader
-          title={petId ? 'Edit Pet Profile' : 'Create Pet Profile'}
-          navigation={navigation}
-          backIcon={true}
-        />
-
         {/* Profile Image Picker */}
         <View style={styles.imagePickerWrapper}>
           <Image

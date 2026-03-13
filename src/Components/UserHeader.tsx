@@ -134,8 +134,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   rightIconsContainer: {
+    flex: 1,
     flexDirection: 'row',
     gap: responsiveWidth(2),
+    justifyContent: 'flex-end',
     // backgroundColor: 'red',
   },
   notificationContainer: {
@@ -179,7 +181,7 @@ const styles = StyleSheet.create({
   },
   absoluteRight: {
     position: 'absolute',
-    right: responsiveWidth(4),
+    right: responsiveWidth(0),
     zIndex: 10,
   },
 });

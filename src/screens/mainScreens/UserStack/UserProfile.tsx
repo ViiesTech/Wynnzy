@@ -156,8 +156,9 @@ const styles = StyleSheet.create({
   backIconContainer: {
     position: 'absolute',
     zIndex: 10,
-    top: 10,
     width: '100%',
+    // top: 10,
+    // backgroundColor: 'teal',
   },
   coverImage: {
     height: responsiveHeight(25),
