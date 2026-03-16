@@ -189,6 +189,8 @@ const AddPetProfile = ({navigation, route}: any) => {
           placeholder={placeholder}
           placeholderTextColor={'#A6A6A6'}
           multiline={multiline}
+          scrollEnabled={!multiline}
+          autoCapitalize={multiline ? 'sentences' : 'words'}
           textAlignVertical={multiline ? 'top' : 'center'}
           style={[
             styles.inputStyle,
@@ -202,7 +204,8 @@ const AddPetProfile = ({navigation, route}: any) => {
   return (
     <ScrollView
       contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}>
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled">
       <UserHeader
         title={petId ? 'Edit Pet Profile' : 'Create Pet Profile'}
         navigation={navigation}
@@ -399,7 +402,6 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(1.8),
     marginTop: 5,
     padding: 0,
-    textTransform: 'capitalize',
   },
   dateText: {color: '#2A1F51', marginTop: 8, fontSize: responsiveFontSize(1.8)},
   row: {flexDirection: 'row', justifyContent: 'space-between'},

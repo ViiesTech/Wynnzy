@@ -23,6 +23,7 @@ import {getAllPets} from '../../../GlobalFunctions/Auth';
 import {ImageBaseUrl} from '../../../BaseUrl';
 import {useIsFocused} from '@react-navigation/native';
 import UserHeader from '../../../Components/UserHeader';
+import {NormalText} from '../../../Components/Titles';
 
 const UserProfile: React.FC = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -115,6 +116,19 @@ const UserProfile: React.FC = ({navigation}: any) => {
     );
   };
 
+  const listEmptyComponent = () => {
+    return (
+      <View style={styles.emptyContainer}>
+        <NormalText
+          title="No Pets Found"
+          fontSize={responsiveFontSize(2)}
+          color={Colors.gray}
+          alignSelf="center"
+        />
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <FlatList
@@ -126,6 +140,7 @@ const UserProfile: React.FC = ({navigation}: any) => {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         renderItem={renderItem}
+        ListEmptyComponent={listEmptyComponent}
       />
       <View style={styles.footerContainer}>
         <Button
@@ -263,6 +278,11 @@ const styles = StyleSheet.create({
   addPetText: {
     fontSize: responsiveFontSize(1.5),
     color: Colors.white,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
