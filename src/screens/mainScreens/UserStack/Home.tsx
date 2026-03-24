@@ -7,8 +7,8 @@ import {
   Platform,
   Alert,
   TouchableOpacity,
-  Linking,
   StyleSheet,
+  Linking,
   ActivityIndicator,
 } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
