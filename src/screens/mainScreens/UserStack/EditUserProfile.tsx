@@ -72,6 +72,7 @@ const EditUserProfile = ({navigation, route}: any) => {
     }
     setIsLoading(false);
   };
+
   console.log('imagePath in EditUserProfile:-', imagePath);
   console.log('userData in EditUserProfile:-', userData);
   return (

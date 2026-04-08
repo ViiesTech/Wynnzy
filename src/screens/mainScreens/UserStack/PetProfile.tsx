@@ -20,6 +20,7 @@ import {getPetProfile} from '../../../GlobalFunctions/Auth';
 import {ImageBaseUrl} from '../../../BaseUrl';
 import moment from 'moment';
 import UserHeader from '../../../Components/UserHeader';
+import FastImage from 'react-native-fast-image';
 
 const PetProfile = ({navigation, route}: any) => {
   const [data, setData] = useState<any>(null);
@@ -65,152 +66,157 @@ const PetProfile = ({navigation, route}: any) => {
   }
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.scrollContainer}>
-      {/* Header Image & Floating Info Card */}
-      <Fragment>
-        <View style={styles.headerAbsoluteContainer}>
-          <UserHeader
-            navigation={navigation}
-            backIcon={true}
-            centerText={true}
-          />
-        </View>
-        <Image
-          source={{uri: `${ImageBaseUrl}${data?.profileImage}`}}
-          style={styles.mainImage}
-        />
-
-        <View style={styles.blurCardContainer}>
-          <BlurView
-            style={StyleSheet.absoluteFill}
-            blurType={'light'}
-            blurAmount={15}
-            reducedTransparencyFallbackColor="white"
+    <View style={styles.container}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContainer}>
+        {/* Header Image & Floating Info Card */}
+        <Fragment>
+          <View style={styles.headerAbsoluteContainer}>
+            <UserHeader
+              navigation={navigation}
+              backIcon={true}
+              centerText={true}
+            />
+          </View>
+          <FastImage
+            source={{uri: `${ImageBaseUrl}${data?.profileImage}`}}
+            style={styles.mainImage}
+            resizeMode={FastImage.resizeMode.cover}
           />
 
-          <View style={styles.headerInfoRow}>
-            <View>
-              <Text style={styles.petNameText}>{data?.petName}</Text>
-              <Text style={styles.subTitleText}>
-                {data?.breed} • {calculateAge(data?.dob)}
-              </Text>
-            </View>
-            <Image source={images.female} style={styles.genderIcon} />
-          </View>
-        </View>
-      </Fragment>
+          <View style={styles.blurCardContainer}>
+            <BlurView
+              style={StyleSheet.absoluteFill}
+              blurType={'light'}
+              blurAmount={15}
+              reducedTransparencyFallbackColor="white"
+            />
 
-      {/* About Section */}
-      <View style={styles.aboutSectionHeader}>
-        <Image source={images.paw} style={styles.sectionIcon} />
-        <Text style={styles.sectionTitle}>About {data?.petName}</Text>
-      </View>
-
-      <FlatList
-        data={[
-          {result: data?.weight ? `${data.weight} kg` : '-', title: 'Weight'},
-          {result: data?.height ? `${data.height} cm` : '-', title: 'Height'},
-          {result: data?.color || '-', title: 'Color'},
-        ]}
-        contentContainerStyle={styles.statsList}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={({item}) => (
-          <View style={styles.statsCard}>
-            <Text style={styles.statsTitle}>{item.title}</Text>
-            <Text style={styles.statsResult}>{item.result}</Text>
-          </View>
-        )}
-      />
-
-      {/* Description Section */}
-      <View style={styles.sectionHeader}>
-        <Image
-          source={images.description}
-          style={styles.sectionIcon}
-          tintColor={Colors.themeText}
-        />
-        <Text style={styles.sectionTitle}>{data?.petName} Description</Text>
-      </View>
-
-      <View style={styles.descriptionContainer}>
-        <Text style={styles.descriptionText}>{data?.description}</Text>
-      </View>
-
-      {/* Behavior Section */}
-      <View style={styles.sectionHeader}>
-        <Image
-          source={images.smileys}
-          style={styles.sectionIcon}
-          tintColor={Colors.themeText}
-        />
-        <Text style={styles.sectionTitle}>{data?.petName} behavior</Text>
-      </View>
-
-      <View style={styles.behaviorContainer}>
-        {data?.behaviour?.map((item: string, index: number) => (
-          <View key={index} style={styles.behaviorTag}>
-            <Text style={styles.behaviorText}>{item}</Text>
-          </View>
-        ))}
-      </View>
-
-      {/* Gallery Section */}
-      <View style={styles.sectionHeader}>
-        <Image
-          source={images.gallery}
-          style={styles.sectionIcon}
-          tintColor={Colors.themeText}
-        />
-        <Text style={styles.sectionTitle}>{data?.petName} Gallery</Text>
-      </View>
-
-      {/* Dynamic Photo Grid */}
-      <View style={{marginTop: 10}}>
-        {data?.petImages?.map((_: any, index: number) => {
-          if (index % 2 === 0) {
-            const firstImage = data?.petImages[index];
-            const secondImage = data?.petImages[index + 1];
-
-            return secondImage ? (
-              <View key={index} style={styles.photoRow}>
-                <Image
-                  source={{uri: `${ImageBaseUrl}${firstImage}`}}
-                  style={styles.gridImageHalf}
-                />
-                <Image
-                  source={{uri: `${ImageBaseUrl}${secondImage}`}}
-                  style={styles.gridImageHalf}
-                />
+            <View style={styles.headerInfoRow}>
+              <View>
+                <Text style={styles.petNameText}>{data?.petName}</Text>
+                <Text style={styles.subTitleText}>
+                  {data?.breed} • {calculateAge(data?.dob)}
+                </Text>
               </View>
-            ) : (
-              <Image
-                key={index}
-                source={{uri: `${ImageBaseUrl}${firstImage}`}}
-                style={styles.gridImageFull}
-              />
-            );
-          }
-          return null;
-        })}
-      </View>
-    </ScrollView>
+              <Image source={images.female} style={styles.genderIcon} />
+            </View>
+          </View>
+        </Fragment>
+
+        {/* About Section */}
+        <View style={styles.aboutSectionHeader}>
+          <Image source={images.paw} style={styles.sectionIcon} />
+          <Text style={styles.sectionTitle}>About {data?.petName}</Text>
+        </View>
+
+        <FlatList
+          data={[
+            {result: data?.weight ? `${data.weight} kg` : '-', title: 'Weight'},
+            {result: data?.height ? `${data.height} cm` : '-', title: 'Height'},
+            {result: data?.color || '-', title: 'Color'},
+          ]}
+          contentContainerStyle={styles.statsList}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({item}) => (
+            <View style={styles.statsCard}>
+              <Text style={styles.statsTitle}>{item.title}</Text>
+              <Text style={styles.statsResult}>{item.result}</Text>
+            </View>
+          )}
+        />
+
+        {/* Description Section */}
+        <View style={styles.sectionHeader}>
+          <Image
+            source={images.description}
+            style={styles.sectionIcon}
+            tintColor={Colors.themeText}
+          />
+          <Text style={styles.sectionTitle}>{data?.petName} Description</Text>
+        </View>
+
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.descriptionText}>{data?.description}</Text>
+        </View>
+
+        {/* Behavior Section */}
+        <View style={styles.sectionHeader}>
+          <Image
+            source={images.smileys}
+            style={styles.sectionIcon}
+            tintColor={Colors.themeText}
+          />
+          <Text style={styles.sectionTitle}>{data?.petName} behavior</Text>
+        </View>
+
+        <View style={styles.behaviorContainer}>
+          {data?.behaviour?.map((item: string, index: number) => (
+            <View key={index} style={styles.behaviorTag}>
+              <Text style={styles.behaviorText}>{item}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Gallery Section */}
+        <View style={styles.sectionHeader}>
+          <FastImage
+            source={images.gallery as any}
+            style={styles.sectionIcon}
+            tintColor={Colors.themeText}
+          />
+          <Text style={styles.sectionTitle}>{data?.petName} Gallery</Text>
+        </View>
+
+        {/* Dynamic Photo Grid */}
+        <View style={{marginTop: 10}}>
+          {data?.petImages?.map((_: any, index: number) => {
+            if (index % 2 === 0) {
+              const firstImage = data?.petImages[index];
+              const secondImage = data?.petImages[index + 1];
+
+              return secondImage ? (
+                <View key={index} style={styles.photoRow}>
+                  <FastImage
+                    source={{uri: `${ImageBaseUrl}${firstImage}`}}
+                    style={styles.gridImageHalf}
+                  />
+                  <FastImage
+                    source={{uri: `${ImageBaseUrl}${secondImage}`}}
+                    style={styles.gridImageHalf}
+                  />
+                </View>
+              ) : (
+                <FastImage
+                  key={index}
+                  source={{uri: `${ImageBaseUrl}${firstImage}`}}
+                  style={styles.gridImageFull}
+                />
+              );
+            }
+            return null;
+          })}
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.white,
   },
   scrollContainer: {
     flexGrow: 1,
-    backgroundColor: Colors.white,
     paddingBottom: responsiveHeight(4),
   },
   mainImage: {
@@ -223,6 +229,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 100,
+    // backgroundColor: 'red',
   },
   blurCardContainer: {
     padding: 20,
@@ -231,7 +238,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     overflow: 'hidden',
     position: 'absolute',
-    bottom: responsiveHeight(-6),
+    top: responsiveHeight(35),
+    // bottom: responsiveHeight(-6),
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},

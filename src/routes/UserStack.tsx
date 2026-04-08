@@ -41,6 +41,15 @@ type UserStackParams = {
   AddCard: undefined;
   Payment: undefined;
   TransferSuccessfully: undefined;
+  ServiceDetail: undefined;
+  AddPetProfile: undefined;
+  EditUserProfile: undefined;
+  AllHotels: undefined;
+  AllServices: undefined;
+  ViewBookedServices: undefined;
+  ReviewDetails: undefined;
+  UserChat: undefined;
+  ViewAllReviews: undefined;
 };
 
 const Stack = createNativeStackNavigator<UserStackParams>(); // Use the typed navigator

@@ -33,6 +33,7 @@ import {
 } from '../../../GlobalFunctions/Auth';
 import {ImageBaseUrl} from '../../../BaseUrl';
 import UserHeader from '../../../Components/UserHeader';
+import FastImage from 'react-native-fast-image';
 
 const AddPetProfile = ({navigation, route}: any) => {
   const petId = route?.params?.petId;
@@ -201,6 +202,9 @@ const AddPetProfile = ({navigation, route}: any) => {
     );
   };
 
+  console.log('imagePath in AddPetProfile:-', imagePath);
+  console.log('petImages in AddPetProfile:-', petImages);
+
   return (
     <ScrollView
       contentContainerStyle={styles.scrollContent}
@@ -215,9 +219,10 @@ const AddPetProfile = ({navigation, route}: any) => {
       <View style={{padding: responsiveHeight(2.5)}}>
         {/* Profile Image Picker */}
         <View style={styles.imagePickerWrapper}>
-          <Image
-            source={imagePath ? {uri: imagePath} : images.petPH}
+          <FastImage
+            source={imagePath ? {uri: imagePath} : (images.petPH as any)}
             style={styles.mainProfileImage}
+            resizeMode={FastImage.resizeMode.cover}
           />
           <TouchableOpacity onPress={selectMainImage} style={styles.plusButton}>
             <Octicons
@@ -286,7 +291,10 @@ const AddPetProfile = ({navigation, route}: any) => {
         </Text>
         {petImages?.length === 0 ? (
           <TouchableOpacity onPress={selectMultipleImages}>
-            <Image source={images.upload} style={styles.uploadPlaceholder} />
+            <FastImage
+              source={images.upload as any}
+              style={styles.uploadPlaceholder}
+            />
           </TouchableOpacity>
         ) : (
           <View style={{marginTop: 0}}>
@@ -312,7 +320,7 @@ const AddPetProfile = ({navigation, route}: any) => {
                     </View>
                     {nextImg ? (
                       <View style={styles.imageWrapper}>
-                        <Image
+                        <FastImage
                           source={{uri: nextImg}}
                           style={styles.galleryImageHalf}
                         />

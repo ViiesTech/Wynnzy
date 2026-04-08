@@ -24,6 +24,7 @@ import {ImageBaseUrl} from '../../../BaseUrl';
 import {useIsFocused} from '@react-navigation/native';
 import UserHeader from '../../../Components/UserHeader';
 import {NormalText} from '../../../Components/Titles';
+import FastImage from 'react-native-fast-image';
 
 const UserProfile: React.FC = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -59,13 +60,13 @@ const UserProfile: React.FC = ({navigation}: any) => {
           whiteTitle={true}
         />
       </View>
-      <Image source={images.cover} style={styles.coverImage} />
+      <FastImage source={images.cover as any} style={styles.coverImage} />
       <View style={styles.profileContainer}>
-        <Image
+        <FastImage
           source={
-            profileImage
+            (profileImage
               ? {uri: `${ImageBaseUrl}${profileImage}`}
-              : images.userDummy
+              : images.userDummy) as any
           }
           style={styles.profileImage}
         />
@@ -90,9 +91,10 @@ const UserProfile: React.FC = ({navigation}: any) => {
         style={styles.petItem}
         activeOpacity={0.8}
         onPress={() => navigation.navigate('PetProfile', {_id: item?._id})}>
-        <Image
-          source={{uri: `${ImageBaseUrl}${item?.profileImage}`}}
+        <FastImage
+          source={{uri: `${ImageBaseUrl}${item?.profileImage}` as any}}
           style={styles.petImage}
+          resizeMode={FastImage.resizeMode.cover}
         />
         <View style={styles.editIconContainer}>
           <TouchableOpacity
