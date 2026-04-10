@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Header2 from '../../../Components/Header2';
 import {heart, rating} from '../../../assets/icons';
 import {images} from '../../../assets/images';
@@ -66,13 +67,14 @@ const StoreDetails = ({navigation, route}: any) => {
 
   return (
     <View style={styles.container}>
-      <Image
+      <FastImage
         source={
           storeDetails?.image?.length > 0
             ? {uri: `${ImageBaseUrl}${storeDetails?.image?.[0]}`}
             : images.storedetail1
         }
         style={styles.backImage}
+        resizeMode={FastImage.resizeMode.cover}
       />
       <Header2 />
 
@@ -121,7 +123,7 @@ const StoreDetails = ({navigation, route}: any) => {
                   const isFullWidth =
                     index === 2 && storeDetails.image.length === 3;
                   return (
-                    <Image
+                    <FastImage
                       key={index}
                       source={{uri: `${ImageBaseUrl}${item}`}}
                       style={[
@@ -132,6 +134,7 @@ const StoreDetails = ({navigation, route}: any) => {
                             : responsiveWidth(44),
                         },
                       ]}
+                      resizeMode={FastImage.resizeMode.cover}
                     />
                   );
                 })}

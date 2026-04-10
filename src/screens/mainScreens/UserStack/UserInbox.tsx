@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
 import DaycareHeader from '../../../Components/DaycareHeader';
 import {Colors} from '../../../assets/colors';
@@ -53,9 +54,10 @@ const UserInbox = ({navigation}: any) => {
       activeOpacity={0.7}>
       <View style={styles.avatarContainer}>
         {item.avatar ? (
-          <Image
+          <FastImage
             source={{uri: `${ImageBaseUrl}${item.avatar}`}}
             style={styles.avatar}
+            resizeMode={FastImage.resizeMode.cover}
           />
         ) : (
           <View style={styles.placeholderAvatar}>

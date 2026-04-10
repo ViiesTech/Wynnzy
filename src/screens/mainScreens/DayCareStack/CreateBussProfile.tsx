@@ -1,18 +1,14 @@
-import React, {useEffect, useState, useCallback, Fragment} from 'react';
+import React, {useEffect, useState, Fragment} from 'react';
 import {
   View,
   ScrollView,
-  Platform,
-  PermissionsAndroid,
-  Alert,
   FlatList,
-  Image,
   TouchableOpacity,
   Text,
   TextInput,
   Linking,
   StyleSheet,
-  ActivityIndicator,
+  Platform,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import DocumentPicker from 'react-native-document-picker';
@@ -21,12 +17,10 @@ import FileViewer from 'react-native-file-viewer';
 import {
   responsiveFontSize,
   responsiveHeight,
-  responsiveWidth,
 } from '../../../assets/responsive_dimensions';
 import {Colors} from '../../../assets/colors';
 import {NormalText} from '../../../Components/Titles';
-import Input from '../../../Components/Input';
-import {cut, tick, upload, upload3, user, pin} from '../../../assets/icons';
+import {cut, tick, upload3} from '../../../assets/icons';
 import ListHeading from '../../../Components/ListHeading';
 import SvgIcons from '../../../Components/SvgIcons';
 import {Button} from '../../../Components/Button';
@@ -38,8 +32,9 @@ import {
   ShowToast,
 } from '../../../GlobalFunctions/Auth';
 import {ImageBaseUrl} from '../../../BaseUrl';
-import TextHeader from '../../../Components/TextHeader';
 import UserHeader from '../../../Components/UserHeader';
+import FastImage from 'react-native-fast-image';
+import Octicons from 'react-native-vector-icons/Octicons';
 
 const CreateBussProfile = ({navigation, route}: any) => {
   const {type, fullName, storeName, contactNo, bio, experienceLvl, imageUri} =
@@ -183,11 +178,12 @@ const CreateBussProfile = ({navigation, route}: any) => {
         onPress={() => handleRemoveItem(item, isPortfolio)}>
         <SvgIcons xml={cut} height={12} width={12} />
       </TouchableOpacity>
+
       <TouchableOpacity
         onPress={() => Linking.openURL(item.uri || `${ImageBaseUrl}${item}`)}>
         {item.type?.startsWith('image/') ||
         (typeof item === 'string' && !item.toLowerCase().endsWith('.pdf')) ? (
-          <Image
+          <FastImage
             source={{uri: item.uri || `${ImageBaseUrl}${item}`}}
             style={styles.previewBox}
           />
@@ -213,6 +209,39 @@ const CreateBussProfile = ({navigation, route}: any) => {
     </TouchableOpacity>
   );
 
+  const handleInputChange = (field: string, val: string) => {
+    setEditFields(prev => ({...prev, [field]: val}));
+  };
+
+  const renderInputField = (
+    label: string,
+    field: string,
+    placeholder: string,
+    multiline = false,
+  ) => {
+    return (
+      <View style={[styles.inputContainer, styles.shadow]}>
+        <Text style={styles.inputLabel}>{label}</Text>
+        <TextInput
+          value={editFields[field as keyof typeof editFields]}
+          onChangeText={text => handleInputChange(field, text)}
+          placeholder={placeholder}
+          placeholderTextColor={'#A6A6A6'}
+          multiline={multiline}
+          scrollEnabled={!multiline}
+          autoCapitalize={multiline ? 'sentences' : 'words'}
+          textAlignVertical={multiline ? 'top' : 'center'}
+          style={[
+            styles.inputStyle,
+            multiline && {height: responsiveHeight(12)},
+          ]}
+        />
+      </View>
+    );
+  };
+
+  console.log('managerId:-', _id);
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -225,16 +254,17 @@ const CreateBussProfile = ({navigation, route}: any) => {
         centerText={true}
       />
 
-      <View style={styles.mainnContainer}>
+      <View style={styles.mainContainer}>
         {type === 'edit' && (
           <View style={styles.avatarSection}>
-            <Image
+            <FastImage
               source={{
                 uri:
                   imageUrl ||
                   `${ImageBaseUrl}${businessProfileData?.profileImage}`,
               }}
               style={styles.avatar}
+              resizeMode={FastImage.resizeMode.cover}
             />
             <TouchableOpacity
               onPress={async () => {
@@ -244,7 +274,12 @@ const CreateBussProfile = ({navigation, route}: any) => {
                 }
               }}
               style={styles.uploadBadge}>
-              <SvgIcons xml={upload} height={16} width={16} />
+              {/* <SvgIcons xml={upload} height={16} width={16} /> */}
+              <Octicons
+                name="plus"
+                size={responsiveFontSize(2.5)}
+                color={Colors.buttonBg}
+              />
             </TouchableOpacity>
           </View>
         )}
@@ -252,42 +287,16 @@ const CreateBussProfile = ({navigation, route}: any) => {
         <View style={styles.formGap}>
           {type === 'edit' && (
             <Fragment>
-              <Input
-                placeHolder="Full Name"
-                value={editFields.fullName}
-                handlePress={v => setEditFields({...editFields, fullName: v})}
-                xml={user}
-                icon
-              />
-              <Input
-                placeHolder="Store Name"
-                value={editFields.storeName}
-                handlePress={v => setEditFields({...editFields, storeName: v})}
-                xml={user}
-                icon
-              />
-              <Input
-                placeHolder="Contact"
-                value={editFields.contactNumber}
-                keyboardType="numeric"
-                handlePress={v =>
-                  setEditFields({...editFields, contactNumber: v})
-                }
-                xml={user}
-                icon
-              />
-
-              <View style={styles.bioContainer}>
-                <SvgIcons xml={user} height={20} width={20} />
-                <TextInput
-                  multiline
-                  placeholder="Bio"
-                  value={editFields.bio}
-                  onChangeText={v => setEditFields({...editFields, bio: v})}
-                  style={styles.bioInput}
-                  placeholderTextColor="#BFBFBF"
-                />
-              </View>
+              {renderInputField('Full Name', 'fullName', 'John Doe')}
+              {renderInputField('Store Name', 'storeName', 'My Pet Store')}
+              {renderInputField('Contact', 'contactNumber', '+1 234 567 890')}
+              {renderInputField('Address', 'address', 'Enter your address')}
+              {renderInputField(
+                'Bio',
+                'bio',
+                'Tell us about your business...',
+                true,
+              )}
             </Fragment>
           )}
 
@@ -299,6 +308,8 @@ const CreateBussProfile = ({navigation, route}: any) => {
               {label: 'Daycare', value: 'Daycare'},
             ]}
             placeHolder="Business Type"
+            zIndexValue={2000}
+            shadow={true}
           />
 
           <PickerCard
@@ -309,14 +320,8 @@ const CreateBussProfile = ({navigation, route}: any) => {
               {label: 'Training', value: 'Training'},
             ]}
             placeHolder="Select Services"
-          />
-
-          <Input
-            placeHolder="Address"
-            value={editFields.address}
-            handlePress={v => setEditFields({...editFields, address: v})}
-            xml={pin}
-            icon
+            zIndexValue={1000}
+            shadow={true}
           />
 
           <ListHeading title="Certificates" showSeeAll={false} />
@@ -375,21 +380,29 @@ const CreateBussProfile = ({navigation, route}: any) => {
 
 const styles = StyleSheet.create({
   container: {flexGrow: 1},
-  mainnContainer: {padding: 20, backgroundColor: Colors.white},
+  mainContainer: {padding: 20, backgroundColor: Colors.white},
   avatarSection: {alignSelf: 'center', marginVertical: 20},
   avatar: {
     width: 120,
     height: 120,
-    borderRadius: 20,
+    borderRadius: 60,
     backgroundColor: '#f5f5f5',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   uploadBadge: {
     position: 'absolute',
-    bottom: -10,
-    right: -10,
+    bottom: 10,
+    right: 0,
     backgroundColor: 'white',
-    padding: 10,
+    height: 30,
+    width: 30,
     borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
     elevation: 5,
     shadowOpacity: 0.2,
   },
@@ -404,7 +417,12 @@ const styles = StyleSheet.create({
   },
   bioInput: {flex: 1, marginLeft: 10, textAlignVertical: 'top', color: 'black'},
   previewContainer: {marginRight: 15, position: 'relative', marginTop: 10},
-  previewBox: {width: 100, height: 100, borderRadius: 10},
+  previewBox: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    backgroundColor: Colors.lightGray,
+  },
   docBox: {
     backgroundColor: '#F0F2FF',
     justifyContent: 'center',
@@ -451,9 +469,38 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.buttonBg,
     borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   checkboxActive: {backgroundColor: Colors.buttonBg},
   termsText: {flex: 1, color: '#9DA5B3', fontSize: 12},
+  inputContainer: {
+    padding: 12,
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+  },
+  shadow: {
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {elevation: 3},
+    }),
+  },
+  inputLabel: {
+    fontSize: responsiveFontSize(1.8),
+    color: '#2A1F51',
+    fontWeight: '700',
+  },
+  inputStyle: {
+    color: '#2A1F51',
+    fontSize: responsiveFontSize(1.8),
+    marginTop: 5,
+    padding: 0,
+  },
 });
 
 export default CreateBussProfile;

@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {BoldText, NormalText} from './Titles';
 import {
   responsiveFontSize,
@@ -72,10 +73,10 @@ const BookingCard: React.FC<BookingCardProps> = ({
       style={styles.cardContainer}>
       <View style={styles.row}>
         {/* Left Side: Image */}
-        <Image
+        <FastImage
           style={styles.image}
           source={{uri: `${ImageBaseUrl}${displayImage}`}}
-          resizeMode="cover"
+          resizeMode={FastImage.resizeMode.cover}
         />
 
         {/* Middle Section: Details */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import moment from 'moment';
 
 import {NormalText} from './Titles';
@@ -12,6 +12,7 @@ import {
 } from '../assets/responsive_dimensions';
 import {images} from '../assets/images';
 import {ImageBaseUrl} from '../BaseUrl'; // Assuming you have this constant
+import FastImage from 'react-native-fast-image';
 
 interface ReviewCardProps {
   handlePress?: () => void;
@@ -46,10 +47,10 @@ const ReviewsCard: React.FC<ReviewCardProps> = ({
       style={[styles.cardContainer, {width: responsiveWidth(cardWidth)}]}>
       <View style={styles.headerRow}>
         {/* Profile Picture */}
-        <Image
-          source={userImage}
+        <FastImage
+          source={userImage as any}
           style={styles.profileImage}
-          resizeMode="cover"
+          resizeMode={FastImage.resizeMode.cover}
         />
 
         {/* Name and Rating Row */}

@@ -1,4 +1,4 @@
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {
   responsiveFontSize,
@@ -11,6 +11,7 @@ import {Colors} from '../assets/colors';
 import {useSelector} from 'react-redux';
 import {ImageBaseUrl} from '../BaseUrl';
 import {NormalText} from './Titles';
+import FastImage from 'react-native-fast-image';
 
 const DaycareHeader = ({
   home,
@@ -31,9 +32,10 @@ const DaycareHeader = ({
       ]}>
       {home && (
         <View style={styles.profileContainer}>
-          <Image
+          <FastImage
             source={{uri: `${ImageBaseUrl}${profileImage}`}}
             style={styles.profileImage}
+            resizeMode={FastImage.resizeMode.cover}
           />
           <View style={styles.nameContainer}>
             <NormalText

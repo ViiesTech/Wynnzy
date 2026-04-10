@@ -11,6 +11,7 @@ import {
   Linking,
   ActivityIndicator,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Geolocation from 'react-native-geolocation-service';
 
 import SvgIcons from '../../../Components/SvgIcons';
@@ -123,9 +124,10 @@ const Home = ({navigation}: any) => {
         })
       }
       style={styles.card}>
-      <Image
+      <FastImage
         source={{uri: `${ImageBaseUrl}${item?.profileImage}`}}
         style={styles.cardImage}
+        resizeMode={FastImage.resizeMode.cover}
       />
       <BoldText
         title={item.fullName}

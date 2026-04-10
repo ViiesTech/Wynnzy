@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {BoldText, NormalText} from './Titles';
 import {
   responsiveFontSize,
@@ -10,7 +11,15 @@ import {Colors} from '../assets/colors';
 import {ImageBaseUrl} from '../BaseUrl';
 import {images} from '../assets/images';
 
-const ServiceCard = ({data, handlePress, activeOpacity = 0.7}: any) => {
+import {edit} from '../assets/icons';
+import SvgIcons from './SvgIcons';
+
+const ServiceCard = ({
+  data,
+  handlePress,
+  handleEdit,
+  activeOpacity = 0.7,
+}: any) => {
   return (
     <TouchableOpacity
       activeOpacity={activeOpacity}
@@ -18,13 +27,14 @@ const ServiceCard = ({data, handlePress, activeOpacity = 0.7}: any) => {
       style={styles.cardContainer}>
       <View style={styles.contentRow}>
         <View style={styles.leftSection}>
-          <Image
+          <FastImage
             style={styles.image}
             source={
               data?.images?.[0]
-                ? {uri: `${ImageBaseUrl}${data?.images[0]}`}
-                : images.userDummy
+                ? {uri: `${ImageBaseUrl}${data?.images[0]}` as any}
+                : (images.userDummy as any)
             }
+            resizeMode={FastImage.resizeMode.cover}
           />
 
           <View style={styles.infoContainer}>
@@ -42,11 +52,20 @@ const ServiceCard = ({data, handlePress, activeOpacity = 0.7}: any) => {
               title={data?.description || 'No description provided'}
             />
 
-            <View style={styles.statusBadge}>
+            <View
+              style={[
+                styles.statusBadge,
+                {
+                  backgroundColor:
+                    data?.status === 'Active' ? Colors.buttonBg : '#E8EAFE',
+                },
+              ]}>
               <NormalText
-                fontWeight="800"
+                fontWeight="500"
                 fontSize={responsiveFontSize(1.4)}
-                color={Colors.themeText}
+                color={
+                  data?.status === 'Active' ? Colors.white : Colors.themeText
+                }
                 title={data?.status || 'Status'}
                 txtAlign="center"
               />
@@ -55,6 +74,15 @@ const ServiceCard = ({data, handlePress, activeOpacity = 0.7}: any) => {
         </View>
 
         <View style={styles.rightSection}>
+          <TouchableOpacity
+            style={styles.editIconBtn}
+            onPress={e => {
+              e.stopPropagation();
+              handleEdit();
+            }}>
+            <SvgIcons xml={edit} height={20} width={20} />
+          </TouchableOpacity>
+
           <BoldText
             fontSize={responsiveFontSize(2)}
             color={Colors.themeText}
@@ -79,7 +107,7 @@ const styles = StyleSheet.create({
   contentRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'stretch',
   },
   leftSection: {
     flexDirection: 'row',
@@ -106,7 +134,9 @@ const styles = StyleSheet.create({
   rightSection: {
     alignItems: 'flex-end',
     marginLeft: responsiveWidth(2),
+    justifyContent: 'space-between',
   },
+  editIconBtn: {},
 });
 
 export default ServiceCard;

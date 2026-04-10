@@ -11,6 +11,7 @@ import {
   ViewStyle,
   ImageStyle,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
 import {
   responsiveFontSize,
@@ -177,9 +178,10 @@ const ServiceDetail = ({navigation, route}: any) => {
         {/* Main Service Info */}
         <View style={styles.contentView}>
           {data?.images?.[0] && (
-            <Image
+            <FastImage
               source={{uri: `${ImageBaseUrl}${data.images[0]}`}}
-              style={styles.imageStyle as ImageStyle}
+              style={styles.imageStyle as any}
+              resizeMode={FastImage.resizeMode.cover}
             />
           )}
           <View style={{flex: 1}}>
@@ -207,9 +209,10 @@ const ServiceDetail = ({navigation, route}: any) => {
               onPress={() => {
                 setSelectedPet(prev => (prev === item._id ? null : item._id));
               }}>
-              <Image
+              <FastImage
                 source={{uri: `${ImageBaseUrl}${item?.petImages[0]}`}}
-                style={styles.petImage as ImageStyle}
+                style={styles.petImage as any}
+                resizeMode={FastImage.resizeMode.cover}
               />
               <View style={styles.petNameContainer}>
                 <Text style={styles.petName}>{item?.petName}</Text>

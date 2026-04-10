@@ -1,13 +1,14 @@
 import {launchImageLibrary} from 'react-native-image-picker';
-import {BaseUrl} from '../BaseUrl';
+import {BaseUrl, ImageBaseUrl} from '../BaseUrl';
 import axios from 'axios';
 import {ShowToast} from './Auth';
 
-export const selectImageFromGallery = () => {
+export const selectImageFromGallery = (selectionLimit = 1) => {
   return new Promise((resolve, reject) => {
     const options = {
       mediaType: 'photo',
       quality: 1,
+      selectionLimit: selectionLimit,
     };
 
     launchImageLibrary(options, response => {
@@ -18,7 +19,11 @@ export const selectImageFromGallery = () => {
         console.log('ImagePicker Error: ', response.errorMessage);
         reject(response.errorMessage);
       } else if (response.assets && response.assets.length > 0) {
-        resolve(response.assets[0].uri);
+        if (selectionLimit === 1) {
+          resolve(response.assets[0].uri);
+        } else {
+          resolve(response.assets.map(asset => asset.uri));
+        }
       } else {
         resolve(null);
       }
@@ -393,6 +398,144 @@ export const getManagerStats = async (managerId, month, year) => {
     const resp = await axios.request(config);
     return resp.data;
   } catch (error) {
+    throw error;
+  }
+};
+export const getAllCategories = async () => {
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: `${BaseUrl}user/getAllCategories`,
+    headers: {},
+  };
+  try {
+    const res = await axios.request(config);
+    // console.log('res in getAllCategories:-', res.data);
+    return res.data;
+  } catch (err) {
+    ShowToast('error', err?.response?.data?.message || 'Something went wrong');
+    throw err;
+  }
+};
+export const getAllMyServices = async managerId => {
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: `${BaseUrl}user/servicesByManagerId?managerId=${managerId}`,
+    headers: {},
+  };
+  try {
+    const res = await axios.request(config);
+    return res.data;
+  } catch (err) {
+    ShowToast('error', err?.response?.data?.message || 'Something went wrong');
+    throw err;
+  }
+};
+export const createService = async ({
+  name,
+  description,
+  managerId,
+  categoryId,
+  price,
+  images,
+}) => {
+  let data = new FormData();
+  data.append('managerId', managerId);
+  data.append('serviceCategory', categoryId);
+  data.append('serviceName', name);
+  data.append('price', price);
+  data.append('description', description);
+  images.forEach((uri, index) => {
+    data.append('images', {
+      uri,
+      name: `image${index}.jpg`,
+      type: 'image/jpeg',
+    });
+  });
+
+  const config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: `${BaseUrl}user/createService`,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    data: data,
+  };
+
+  try {
+    const res = await axios.request(config);
+    console.log('res in createService:-', res.data);
+    if (res.data.success) {
+      ShowToast('success', 'Service Created Successfully');
+    } else {
+      ShowToast('error', res.data.message);
+    }
+    return res.data;
+  } catch (error) {
+    console.error(
+      'Error createService:-',
+      error?.response?.data || error.message,
+    );
+    throw error;
+  }
+};
+export const updateService = async ({
+  name,
+  description,
+  managerId,
+  categoryId,
+  price,
+  images,
+  serviceId,
+}) => {
+  let data = new FormData();
+  data.append('managerId', managerId);
+  data.append('serviceCategory', categoryId);
+  data.append('serviceName', name);
+  data.append('price', price);
+  data.append('description', description);
+  data.append('serviceId', serviceId);
+  images.forEach((uri, index) => {
+    if (uri.startsWith('http')) {
+      // Existing server image — send relative path to keep it
+      const relativePath = uri.replace(ImageBaseUrl, '');
+      data.append('images', relativePath);
+    } else {
+      // Newly picked local file — upload it
+      data.append('images', {
+        uri,
+        name: `image${index}.jpg`,
+        type: 'image/jpeg',
+      });
+    }
+  });
+
+  const config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: `${BaseUrl}user/updateService`,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    data: data,
+  };
+
+  try {
+    const res = await axios.request(config);
+    console.log('res in updateService:-', res.data);
+    if (res.data.success) {
+      ShowToast('success', 'Service Updated Successfully');
+    } else {
+      ShowToast('error', res.data.message);
+    }
+    return res.data;
+  } catch (error) {
+    console.error(
+      'Error updateService:-',
+      error?.response?.data || error.message,
+    );
     throw error;
   }
 };

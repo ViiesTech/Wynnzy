@@ -23,6 +23,7 @@ import {addToCart} from '../../../../redux/cartSlice';
 import {RootState} from '../../../../redux/Store';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import UserHeader from '../../../../Components/UserHeader';
+import FastImage from 'react-native-fast-image';
 
 const PRODUCT_DATA = [1, 2, 3, 4, 5, 6, 7, 8]; // Replace with real data later
 
@@ -77,36 +78,37 @@ const Shop = ({navigation}: {navigation: any}) => {
         onPress={() => navigation.navigate('ProductDetails', {...item})}
         activeOpacity={0.8}>
         <View style={styles.imageContainer}>
-          <Image
+          <FastImage
+            source={
+              productImage ? {uri: productImage} : (images.product as any)
+            }
             style={styles.productImage}
-            source={productImage ? {uri: productImage} : images.product}
-            resizeMode="contain"
+            resizeMode={FastImage.resizeMode.contain}
           />
         </View>
 
-        <BoldText
-          color={Colors.labelText}
-          title={item?.productName}
-          mrgnTop={responsiveHeight(1.2)}
-          fontSize={responsiveFontSize(2)}
-          alignSelf="left"
-        />
+        <View style={{padding: responsiveHeight(1)}}>
+          <BoldText
+            color={Colors.labelText}
+            title={item?.productName}
+            fontSize={responsiveFontSize(1.8)}
+          />
 
-        <View style={styles.priceRow}>
-          <View style={styles.priceBadge}>
-            <NormalText
-              color="#5F6063"
-              alignSelf="center"
-              title={`$${item?.variations?.[0]?.price}`}
-            />
+          <View style={styles.priceRow}>
+            <View style={styles.priceBadge}>
+              <NormalText
+                color={Colors.buttonBg}
+                alignSelf="center"
+                title={`$${item?.variations?.[0]?.price?.toFixed(1)}`}
+              />
+            </View>
+
+            <TouchableOpacity
+              style={styles.addToCartButton}
+              onPress={() => handleAddToCart(item)}>
+              <NormalText color={Colors.white} title="Add to Cart" />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => handleAddToCart(item)}>
-            <NormalText
-              alignSelf="center"
-              color={Colors.buttonBg}
-              title="Add to Cart"
-            />
-          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     );
@@ -175,20 +177,29 @@ const styles = StyleSheet.create({
   },
   productCard: {
     width: responsiveWidth(44),
+    borderRadius: responsiveHeight(2),
+    backgroundColor: Colors.white,
+    elevation: 5,
+    shadowColor: Colors.black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    // borderColor: Colors?.buttonBg,
+    // borderWidth: 0.3,
+    // backgroundColor: 'red',
   },
   imageContainer: {
-    borderWidth: 1.5,
-    width: '100%',
     height: responsiveHeight(20),
+    width: '100%',
+    backgroundColor: Colors.lightGray,
     alignItems: 'center',
     justifyContent: 'center',
-    borderColor: Colors?.buttonBg || '#EEE',
     borderRadius: responsiveHeight(2),
-    backgroundColor: '#FAFAFA',
+    overflow: 'hidden',
   },
   productImage: {
-    height: '80%',
-    width: '80%',
+    height: '90%',
+    width: '90%',
   },
   priceRow: {
     flexDirection: 'row',
@@ -197,12 +208,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   priceBadge: {
-    backgroundColor: '#F5F5F5',
-    paddingHorizontal: responsiveWidth(3),
-    paddingVertical: responsiveHeight(0.5),
-    borderRadius: responsiveHeight(1),
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  addToCartButton: {
+    padding: responsiveHeight(1),
+    backgroundColor: Colors.buttonBg,
+    borderRadius: 10,
   },
   floatingButton: {
     position: 'absolute',

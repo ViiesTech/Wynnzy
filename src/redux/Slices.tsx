@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import axios, {AxiosRequestConfig} from 'axios';
 import {ShowToast} from '../GlobalFunctions/Auth';
-import {getManagerStats} from '../GlobalFunctions';
+import {getManagerStats, getAllMyServices} from '../GlobalFunctions';
 
 // Define types for initial state
 interface UserState {
@@ -73,6 +73,25 @@ export const GetManagerStats = createAsyncThunk(
       }
     } catch (error: any) {
       console.log('GetManagerStats error:', error);
+      return rejectWithValue(
+        error?.response?.data?.message || 'Something went wrong',
+      );
+    }
+  },
+);
+
+export const GetAllMyServices = createAsyncThunk(
+  'auth/GetAllMyServices',
+  async (managerId: any, {rejectWithValue}) => {
+    try {
+      const response = await getAllMyServices(managerId);
+      if (response && response.success) {
+        return response;
+      } else {
+        return rejectWithValue(response?.message || 'Failed to fetch services');
+      }
+    } catch (error: any) {
+      console.log('GetAllMyServices error:', error);
       return rejectWithValue(
         error?.response?.data?.message || 'Something went wrong',
       );

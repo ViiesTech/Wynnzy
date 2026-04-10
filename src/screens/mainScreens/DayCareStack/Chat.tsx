@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
 import {Colors} from '../../../assets/colors';
 import {
@@ -106,9 +107,10 @@ const Chat = ({navigation, route}: any) => {
         {isDaycare && (
           <View style={styles.daycareAvatarContainer}>
             {profileImage ? (
-              <Image
+              <FastImage
                 source={{uri: `${ImageBaseUrl}${profileImage}`}}
                 style={styles.avatarImage}
+                resizeMode={FastImage.resizeMode.cover}
               />
             ) : (
               <View style={styles.daycareProfilePlaceholder}>

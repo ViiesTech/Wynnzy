@@ -382,7 +382,7 @@ export const editBusinessProfile = async ({
   const data = new FormData();
   data.append('businessProfileId', id);
   if (bType) {
-    data.append('bType', bType);
+    data.append('bType', JSON.stringify(bType));
   }
   if (image) {
     data.append('profileImage', {
@@ -401,7 +401,7 @@ export const editBusinessProfile = async ({
     data.append('address', address);
   }
   if (services) {
-    data.append('services', services);
+    data.append('services', JSON.stringify(services));
   }
   if (contactNumber) {
     data.append('contactNumber', contactNumber);
@@ -419,7 +419,14 @@ export const editBusinessProfile = async ({
   }
   if (certificates?.length) {
     certificates.forEach((file, index) => {
-      if (file && file.uri) {
+      if (typeof file === 'string') {
+        // Existing server file — send relative path to keep it
+        const relativePath = file.startsWith('http')
+          ? file.replace(ImageBaseUrl, '')
+          : file;
+        data.append('certificate', relativePath);
+      } else if (file && file.uri) {
+        // Newly picked local file — upload it
         data.append('certificate', {
           uri: file.uri,
           name: file.name || `certificate_${index}.pdf`,
@@ -427,10 +434,20 @@ export const editBusinessProfile = async ({
         });
       }
     });
+  } else {
+    // Explicitly send empty to clear all certificates
+    data.append('certificate', JSON.stringify([]));
   }
   if (portfolio?.length) {
     portfolio.forEach((file, index) => {
-      if (file && file.uri) {
+      if (typeof file === 'string') {
+        // Existing server file — send relative path to keep it
+        const relativePath = file.startsWith('http')
+          ? file.replace(ImageBaseUrl, '')
+          : file;
+        data.append('image', relativePath);
+      } else if (file && file.uri) {
+        // Newly picked local file — upload it
         data.append('image', {
           uri: file.uri,
           name: file.name || `portfolio_${index}.jpg`,
@@ -438,6 +455,9 @@ export const editBusinessProfile = async ({
         });
       }
     });
+  } else {
+    // Explicitly send empty to clear all portfolio images
+    data.append('image', JSON.stringify([]));
   }
   const config = {
     method: 'post',

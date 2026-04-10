@@ -222,6 +222,7 @@ const styles = StyleSheet.create({
   mainImage: {
     height: responsiveHeight(40),
     width: responsiveWidth(100),
+    backgroundColor: Colors.lightGray,
   },
   headerAbsoluteContainer: {
     position: 'absolute',
@@ -365,10 +366,12 @@ const styles = StyleSheet.create({
     width: responsiveWidth(43.5),
     height: responsiveHeight(18),
     borderRadius: 12,
+    backgroundColor: Colors.lightGray,
   },
   gridImageFull: {
     width: responsiveWidth(90),
     height: responsiveHeight(18),
+    backgroundColor: Colors.lightGray,
     borderRadius: 12,
     alignSelf: 'center',
     marginBottom: 10,

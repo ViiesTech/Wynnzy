@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
 import {Colors} from '../../../assets/colors';
 import {
@@ -83,9 +84,10 @@ const UserChat = ({navigation, route}: any) => {
         {!isMe && (
           <View style={styles.themAvatarContainer}>
             {chatData?.avatar ? (
-              <Image
+              <FastImage
                 source={{uri: `${ImageBaseUrl}${chatData.avatar}`}}
                 style={styles.avatarImage}
+                resizeMode={FastImage.resizeMode.cover}
               />
             ) : (
               <View style={styles.themProfilePlaceholder}>
@@ -112,9 +114,10 @@ const UserChat = ({navigation, route}: any) => {
         {isMe && (
           <View style={styles.meAvatarContainer}>
             {profileImage ? (
-              <Image
+              <FastImage
                 source={{uri: `${ImageBaseUrl}${profileImage}`}}
                 style={styles.avatarImage}
+                resizeMode={FastImage.resizeMode.cover}
               />
             ) : (
               <View style={styles.meProfilePlaceholder}>

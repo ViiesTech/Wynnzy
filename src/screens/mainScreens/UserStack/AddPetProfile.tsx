@@ -206,126 +206,114 @@ const AddPetProfile = ({navigation, route}: any) => {
   console.log('petImages in AddPetProfile:-', petImages);
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}
-      keyboardShouldPersistTaps="handled">
+    <View style={styles.container}>
       <UserHeader
         title={petId ? 'Edit Pet Profile' : 'Create Pet Profile'}
         navigation={navigation}
         backIcon={true}
         centerText={true}
       />
-      <View style={{padding: responsiveHeight(2.5)}}>
-        {/* Profile Image Picker */}
-        <View style={styles.imagePickerWrapper}>
-          <FastImage
-            source={imagePath ? {uri: imagePath} : (images.petPH as any)}
-            style={styles.mainProfileImage}
-            resizeMode={FastImage.resizeMode.cover}
-          />
-          <TouchableOpacity onPress={selectMainImage} style={styles.plusButton}>
-            <Octicons
-              name="plus"
-              size={responsiveFontSize(2)}
-              color={'#FFFFFF'}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={{marginHorizontal: responsiveHeight(2.5)}}>
-        {renderInputField('Pet Name', 'petName', 'Buddy')}
-
-        {/* Date Picker */}
-        <TouchableOpacity
-          onPress={() => setShowDatePicker(true)}
-          style={[styles.inputContainer, styles.shadow]}>
-          <Text style={styles.inputLabel}>Date Of Birth</Text>
-          <Text style={styles.dateText}>
-            {moment(date).format('MMM Do YYYY')}
-          </Text>
-        </TouchableOpacity>
-
-        {showDatePicker && (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={(event, selectedDate) => {
-              setShowDatePicker(false);
-              if (selectedDate) {
-                setDate(selectedDate);
-              }
-            }}
-          />
-        )}
-
-        {renderInputField('Breed', 'breed', 'Golden Retriever')}
-        {renderInputField('Size', 'size', 'Medium')}
-        {renderInputField('Special Care Need', 'specialCare', 'None')}
-
-        <View style={styles.row}>
-          <View style={{flex: 1}}>
-            {renderInputField('Weight (kg)', 'weight', '15')}
-          </View>
-          <View style={{width: 15}} />
-          <View style={{flex: 1}}>
-            {renderInputField('Height (cm)', 'height', '50')}
-          </View>
-        </View>
-
-        {renderInputField('Color', 'color', 'Golden')}
-        {renderInputField('Behaviour', 'behaviour', 'Friendly, Active')}
-        {renderInputField(
-          'Description',
-          'description',
-          'A very loyal dog...',
-          true,
-        )}
-      </View>
-
-      <View style={{padding: responsiveHeight(2.5)}}>
-        <Text style={[styles.inputLabel, {marginBottom: 10}]}>
-          Gallery Images
-        </Text>
-        {petImages?.length === 0 ? (
-          <TouchableOpacity onPress={selectMultipleImages}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled">
+        <View style={{padding: responsiveHeight(2.5)}}>
+          {/* Profile Image Picker */}
+          <View style={styles.imagePickerWrapper}>
             <FastImage
-              source={images.upload as any}
-              style={styles.uploadPlaceholder}
+              source={imagePath ? {uri: imagePath} : (images.petPH as any)}
+              style={styles.mainProfileImage}
+              resizeMode={FastImage.resizeMode.cover}
             />
+            <TouchableOpacity
+              onPress={selectMainImage}
+              style={styles.plusButton}>
+              <Octicons
+                name="plus"
+                size={responsiveFontSize(2)}
+                color={'#FFFFFF'}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={{marginHorizontal: responsiveHeight(2.5)}}>
+          {renderInputField('Pet Name', 'petName', 'Buddy')}
+
+          {/* Date Picker */}
+          <TouchableOpacity
+            onPress={() => setShowDatePicker(true)}
+            style={[styles.inputContainer, styles.shadow]}>
+            <Text style={styles.inputLabel}>Date Of Birth</Text>
+            <Text style={styles.dateText}>
+              {moment(date).format('MMM Do YYYY')}
+            </Text>
           </TouchableOpacity>
-        ) : (
-          <View style={{marginTop: 0}}>
-            {petImages.map((img, index) => {
-              if (index % 2 === 0) {
-                const nextImg = petImages[index + 1];
-                return (
-                  <View key={index} style={styles.imageRow}>
-                    <View style={styles.imageWrapper}>
-                      <Image
-                        source={{uri: img}}
-                        style={styles.galleryImageHalf}
-                      />
-                      <TouchableOpacity
-                        onPress={() => removeImage(index)}
-                        style={styles.removeIconContainer}>
-                        <Entypo
-                          name="cross"
-                          size={responsiveFontSize(2)}
-                          color={Colors.white}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    {nextImg ? (
+
+          {showDatePicker && (
+            <DateTimePicker
+              value={date}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={(event, selectedDate) => {
+                setShowDatePicker(false);
+                if (selectedDate) {
+                  setDate(selectedDate);
+                }
+              }}
+            />
+          )}
+
+          {renderInputField('Breed', 'breed', 'Golden Retriever')}
+          {renderInputField('Size', 'size', 'Medium')}
+          {renderInputField('Special Care Need', 'specialCare', 'None')}
+
+          <View style={styles.row}>
+            <View style={{flex: 1}}>
+              {renderInputField('Weight (kg)', 'weight', '15')}
+            </View>
+            <View style={{width: 15}} />
+            <View style={{flex: 1}}>
+              {renderInputField('Height (cm)', 'height', '50')}
+            </View>
+          </View>
+
+          {renderInputField('Color', 'color', 'Golden')}
+          {renderInputField('Behaviour', 'behaviour', 'Friendly, Active')}
+          {renderInputField(
+            'Description',
+            'description',
+            'A very loyal dog...',
+            true,
+          )}
+        </View>
+
+        <View style={{padding: responsiveHeight(2.5)}}>
+          <Text style={[styles.inputLabel, {marginBottom: 10}]}>
+            Gallery Images
+          </Text>
+          {petImages?.length === 0 ? (
+            <TouchableOpacity onPress={selectMultipleImages}>
+              <FastImage
+                source={images.upload as any}
+                style={styles.uploadPlaceholder}
+              />
+            </TouchableOpacity>
+          ) : (
+            <View style={{marginTop: 0}}>
+              {petImages.map((img, index) => {
+                if (index % 2 === 0) {
+                  const nextImg = petImages[index + 1];
+                  return (
+                    <View key={index} style={styles.imageRow}>
                       <View style={styles.imageWrapper}>
                         <FastImage
-                          source={{uri: nextImg}}
+                          source={{uri: img}}
                           style={styles.galleryImageHalf}
+                          resizeMode={FastImage.resizeMode.cover}
                         />
                         <TouchableOpacity
-                          onPress={() => removeImage(index + 1)}
+                          onPress={() => removeImage(index)}
                           style={styles.removeIconContainer}>
                           <Entypo
                             name="cross"
@@ -334,33 +322,54 @@ const AddPetProfile = ({navigation, route}: any) => {
                           />
                         </TouchableOpacity>
                       </View>
-                    ) : (
-                      <View style={{width: responsiveWidth(44)}} />
-                    )}
-                  </View>
-                );
-              }
-              return null;
-            })}
-          </View>
-        )}
+                      {nextImg ? (
+                        <View style={styles.imageWrapper}>
+                          <FastImage
+                            source={{uri: nextImg}}
+                            style={styles.galleryImageHalf}
+                            resizeMode={FastImage.resizeMode.cover}
+                          />
+                          <TouchableOpacity
+                            onPress={() => removeImage(index + 1)}
+                            style={styles.removeIconContainer}>
+                            <Entypo
+                              name="cross"
+                              size={responsiveFontSize(2)}
+                              color={Colors.white}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      ) : (
+                        <View style={{width: responsiveWidth(44)}} />
+                      )}
+                    </View>
+                  );
+                }
+                return null;
+              })}
+            </View>
+          )}
 
-        <View style={{marginTop: 20}}>
-          <Button
-            title={petId ? 'Update Profile' : 'Create Profile'}
-            isLoading={isLoading}
-            handlePress={submitHandler}
-          />
+          <View style={{marginTop: 20}}>
+            <Button
+              title={petId ? 'Update Profile' : 'Create Profile'}
+              isLoading={isLoading}
+              handlePress={submitHandler}
+            />
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
   scrollContent: {
     flexGrow: 1,
-    backgroundColor: Colors.white,
     paddingBottom: 30,
   },
   imagePickerWrapper: {alignSelf: 'center', marginTop: responsiveHeight(1.5)},
@@ -368,7 +377,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(14),
     width: responsiveHeight(14),
     borderRadius: responsiveHeight(7),
-    backgroundColor: '#f0f0f0',
+    backgroundColor: Colors.lightGray,
   },
   plusButton: {
     backgroundColor: Colors.buttonBg,

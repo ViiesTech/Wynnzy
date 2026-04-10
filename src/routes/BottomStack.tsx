@@ -25,6 +25,7 @@ import ChangeDetails from '../screens/mainScreens/UserStack/shop/ChangeDetails';
 import Orders from '../screens/mainScreens/DayCareStack/Orders';
 import Inbox from '../screens/mainScreens/DayCareStack/Inbox';
 import UserInbox from '../screens/mainScreens/UserStack/UserInbox';
+import MyServices from '../screens/mainScreens/DayCareStack/MyServices';
 // Create Bottom Tab Navigator
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -181,6 +182,24 @@ const DayCareBottomStack = () => {
               <View style={styles.bottomTabs}>
                 <AntDesign
                   name="home"
+                  size={25}
+                  color={focused ? '#554292' : '#BFBFBF'}
+                />
+                {focused && <View style={focusedStyle(false)} />}
+              </View>
+            ),
+            tabBarShowLabel: false,
+          })}
+        />
+
+        <Tab.Screen
+          name={'MyServices'}
+          component={MyServices}
+          options={({route}) => ({
+            tabBarIcon: ({focused, size}) => (
+              <View style={styles.bottomTabs}>
+                <Ionicons
+                  name={'paw-outline'}
                   size={25}
                   color={focused ? '#554292' : '#BFBFBF'}
                 />

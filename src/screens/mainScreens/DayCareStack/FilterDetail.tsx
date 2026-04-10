@@ -1,5 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
-import { Text, ScrollView, Image, View } from 'react-native';
+import { Text, ScrollView, View } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import React, { useEffect, useState } from 'react';
 import { Colors } from '../../../assets/colors';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from '../../../assets/responsive_dimensions';
@@ -29,7 +30,11 @@ const FilterDetail = ({ navigation, route }) => {
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, backgroundColor: Colors.white, padding: responsiveHeight(2) }}>
       <BackIcon  />
       {data?.images ? (
-        <Image source={{ uri: `${ImageBaseUrl}${data?.images[0]}` }} style={{ marginTop: responsiveHeight(4), height: responsiveHeight(30), width: '100%', borderRadius: responsiveHeight(1) }} />
+        <FastImage
+          source={{ uri: `${ImageBaseUrl}${data?.images[0]}` }}
+          style={{ marginTop: responsiveHeight(4), height: responsiveHeight(30), width: '100%', borderRadius: responsiveHeight(1) }}
+          resizeMode={FastImage.resizeMode.cover}
+        />
       ) : null}
 
       <View style={{ gap: 10, marginTop: 5 }}>

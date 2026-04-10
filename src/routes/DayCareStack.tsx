@@ -13,6 +13,7 @@ import Orders from '../screens/mainScreens/DayCareStack/Orders';
 import ViewBookedServices from '../screens/commonScreens/ViewBookedServices';
 import {Colors} from '../assets/colors';
 import Chat from '../screens/mainScreens/DayCareStack/Chat';
+import CreateService from '../screens/mainScreens/DayCareStack/CreateService';
 // Define types for the navigation parameters
 type DayCareStackParams = {
   BottomStack: undefined;
@@ -48,6 +49,7 @@ export function DayCareStack() {
       <Stack.Screen name="CreateProfile" component={CreateProfile} />
       <Stack.Screen name="CreateBussProfile" component={CreateBussProfile} />
       <Stack.Screen name="Chat" component={Chat} />
+      <Stack.Screen name="CreateService" component={CreateService} />
     </Stack.Navigator>
   );
 }

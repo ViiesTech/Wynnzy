@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {Colors} from '../../../assets/colors';
 import BackIcon from '../../../Components/BackIcon';
 import {BoldText, NormalText} from '../../../Components/Titles';
@@ -55,10 +56,10 @@ const AllHotels = ({navigation}: any) => {
           })
         }
         style={styles.cardContainer}>
-        <Image
+        <FastImage
           source={{uri: `${ImageBaseUrl}${item?.profileImage}`}}
           style={styles.hotelImage}
-          resizeMode="cover"
+          resizeMode={FastImage.resizeMode.cover}
         />
         <BoldText
           title={item.fullName || 'Unnamed Business'}

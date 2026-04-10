@@ -68,11 +68,6 @@ const Orders = ({navigation, route}: any) => {
 
   const renderHeader = () => (
     <View style={{marginBottom: responsiveHeight(1)}}>
-      {from ? (
-        <TextHeader title="Orders" navigation={navigation} />
-      ) : (
-        <DaycareHeader title="Orders" navigation={navigation} centerText />
-      )}
       <FlatList
         data={categories}
         horizontal
@@ -120,6 +115,11 @@ const Orders = ({navigation, route}: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {from ? (
+        <TextHeader title="Orders" navigation={navigation} />
+      ) : (
+        <DaycareHeader title="Orders" navigation={navigation} centerText />
+      )}
       {loading ? (
         <View style={styles.loaderContainer}>
           {renderHeader()}
@@ -175,7 +175,6 @@ const styles = StyleSheet.create({
   },
   categoryList: {
     gap: 10,
-    marginTop: responsiveHeight(2),
     paddingBottom: 10,
   },
   categoryBtn: {

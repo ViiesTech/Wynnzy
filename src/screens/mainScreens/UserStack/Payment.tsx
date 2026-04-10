@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 // Assets & Utils
 import {Colors} from '../../../assets/colors';
@@ -86,9 +87,10 @@ const Payment = ({navigation, route}: any) => {
             showsHorizontalScrollIndicator={false}
             renderItem={({item}) => (
               <View style={styles.contentView}>
-                <Image
+                <FastImage
                   source={{uri: `${ImageBaseUrl}${item?.images?.[0]}`}}
                   style={styles.imageStyle}
+                  resizeMode={FastImage.resizeMode.cover}
                 />
                 <View style={{flex: 1}}>
                   <Text style={styles.serviceTitle} numberOfLines={1}>
