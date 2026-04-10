@@ -19,6 +19,7 @@ const ServiceCard = ({
   handlePress,
   handleEdit,
   activeOpacity = 0.7,
+  editIcon = false,
 }: any) => {
   return (
     <TouchableOpacity
@@ -74,15 +75,16 @@ const ServiceCard = ({
         </View>
 
         <View style={styles.rightSection}>
-          <TouchableOpacity
-            style={styles.editIconBtn}
-            onPress={e => {
-              e.stopPropagation();
-              handleEdit();
-            }}>
-            <SvgIcons xml={edit} height={20} width={20} />
-          </TouchableOpacity>
-
+          {editIcon && (
+            <TouchableOpacity
+              style={styles.editIconBtn}
+              onPress={e => {
+                e.stopPropagation();
+                handleEdit();
+              }}>
+              <SvgIcons xml={edit} height={20} width={20} />
+            </TouchableOpacity>
+          )}
           <BoldText
             fontSize={responsiveFontSize(2)}
             color={Colors.themeText}

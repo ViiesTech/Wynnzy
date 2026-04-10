@@ -66,6 +66,7 @@ const MyServices = ({navigation}: any) => {
   const renderItem = ({item}: any) => (
     <ServiceCard
       data={item}
+      editIcon={true}
       activeOpacity={1}
       handleEdit={() =>
         navigation.navigate('CreateService', {serviceData: item})
