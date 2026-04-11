@@ -34,6 +34,7 @@ import {BoldText} from '../../../Components/Titles';
 import Input from '../../../Components/Input';
 import TextHeader from '../../../Components/TextHeader';
 import {bookService} from '../../../GlobalFunctions';
+import GooglePlaces from '../../../Components/GooglePlaces';
 
 const ServiceDetail = ({navigation, route}: any) => {
   const {_id, managerId, serviceCategory, categoryId} = route?.params;
@@ -171,6 +172,7 @@ const ServiceDetail = ({navigation, route}: any) => {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.container}>
       <View style={styles.subContainer}>
         <TextHeader title="Services Details" />
@@ -223,22 +225,8 @@ const ServiceDetail = ({navigation, route}: any) => {
 
         {/* Form Section */}
         <View style={styles.formContainer}>
-          {/* <PickerCard
-            value={value}
-            setValue={setValue}
-            items={otherServices}
-            placeHolder="Add Extra Services"
-            mrgnTop={responsiveHeight(1)}
-          /> */}
-
-          <View style={{marginTop: responsiveHeight(2), width: '100%'}}>
-            <Input
-              placeHolder="Address"
-              value={address}
-              placeholderTxtColor={'#CCCCCC'}
-              fontSize={responsiveHeight(2)}
-              handlePress={(txt: string) => setAddress(txt)}
-            />
+          <View style={styles.googlePlacesContainer}>
+            <GooglePlaces onAddressSelect={val => setAddress(val)} />
           </View>
 
           <CalendarCard onDatesSelect={setSelectedDates} />
@@ -342,6 +330,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  googlePlacesContainer: {
+    marginTop: responsiveHeight(2),
+    width: '100%',
+    zIndex: 100,
   },
 });
 
