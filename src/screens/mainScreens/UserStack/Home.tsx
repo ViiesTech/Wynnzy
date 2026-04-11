@@ -197,6 +197,13 @@ const Home = ({navigation}: any) => {
   );
 
   const listEmptyComponent = () => {
+    if (loading) {
+      return (
+        <View style={styles.emptyContainer}>
+          <ActivityIndicator size="large" color={Colors.buttonBg} />
+        </View>
+      );
+    }
     return (
       <View style={styles.emptyContainer}>
         <NormalText
@@ -217,7 +224,7 @@ const Home = ({navigation}: any) => {
         keyExtractor={item => item._id.toString()}
         numColumns={2}
         ListHeaderComponent={renderHeader}
-        ListEmptyComponent={loading ? null : listEmptyComponent()}
+        ListEmptyComponent={listEmptyComponent}
         columnWrapperStyle={styles.columnWrapper}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
