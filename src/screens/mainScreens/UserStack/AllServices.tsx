@@ -45,7 +45,6 @@ const AllServices = ({navigation, route}: any) => {
   );
 
   const renderItem = ({item}: any) => {
-    console.log('item:--------', item);
     return (
       <ServiceCard
         data={item}
@@ -63,7 +62,7 @@ const AllServices = ({navigation, route}: any) => {
 
   return (
     <View style={styles.container}>
-      <TextHeader title="Services" />
+      <TextHeader title="Services" goBack={true} />
 
       {isLoading ? (
         <View style={styles.centerContainer}>

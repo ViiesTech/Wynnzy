@@ -223,7 +223,7 @@ const Home = ({navigation}: any) => {
         renderItem={renderNearbyItems}
         keyExtractor={item => item._id.toString()}
         numColumns={2}
-        ListHeaderComponent={renderHeader}
+        ListHeaderComponent={renderHeader()}
         ListEmptyComponent={listEmptyComponent}
         columnWrapperStyle={styles.columnWrapper}
         contentContainerStyle={styles.listContent}

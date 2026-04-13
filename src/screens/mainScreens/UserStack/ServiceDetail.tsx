@@ -175,7 +175,7 @@ const ServiceDetail = ({navigation, route}: any) => {
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.container}>
       <View style={styles.subContainer}>
-        <TextHeader title="Services Details" />
+        <TextHeader title="Services Details" goBack={true} />
 
         {/* Main Service Info */}
         <View style={styles.contentView}>

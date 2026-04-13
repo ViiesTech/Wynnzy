@@ -63,15 +63,15 @@ const StoreDetails = ({navigation, route}: any) => {
     );
   }
 
-  console.log('categories:-', JSON.stringify(categories, null, 2));
+  // console.log('categories:-', JSON.stringify(categories, null, 2));
 
   return (
     <View style={styles.container}>
       <FastImage
         source={
           storeDetails?.image?.length > 0
-            ? {uri: `${ImageBaseUrl}${storeDetails?.image?.[0]}`}
-            : images.storedetail1
+            ? {uri: `${ImageBaseUrl}${storeDetails?.image?.[0]}` as any}
+            : (images.storedetail1 as any)
         }
         style={styles.backImage}
         resizeMode={FastImage.resizeMode.cover}
@@ -207,6 +207,7 @@ const styles = StyleSheet.create({
   backImage: {
     height: responsiveHeight(35),
     width: responsiveWidth(100),
+    backgroundColor: Colors.lightGray,
   },
   contentWrapper: {
     flex: 1,

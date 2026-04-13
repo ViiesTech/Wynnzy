@@ -49,6 +49,7 @@ export const Header3: React.FC<Header3Props> = ({
         <TouchableOpacity>
           <SvgIcons xml={menu} height={25} width={25} />
         </TouchableOpacity>
+
         {textContainer && (
           <View style={{}}>
             <View

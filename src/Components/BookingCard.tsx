@@ -64,7 +64,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
     ).format('MMM DD, YYYY')}`;
   };
 
-  // console.log('bookingData:------', JSON.stringify(data, null, 2));
+  console.log('bookingData:------', JSON.stringify(data, null, 2));
   // console.log('userData:------', JSON.stringify(userData?.type, null, 2));
   return (
     <TouchableOpacity
