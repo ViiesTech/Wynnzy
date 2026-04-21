@@ -119,7 +119,7 @@ const CreateBussProfile = ({navigation, route}: any) => {
     if (
       !value?.length ||
       !value2?.length ||
-      !editFields.address ||
+      (type === 'edit' && !editFields.address) ||
       !certificates.length
     ) {
       return ShowToast('error', 'Please fill all required fields');
@@ -240,7 +240,8 @@ const CreateBussProfile = ({navigation, route}: any) => {
     );
   };
 
-  console.log('managerId:-', _id);
+  // console.log('managerId:-', _id);
+  console.log('route:-', route);
 
   return (
     <ScrollView

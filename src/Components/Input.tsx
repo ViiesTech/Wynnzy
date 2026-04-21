@@ -100,11 +100,15 @@ const Input = ({
             placeholder={placeHolder}
             secureTextEntry={showPassword ? false : true}
             value={value}
+            textContentType="none"
+            autoComplete="off"
+            importantForAutofill="no"
             style={{
               color: color,
               fontSize: fontSize,
               fontWeight: fontWeight,
               height: 40,
+              backgroundColor: 'transparent',
             }}
             onChangeText={text => handlePress(text)}
           />

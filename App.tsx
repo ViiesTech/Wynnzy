@@ -12,6 +12,7 @@ const App = () => {
   useEffect(() => {
     GoogleSignin.configure({
       webClientId: webClientId,
+      iosClientId: '590049783523-2tllvpl0qi7lmm8vijmrb069avt2i41j.apps.googleusercontent.com',
     });
   }, []);
 
