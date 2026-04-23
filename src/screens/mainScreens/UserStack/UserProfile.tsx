@@ -19,12 +19,13 @@ import {Colors} from '../../../assets/colors';
 import {Button} from '../../../Components/Button';
 import {clearToken} from '../../../redux/Slices';
 import {useDispatch, useSelector} from 'react-redux';
-import {getAllPets} from '../../../GlobalFunctions/Auth';
+import {getAllPets, handleLogin} from '../../../GlobalFunctions/Auth';
 import {ImageBaseUrl} from '../../../BaseUrl';
 import {useIsFocused} from '@react-navigation/native';
 import UserHeader from '../../../Components/UserHeader';
 import {NormalText} from '../../../Components/Titles';
 import FastImage from 'react-native-fast-image';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const UserProfile: React.FC = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -131,6 +132,18 @@ const UserProfile: React.FC = ({navigation}: any) => {
     );
   };
 
+  const handleLogout = async () => {
+    try {
+      if (userData?.socialType === 'Google') {
+        await GoogleSignin.signOut();
+      }
+      dispatch(clearToken());
+    } catch (error) {
+      console.log('Error during logout:', error);
+      dispatch(clearToken());
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <FlatList
@@ -146,7 +159,7 @@ const UserProfile: React.FC = ({navigation}: any) => {
       />
       <View style={styles.footerContainer}>
         <Button
-          handlePress={() => dispatch(clearToken())}
+          handlePress={handleLogout}
           title="Logout"
           bgColor={Colors.buttonBg}
           textColor={Colors.white}

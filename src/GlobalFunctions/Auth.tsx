@@ -67,7 +67,7 @@ export const handleLogin = async (
 export const SocialLogin = (body: any, dispatch: any) => {
   const {email, nickName, type, socialId} = body;
   let data = JSON.stringify({
-    email: email.toLowerCase(),
+    email: email ? email.toLowerCase() : '',
     nickName: nickName,
     type: type,
     socialId: socialId,

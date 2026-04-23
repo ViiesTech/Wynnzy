@@ -111,11 +111,16 @@ const Login = ({navigation}: any) => {
 
       console.log('Google signInResult:', signInResult);
 
+      if (signInResult.type === 'cancelled' || !signInResult.data) {
+        console.log('Google sign-in was cancelled or returned no data');
+        return;
+      }
+
       const body = {
-        email: signInResult?.data?.user?.email,
-        fullName: signInResult?.data?.user?.name,
+        email: signInResult.data.user.email,
+        fullName: signInResult.data.user.name,
         socialType: socialLoginTypes?.google,
-        socialId: signInResult?.data?.user?.id,
+        socialId: signInResult.data.user.id,
       };
 
       console.log('body in socialLogin:-', body);
