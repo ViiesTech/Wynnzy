@@ -55,6 +55,11 @@ const AddressInput = ({
         value={value}
         onChangeText={onChangeText}
         keyboardType={keyboardType || 'default'}
+        autoCorrect={false}
+        spellCheck={false}
+        textContentType="none"
+        autoComplete="off"
+        importantForAutofill="no"
         style={styles.textInput}
       />
     </View>

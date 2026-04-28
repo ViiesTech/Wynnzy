@@ -111,6 +111,7 @@ const Profile = ({navigation}: any) => {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
+      style={{backgroundColor: Colors.white}}
       contentContainerStyle={styles.scrollContainer}>
       <DaycareHeader title="Profile" navigation={navigation} editProfile />
 

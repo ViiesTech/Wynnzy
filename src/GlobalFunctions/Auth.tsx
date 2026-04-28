@@ -308,8 +308,8 @@ export const createBusinessProfile = async ({
   portfolioImages.forEach((file, index) => {
     data.append('image', {
       uri: file.uri,
-      name: file.name || `certificate_${index}.pdf`,
-      type: file.type || 'application/pdf',
+      name: file.name || `portfolio_${index}.jpg`,
+      type: file.type || 'image/jpeg',
     });
   });
   data.append('locationName', locationName);
@@ -387,7 +387,7 @@ export const editBusinessProfile = async ({
   if (image) {
     data.append('profileImage', {
       uri: image,
-      name: 'image.jpg',
+      name: `profile_${Date.now()}.jpg`,
       type: 'image/jpeg',
     });
   }

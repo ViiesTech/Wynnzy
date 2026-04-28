@@ -44,6 +44,7 @@ const SelectType = ({navigation}: any) => {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
+      style={{backgroundColor: Colors.white}}
       contentContainerStyle={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <SvgIcons xml={back} height={20} width={20} />

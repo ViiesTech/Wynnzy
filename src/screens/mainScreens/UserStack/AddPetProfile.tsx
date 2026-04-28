@@ -193,6 +193,8 @@ const AddPetProfile = ({navigation, route}: any) => {
           scrollEnabled={!multiline}
           autoCapitalize={multiline ? 'sentences' : 'words'}
           textAlignVertical={multiline ? 'top' : 'center'}
+          autoCorrect={false}
+          spellCheck={false}
           textContentType="none"
           autoComplete="off"
           importantForAutofill="no"

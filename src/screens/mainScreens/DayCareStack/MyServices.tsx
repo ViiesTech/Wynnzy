@@ -27,7 +27,8 @@ const MyServices = ({navigation}: any) => {
   const [loader, setLoader] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [servicesData, setServicesData] = useState<any[]>([]);
-  const {_id} = useSelector((state: any) => state.user?.userData);
+  const userData = useSelector((state: any) => state.user?.userData);
+  const _id = userData?._id || userData?.id || userData?.user?._id || userData?.user?.id;
   const dispatch = useDispatch<any>();
   const isFocused = useIsFocused();
 

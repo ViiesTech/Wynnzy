@@ -34,9 +34,7 @@ const CreateProfile = ({navigation}) => {
   const [experienceLvl, setExperienceLvl] = useState(5);
   const {fullName, storeName, contactNo, bio} = form;
   const [imageUri, setImageUri] = useState(null);
-  console.log('imageuri', imageUri);
-  console.log('form', form);
-  console.log('experienceLvl', experienceLvl);
+
   const handleInputChange = (field: string, value: string) => {
     setForm(prev => ({...prev, [field]: value}));
   };
@@ -152,6 +150,11 @@ const CreateProfile = ({navigation}) => {
           placeholder="Bio"
           textAlignVertical="top"
           placeholderTextColor={'#3B4B68'}
+          autoCorrect={false}
+          spellCheck={false}
+          textContentType="none"
+          autoComplete="off"
+          importantForAutofill="no"
           style={{
             height: responsiveHeight(15),
             borderRadius: responsiveHeight(1),
@@ -160,6 +163,7 @@ const CreateProfile = ({navigation}) => {
             width: '100%',
             borderColor: '#EFEFEF',
             borderWidth: 2,
+            backgroundColor: 'transparent',
           }}
         />
         <NormalText

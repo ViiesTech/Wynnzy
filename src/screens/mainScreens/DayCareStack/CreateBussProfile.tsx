@@ -116,13 +116,20 @@ const CreateBussProfile = ({navigation, route}: any) => {
   };
 
   const handleAction = async () => {
-    if (
-      !value?.length ||
-      !value2?.length ||
-      (type === 'edit' && !editFields.address) ||
-      !certificates.length
-    ) {
-      return ShowToast('error', 'Please fill all required fields');
+    if (!value?.length) {
+      return ShowToast('error', 'Please select your Business Type');
+    }
+    if (!value2?.length) {
+      return ShowToast('error', 'Please select your Services');
+    }
+    if (!editFields.address) {
+      return ShowToast('error', 'Please enter your Address');
+    }
+    if (!portfolioImages.length) {
+      return ShowToast('error', 'Please upload Portfolio Image');
+    }
+    if (!certificates.length) {
+      return ShowToast('error', 'Please upload Certificates.');
     }
     if (!accept) {
       return ShowToast('error', 'Please accept terms to proceed');
@@ -231,8 +238,14 @@ const CreateBussProfile = ({navigation, route}: any) => {
           scrollEnabled={!multiline}
           autoCapitalize={multiline ? 'sentences' : 'words'}
           textAlignVertical={multiline ? 'top' : 'center'}
+          autoCorrect={false}
+          spellCheck={false}
+          textContentType="none"
+          autoComplete="off"
+          importantForAutofill="no"
           style={[
             styles.inputStyle,
+            {minHeight: 40, backgroundColor: 'transparent'},
             multiline && {height: responsiveHeight(12)},
           ]}
         />
@@ -241,7 +254,7 @@ const CreateBussProfile = ({navigation, route}: any) => {
   };
 
   // console.log('managerId:-', _id);
-  console.log('route:-', route);
+  // console.log('route:-', route);
 
   return (
     <ScrollView
@@ -325,20 +338,8 @@ const CreateBussProfile = ({navigation, route}: any) => {
             shadow={true}
           />
 
-          <ListHeading title="Certificates" showSeeAll={false} />
-          {certificates.length > 0 ? (
-            <FlatList
-              data={certificates}
-              horizontal
-              renderItem={props => renderMediaItem(props, false)}
-              showsHorizontalScrollIndicator={false}
-            />
-          ) : (
-            <UploadPlaceholder
-              title="Upload Certificate"
-              onPress={uploadDocuments}
-            />
-          )}
+          {type !== 'edit' &&
+            renderInputField('Address', 'address', 'Enter your address')}
 
           <ListHeading title="Portfolio" showSeeAll={false} />
 
@@ -353,6 +354,21 @@ const CreateBussProfile = ({navigation, route}: any) => {
             <UploadPlaceholder
               title="Upload Portfolio"
               onPress={uploadPortfolioImages}
+            />
+          )}
+
+          <ListHeading title="Certificates" showSeeAll={false} />
+          {certificates.length > 0 ? (
+            <FlatList
+              data={certificates}
+              horizontal
+              renderItem={props => renderMediaItem(props, false)}
+              showsHorizontalScrollIndicator={false}
+            />
+          ) : (
+            <UploadPlaceholder
+              title="Upload Certificate"
+              onPress={uploadDocuments}
             />
           )}
 

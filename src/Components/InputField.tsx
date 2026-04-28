@@ -14,6 +14,11 @@ const InputField = ({ value, onChangeText, placeholder }: inputProps) => {
       onChangeText={onChangeText}
       value={value}
       placeholder={placeholder}
+      autoCorrect={false}
+      spellCheck={false}
+      textContentType="none"
+      autoComplete="off"
+      importantForAutofill="no"
     />
   );
 };

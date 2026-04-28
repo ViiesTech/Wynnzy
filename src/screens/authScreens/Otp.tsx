@@ -112,8 +112,8 @@ const Otp = ({navigation, route}) => {
       console.log('response', response);
       if (response.success) {
         ShowToast('success', 'Otp Verified');
-        dispatch(setToken(response.accessToken));
-        dispatch(setUserData(response.data));
+        dispatch(setToken(response.accessToken || response.token));
+        dispatch(setUserData(response.data?.user || response.data || response.user || response));
       } else {
         ShowToast('error', response.message);
       }

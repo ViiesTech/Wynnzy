@@ -48,7 +48,8 @@ const CreateService = ({navigation, route}: any) => {
     price: '',
   });
 
-  const {_id: managerId} = useSelector((state: any) => state.user?.userData);
+  const userData = useSelector((state: any) => state.user?.userData);
+  const managerId = userData?._id || userData?.id || userData?.user?._id || userData?.user?.id;
 
   useEffect(() => {
     fetchCategories();

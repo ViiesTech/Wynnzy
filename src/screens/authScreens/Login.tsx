@@ -149,7 +149,7 @@ const Login = ({navigation}: any) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{flex: 1}}>
+      style={{flex: 1, backgroundColor: Colors.white}}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContainer}>

@@ -61,6 +61,11 @@ const SearchInput: React.FC<InputProps> = ({
         style={{flex: 1, color: txtColor}}
         placeholderTextColor={placeHolderColor}
         placeholder={placeHolder}
+        autoCorrect={false}
+        spellCheck={false}
+        textContentType="none"
+        autoComplete="off"
+        importantForAutofill="no"
       />
     </View>
   );

@@ -44,7 +44,9 @@ const Home = ({navigation}: any) => {
   );
   const [activeYear, setActiveYear] = useState(new Date().getFullYear());
   const [loader, setLoader] = useState(false);
-  const {_id} = useSelector((state: any) => state.user?.userData);
+  const userData = useSelector((state: any) => state.user?.userData);
+  const _id = userData?._id || userData?.id || userData?.user?._id || userData?.user?.id;
+  const {token} = useSelector((state: any) => state.user);
   const dispatch = useDispatch<any>();
   const [statsData, setStatsData] = useState<any>(null);
 
@@ -54,6 +56,7 @@ const Home = ({navigation}: any) => {
 
   // console.log('activeMonthIndex:-', activeMonthIndex);
   // console.log('activeYear:-', activeYear);
+  // console.log('token:-', token);
 
   const getStats = async () => {
     setLoader(true);
@@ -136,6 +139,7 @@ const Home = ({navigation}: any) => {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
+      style={{backgroundColor: Colors.white}}
       contentContainerStyle={styles.container}>
       <DaycareHeader home bellIcon navigation={navigation} />
 
