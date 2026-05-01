@@ -1,13 +1,17 @@
-import { StyleSheet, TextInput } from 'react-native';
+import {StyleSheet, TextInput} from 'react-native';
 import React from 'react';
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from '../assets/responsive_dimensions';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from '../assets/responsive_dimensions';
 
 interface inputProps {
   placeholder: string;
   value: string;
   onChangeText: () => void;
 }
-const InputField = ({ value, onChangeText, placeholder }: inputProps) => {
+const InputField = ({value, onChangeText, placeholder}: inputProps) => {
   return (
     <TextInput
       style={styles.inputStyle}

@@ -201,6 +201,9 @@ const BookingReviewModal: React.FC<BookingReviewModalProps> = ({
                   placeholder="Tell us more about the service (optional)..."
                   placeholderTextColor={'#969AA8'}
                   multiline
+                  textContentType="none"
+                  importantForAutofill="no"
+                  autoCorrect={false}
                   style={styles.commentInput}
                 />
 

@@ -194,10 +194,10 @@ const AddPetProfile = ({navigation, route}: any) => {
           autoCapitalize={multiline ? 'sentences' : 'words'}
           textAlignVertical={multiline ? 'top' : 'center'}
           autoCorrect={false}
-          spellCheck={false}
           textContentType="none"
-          autoComplete="off"
           importantForAutofill="no"
+          spellCheck={false}
+          autoComplete="off"
           style={[
             styles.inputStyle,
             {minHeight: 40, backgroundColor: 'transparent'},

@@ -151,10 +151,10 @@ const CreateProfile = ({navigation}) => {
           textAlignVertical="top"
           placeholderTextColor={'#3B4B68'}
           autoCorrect={false}
-          spellCheck={false}
           textContentType="none"
-          autoComplete="off"
           importantForAutofill="no"
+          spellCheck={false}
+          autoComplete="off"
           style={{
             height: responsiveHeight(15),
             borderRadius: responsiveHeight(1),

@@ -124,6 +124,7 @@ const EditUserProfile = ({navigation, route}: any) => {
           value={fullName}
           onChangeText={text => setFullName(text)}
           placeholder="Enter Name"
+          textContentType="none"
           placeholderTextColor={'#A6A6A6'}
           style={styles.InputStyles}
         />

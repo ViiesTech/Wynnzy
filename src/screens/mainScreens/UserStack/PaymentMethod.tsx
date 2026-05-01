@@ -84,6 +84,9 @@ const PaymentMethod = ({navigation}: any) => {
             <Text style={styles.inputLabel}>Name on Card</Text>
             <TextInput
               placeholder="Jordan Delgado"
+              textContentType="none"
+              importantForAutofill="no"
+              autoCorrect={false}
               placeholderTextColor={'#A6A6A6'}
               style={styles.textInput}
             />
@@ -95,6 +98,9 @@ const PaymentMethod = ({navigation}: any) => {
               placeholder="**** **** **** 7890"
               placeholderTextColor={'#A6A6A6'}
               keyboardType="numeric"
+              textContentType="none" // iOS ke liye
+              importantForAutofill="no" // Android ke liye
+              autoCorrect={false}
               style={styles.textInput}
             />
           </View>
@@ -106,6 +112,9 @@ const PaymentMethod = ({navigation}: any) => {
                 placeholder="10/27"
                 placeholderTextColor={'#A6A6A6'}
                 keyboardType="numeric"
+                textContentType="none" // iOS ke liye
+                importantForAutofill="no" // Android ke liye
+                autoCorrect={false}
                 style={styles.textInput}
               />
             </View>
@@ -118,6 +127,9 @@ const PaymentMethod = ({navigation}: any) => {
                 keyboardType="numeric"
                 secureTextEntry
                 maxLength={3}
+                textContentType="none" // iOS ke liye
+                importantForAutofill="no" // Android ke liye
+                autoCorrect={false}
                 style={styles.textInput}
               />
             </View>

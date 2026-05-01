@@ -103,8 +103,8 @@ const Input = ({
             autoCorrect={false}
             spellCheck={false}
             textContentType="none"
-            autoComplete="off"
             importantForAutofill="no"
+            autoComplete="off"
             style={{
               color: color,
               fontSize: fontSize,

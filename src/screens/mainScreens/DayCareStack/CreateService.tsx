@@ -49,7 +49,8 @@ const CreateService = ({navigation, route}: any) => {
   });
 
   const userData = useSelector((state: any) => state.user?.userData);
-  const managerId = userData?._id || userData?.id || userData?.user?._id || userData?.user?.id;
+  const managerId =
+    userData?._id || userData?.id || userData?.user?._id || userData?.user?.id;
 
   useEffect(() => {
     fetchCategories();
@@ -182,6 +183,9 @@ const CreateService = ({navigation, route}: any) => {
           scrollEnabled={!multiline}
           autoCapitalize={multiline ? 'sentences' : 'words'}
           textAlignVertical={multiline ? 'top' : 'center'}
+          textContentType="none"
+          importantForAutofill="no"
+          autoCorrect={false}
           style={[
             styles.inputStyle,
             multiline && {height: responsiveHeight(12)},
